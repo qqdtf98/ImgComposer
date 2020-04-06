@@ -1,13 +1,13 @@
 <template>
-  <app />
+  <editor />
 </template>
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api'
-import App from '@/components/editor/Editor.vue'
+import Editor from '@/components/Editor/index.vue'
 
 export default defineComponent({
-  components: { App },
+  components: { Editor },
   setup(...args) {
     const route = args[1].root.$route
     const router = args[1].root.$router

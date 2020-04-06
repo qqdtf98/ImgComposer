@@ -6,8 +6,8 @@
 </template>
 
 <script lang="ts">
-import MenuBar from './menu-bar/MenuBar.vue'
-import StylesPanel from './styles-panel/StylelsPanel.vue'
+import MenuBar from './MenuBar/index.vue'
+import StylesPanel from './StylesPanel/index.vue'
 
 export default {
   components: { MenuBar, StylesPanel },
