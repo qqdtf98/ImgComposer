@@ -27,12 +27,15 @@
 </template>
 
 <script lang="ts">
-import { onMounted, reactive } from '@vue/composition-api'
+import { onMounted, reactive, defineComponent } from '@vue/composition-api'
 import Spinner from '@/components/global/Spinner.vue'
 
-export default {
+export default defineComponent({
   components: { Spinner },
-  setup(props, { root: { $router: router } }) {
+  // setup(props, { root: { $router: router } }) {
+  setup(...args) {
+    const router = args[1].root.$router
+
     const state = reactive({
       projects: [
         {
@@ -50,7 +53,7 @@ export default {
 
     function selectProject(projectId: number) {
       router.push({
-        path: 'editor',
+        path: '/editor',
         query: {
           projectId: projectId.toString(),
         },
@@ -72,7 +75,7 @@ export default {
       selectProject,
     }
   },
-}
+})
 </script>
 
 <style lang="scss">

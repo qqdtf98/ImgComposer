@@ -153,8 +153,9 @@ $label-font-size: 14px;
 $label-padding: 12px;
 
 #ae-menu-bar {
-  height: 30px;
-  border-bottom: 1px solid $ae-border;
+  height: $menu-bar-height;
+  border-bottom: 1px solid;
+  @include auto-border-color;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -166,7 +167,7 @@ $label-padding: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: $ae-white;
+    @include auto-text-color;
     font-size: $label-font-size;
     user-select: none;
 
@@ -187,7 +188,9 @@ $label-padding: 12px;
     }
 
     &.active {
-      background-color: $ae-blue;
+      .menu-label {
+        @include auto-blue-color;
+      }
     }
 
     &.active .submenus-container {
@@ -196,12 +199,13 @@ $label-padding: 12px;
     .submenus-container {
       position: absolute;
       left: 0;
-      top: 100%;
+      top: calc(100% + 1px);
       white-space: nowrap;
       display: none;
       padding: 5px 0;
       border-radius: 0 0 5px 5px;
-      background-color: $ae-black;
+      @include auto-distinct-bg-color;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 
       .submenu {
         padding: 0 $label-padding;
@@ -222,7 +226,7 @@ $label-padding: 12px;
         }
 
         &:hover {
-          background-color: $ae-blue;
+          @include auto-blue-color;
         }
       }
     }
