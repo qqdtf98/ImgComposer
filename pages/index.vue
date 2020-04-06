@@ -1,11 +1,11 @@
 <template>
-  <home />
+  <hero />
 </template>
 
 <script lang="ts">
-import Home from '@/components/home/Home.vue'
+import Hero from '@/components/hero/Hero.vue'
 
 export default {
-  components: { Home },
+  components: { Hero },
 }
 </script>
