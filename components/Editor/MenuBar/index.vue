@@ -197,6 +197,7 @@ $label-padding: 12px;
       display: block;
     }
     .submenus-container {
+      z-index: 9999;
       position: absolute;
       left: 0;
       top: calc(100% + 1px);
