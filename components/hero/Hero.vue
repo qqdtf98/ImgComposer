@@ -17,9 +17,9 @@
           v-for="(project, i) in state.projects"
           :key="i"
           class="project-item"
-          @click="selectProject(i)"
+          @click="selectProject(project.seq)"
         >
-          {{ project.name }}
+          {{ project.title }}
         </div>
       </div>
     </div>
@@ -29,6 +29,7 @@
 <script lang="ts">
 import { onMounted, reactive, defineComponent } from '@vue/composition-api'
 import Spinner from '@/components/global/Spinner.vue'
+import ProjectServcie from '@/services/project-service'
 
 export default defineComponent({
   components: { Spinner },
@@ -36,18 +37,16 @@ export default defineComponent({
   setup(...args) {
     const router = args[1].root.$router
 
-    const state = reactive({
-      projects: [
-        {
-          name: 'My Project',
-        },
-        {
-          name: `Sungmin's Project`,
-        },
-        {
-          name: 'Untitled',
-        },
-      ],
+    type Title = {
+      seq: number
+      title: string
+    }
+
+    const state: {
+      projects: Title[]
+      isLoading: boolean
+    } = reactive({
+      projects: [],
       isLoading: false,
     })
 
@@ -63,7 +62,20 @@ export default defineComponent({
     onMounted(() => {
       state.isLoading = true
 
-      // TODO: Load projects from the server
+      // Project list 받아오기
+      ProjectServcie.getProjectList().then((res) => {
+        if (res.data.responseCode === 'SUCCESS') {
+          let i
+          state.projects = []
+          for (i = 0; i < res.data.data.length; i++) {
+            const title: Title = {
+              seq: res.data.data[i].project_seq,
+              title: res.data.data[i].project_name,
+            }
+            state.projects.push(title)
+          }
+        }
+      })
 
       setTimeout(() => {
         state.isLoading = false
@@ -115,10 +127,10 @@ export default defineComponent({
     .project-item {
       color: $ae-white;
       font-size: 15px;
-      font-weight: 700;
       user-select: none;
       padding: 0 10px;
       height: 28px;
+      letter-spacing: 0.8px;
       margin: 0 -10px;
       border-radius: 3px;
       cursor: pointer;
