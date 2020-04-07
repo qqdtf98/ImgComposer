@@ -10,8 +10,15 @@
           <i class="icon-arrowhead-right" />
         </button>
       </h1>
-
-      <div class="tools-container"></div>
+      <div class="layout-tab-box">
+        <!-- <div class="layout-tab">{{ store.state.data }}</div> -->
+        <div class="layout-tab" @click="changeTab">Options</div>
+        <div class="layout-tab" @click="changeTab">Animation</div>
+      </div>
+      <vue-custom-scrollbar class="layout-scroll-area">
+        <StylesAnimation v-if="!show.showOptions" />
+        <StylesOption v-else class="layout-options" />
+      </vue-custom-scrollbar>
     </div>
 
     <button
@@ -25,11 +32,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from '@vue/composition-api'
+import { defineComponent, reactive, onMounted } from '@vue/composition-api'
+import vueCustomScrollbar from 'vue-custom-scrollbar'
+import StylesAnimation from './StylesAnimation/index.vue'
+import StylesOption from './StylesOption/index.vue'
 import mergeClassNames from '@/modules/merge-class-names'
+import { store } from '@/store'
 
 export default defineComponent({
+  components: { vueCustomScrollbar, StylesAnimation, StylesOption },
   setup() {
+    console.log(store.state)
     const state = reactive({
       collapsed: false, // Whether the panel is collapsed or not
     })
@@ -39,10 +52,43 @@ export default defineComponent({
       state.collapsed = !state.collapsed
     }
 
+    const show = reactive({
+      showOptions: true,
+    })
+
+    onMounted(() => {
+      const tab = document.querySelector('.layout-tab') as HTMLElement
+      tab.style.backgroundColor = '#4e4e5c'
+    })
+
+    function changeTab(e: MouseEvent) {
+      const tabs: NodeListOf<HTMLElement> = document.querySelectorAll(
+        '.layout-tab'
+      )
+      const target = e.target
+      if (target instanceof HTMLElement) {
+        const trimmedString = target.textContent
+          ? target.textContent.trim()
+          : ''
+
+        if (trimmedString === 'Options') {
+          tabs[0].style.backgroundColor = '#4e4e5c'
+          tabs[1].style.backgroundColor = '#292931'
+          show.showOptions = true
+        } else if (trimmedString === 'Animation') {
+          tabs[1].style.backgroundColor = '#4e4e5c'
+          tabs[0].style.backgroundColor = '#292931'
+          show.showOptions = false
+        }
+      }
+    }
+
     return {
       state,
       mergeClassNames,
       togglePanel,
+      changeTab,
+      show,
     }
   },
 })
@@ -89,6 +135,30 @@ export default defineComponent({
       &:hover {
         @include auto-distinct-bg-color;
       }
+    }
+  }
+  .layout-tab-box {
+    width: 100%;
+    height: 2rem;
+    display: flex;
+    flex-direction: row;
+    .layout-tab {
+      border-top-left-radius: 0.5rem;
+      border-top-right-radius: 0.5rem;
+      width: 5.5rem;
+      text-align: center;
+      padding-top: 0.4rem;
+      height: 100%;
+      &:hover {
+        color: #d3d3d3;
+        cursor: pointer;
+      }
+    }
+  }
+  .layout-scroll-area {
+    height: calc(85% - 0.6rem);
+    .layout-options {
+      height: 100%;
     }
   }
 }
