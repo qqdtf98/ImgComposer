@@ -42,7 +42,6 @@ import { store } from '@/store'
 export default defineComponent({
   components: { vueCustomScrollbar, StylesAnimation, StylesOption },
   setup() {
-    console.log(store.state)
     const state = reactive({
       collapsed: false, // Whether the panel is collapsed or not
     })
