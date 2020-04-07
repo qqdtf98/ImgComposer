@@ -105,7 +105,14 @@ export default defineComponent({
        * Close menu when click outside the performable menus
        */
       function inactiveMenuOnMouseDownHandler(e: MouseEvent): void {
-        if (!(e.target instanceof HTMLElement)) return
+        if (e.target === window) {
+          setCurrent(null)
+          return
+        }
+
+        if (!(e.target instanceof HTMLElement)) {
+          return
+        }
 
         if (
           isOutside(
