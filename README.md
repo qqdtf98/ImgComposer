@@ -51,7 +51,7 @@ Studio 패널에서 드래그&드롭으로 HTML 마크업에 요소를 추가하
 
 ### CSS 편집 (Styles)
 
-HTML 마크업에 직접적으로 삽입된는 inner style 대신 class, id 등의 attribute을 직접 추가하거나 삭제하고 해당 attribute에 스타일을 적용하는 방식을 사용한다.
+HTML 마크업에 직접적으로 삽입되는 inner style 대신 class, id 등의 attribute을 직접 추가하거나 삭제하고 해당 attribute에 스타일을 적용하는 방식을 사용한다.
 
 **Unit**
 
