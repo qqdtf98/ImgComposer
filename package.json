@@ -18,7 +18,8 @@
     "nuxt": "^2.12.2",
     "vue-color": "^2.7.1",
     "vue-custom-scrollbar": "^1.1.0",
-    "vue-property-decorator": "^8.4.1"
+    "vue-property-decorator": "^8.4.1",
+    "nuxt-typed-vuex": "^0.1.17"
   },
   "devDependencies": {
     "@nuxt/typescript-build": "^0.6.1",

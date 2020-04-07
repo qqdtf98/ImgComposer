@@ -3,9 +3,10 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from '@vue/composition-api'
 import Hero from '@/components/hero/Hero.vue'
 
-export default {
+export default defineComponent({
   components: { Hero },
-}
+})
 </script>
