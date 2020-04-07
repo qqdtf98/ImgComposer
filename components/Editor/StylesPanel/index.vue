@@ -95,6 +95,7 @@ export default defineComponent({
 
 .uncollapse-btn {
   position: fixed;
+  top: $menu-bar-height;
   right: 0;
   display: none;
   @include auto-text-color;
