@@ -20,6 +20,7 @@ import mergeClassNames from '@/modules/merge-class-names'
 import { isOutside } from '@/modules/is-outside'
 import { useVuex } from '@/modules/vue-hooks'
 import { classify } from '@/modules/classify'
+import { bubbleIframeEvents } from '@/modules/bubble-iframe-events'
 
 export default defineComponent({
   setup(props, ctx) {
@@ -28,31 +29,16 @@ export default defineComponent({
     const iframeState = reactive({
       isActive: false,
     })
-
-    const vuex = useVuex(ctx)
     const iframeRef = ref() as Ref<HTMLIFrameElement>
 
     onMounted(() => {
       const iframe = iframeRef.value
       const iframeDoc = iframe.contentDocument
 
+      bubbleIframeEvents(iframe, window)
+
       if (iframeDoc) {
         iframeDoc.documentElement.innerHTML = 'hello world'
-      }
-
-      // window.addEventListener('mousedown', (e) => {
-      //   if (isOutside(e.target as HTMLElement, [`#${sandboxId}`])) {
-      //     iframeState.isActive = false
-      //   } else {
-      //     iframeState.isActive = true
-      //   }
-      // })
-
-      if (iframe.contentWindow) {
-        const iframeWindow = iframe.contentWindow
-        iframeWindow.addEventListener('click', (e) => {
-          window.dispatchEvent(e)
-        })
       }
     })
 
