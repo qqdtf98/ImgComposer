@@ -16,10 +16,10 @@
     "axios": "^0.19.2",
     "dayjs": "^1.8.23",
     "nuxt": "^2.12.2",
+    "nuxt-typed-vuex": "^0.1.17",
     "vue-color": "^2.7.1",
     "vue-custom-scrollbar": "^1.1.0",
-    "vue-property-decorator": "^8.4.1",
-    "nuxt-typed-vuex": "^0.1.17"
+    "vue-property-decorator": "^8.4.1"
   },
   "devDependencies": {
     "@nuxt/typescript-build": "^0.6.1",
