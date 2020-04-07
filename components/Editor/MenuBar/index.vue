@@ -36,7 +36,7 @@ import {
   defineComponent,
 } from '@vue/composition-api'
 import { isOutside } from '@/modules/is-outside'
-import { classify } from '@/modules/js-html-utils'
+import { classify } from '@/modules/classify'
 
 export default defineComponent({
   setup() {
@@ -104,7 +104,7 @@ export default defineComponent({
       /**
        * Close menu when click outside the performable menus
        */
-      function inactiveMenuOnClickHandler(e: MouseEvent): void {
+      function inactiveMenuOnMouseDownHandler(e: MouseEvent): void {
         if (!(e.target instanceof HTMLElement)) return
 
         if (
@@ -123,10 +123,13 @@ export default defineComponent({
         () => menuState.current,
         (current) => {
           if (current === null) {
-            window.removeEventListener('click', inactiveMenuOnClickHandler)
+            window.removeEventListener(
+              'mousedown',
+              inactiveMenuOnMouseDownHandler
+            )
             window.removeEventListener('keydown', inactiveMenuOnKeydownHandler)
           } else {
-            window.addEventListener('click', inactiveMenuOnClickHandler)
+            window.addEventListener('mousedown', inactiveMenuOnMouseDownHandler)
             window.addEventListener('keydown', inactiveMenuOnKeydownHandler)
           }
         }
