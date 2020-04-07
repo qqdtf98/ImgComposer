@@ -29,11 +29,16 @@
 </template>
 
 <script lang="ts">
-import { reactive, onMounted, watch } from '@vue/composition-api'
+import {
+  reactive,
+  onMounted,
+  watch,
+  defineComponent,
+} from '@vue/composition-api'
 import { isOutside } from '@/modules/is-outside'
 import { classify } from '@/modules/js-html-utils'
 
-export default {
+export default defineComponent({
   setup() {
     const menus = [
       {
@@ -64,7 +69,7 @@ export default {
     const subMenusContainerClassName = 'submenus-container'
 
     const menuState: {
-      current: number | null
+      current: number | null // Currently clicked menu index
     } = reactive({
       current: null,
     })
@@ -90,7 +95,6 @@ export default {
       /**
        * Close menu when press `ESC`
        */
-
       function inactiveMenuOnKeydownHandler(e: KeyboardEvent): void {
         if (e.key === 'Escape') {
           setCurrent(null)
@@ -143,7 +147,7 @@ export default {
       mouseoverHandler,
     }
   },
-}
+})
 </script>
 
 <style lang="scss">
