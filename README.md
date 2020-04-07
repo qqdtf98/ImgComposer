@@ -113,5 +113,6 @@ HTML 마크업에 직접적으로 삽입되는 inner style 대신 class, id 등�
 
 **File names**
 
-- JS/TS: `kebab-case.js`
-- Vue: `PascalCase.vue`
+- JS/TS: `general-file.ts`
+- Vue Component: `VueComponent.vue`
+- Vuex Store: `storeModule.ts`
