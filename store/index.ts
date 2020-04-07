@@ -1,13 +1,20 @@
-import { getAccessorType } from 'nuxt-typed-vuex'
-import * as countModule from './countModule'
+import { getAccessorType, mutationTree } from 'nuxt-typed-vuex'
+import * as fileModule from './fileModule'
 
-export const state = () => ({})
+export const state = () => ({
+  rootState: '',
+})
 
-export type RootState = ReturnType<typeof state>
+export const mutations = mutationTree(state, {
+  setRootState(state) {
+    state.rootState = 'what'
+  },
+})
 
 export const accessorType = getAccessorType({
   state,
+  mutations,
   modules: {
-    countModule,
+    fileModule,
   },
 })
