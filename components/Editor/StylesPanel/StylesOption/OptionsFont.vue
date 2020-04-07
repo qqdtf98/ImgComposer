@@ -28,12 +28,14 @@
       </div>
       <div class="font-size-wrapper">
         <div class="font-size-text">Font Size</div>
-        <!-- <input
+        <input
           name="fontSize"
           class="font-size-input"
-          :placeholder="$store.state.styleData.styleData.fontSize"
+          :placeholder="
+            vuex.styleData.styleData ? vuex.styleData.styleData.fontSize : ''
+          "
           @keyup.enter="submitFontSize"
-        /> -->
+        />
       </div>
     </div>
     <div class="font-color-wrapper">
@@ -65,10 +67,13 @@
 <script lang="ts">
 import { defineComponent, reactive } from '@vue/composition-api'
 import { Chrome } from 'vue-color'
+import useVuex from '@/modules/vue/use-vuex'
 
 export default defineComponent({
   components: { ChromePicker: Chrome },
-  setup() {
+  setup(props, ctx) {
+    const vuex = useVuex(ctx)
+
     const picker = reactive({
       isChromePicker: false,
     })
@@ -128,6 +133,7 @@ export default defineComponent({
       submitFontColor,
       fontColorChanged,
       font,
+      vuex,
     }
   },
 })

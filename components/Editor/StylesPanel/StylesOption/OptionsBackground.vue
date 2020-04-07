@@ -3,10 +3,14 @@
     <div class="bg-color-wrapper">
       <div class="bg-color-box">
         <div class="bg-color-text">Background Color</div>
-        <!-- <div
+        <div
           class="bg-color-before"
-          :style="`background-color: ${$store.state.styleData.styleData.backgroundColor};`"
-        ></div> -->
+          :style="{
+            backgroundColor: vuex.styleData.styleData
+              ? vuex.styleData.styleData.backgroundColor
+              : '',
+          }"
+        ></div>
       </div>
 
       <div class="bg-color-list">
@@ -44,10 +48,13 @@
 <script lang="ts">
 import { defineComponent, reactive } from '@vue/composition-api'
 import { Chrome } from 'vue-color'
+import useVuex from '@/modules/vue/use-vuex'
 
 export default defineComponent({
   components: { ChromeColor: Chrome },
-  setup() {
+  setup(props, ctx) {
+    const vuex = useVuex(ctx)
+
     const picker = reactive({
       isChromePicker: false,
     })
@@ -94,6 +101,7 @@ export default defineComponent({
       submitNewStyle,
       background,
       backgroundColorChanged,
+      vuex,
     }
   },
 })

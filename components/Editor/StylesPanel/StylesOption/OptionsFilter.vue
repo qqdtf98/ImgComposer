@@ -11,11 +11,15 @@
         name="state.opacity.name"
         submit-sorce-style="state.opacity.name"
         @input="state.opacity.onInput"
-      />
+      /> -->
       <input
         class="opacity-input"
-        :placeholder="$store.state.styleData.styleData[state.opacity.type]"
-      /> -->
+        :placeholder="
+          vuex.styleData.styleData
+            ? vuex.styleData.styleData[state.opacity.type]
+            : ''
+        "
+      />
     </div>
     <div v-for="(filter, i) in state.filters" :key="i" class="filter-wrapper">
       <div class="filter-text">{{ filter.name }}</div>
@@ -35,9 +39,12 @@
 
 <script lang="ts">
 import { defineComponent, reactive } from '@vue/composition-api'
+import useVuex from '@/modules/vue/use-vuex'
 
 export default defineComponent({
-  setup() {
+  setup(props, ctx) {
+    const vuex = useVuex(ctx)
+
     const state = reactive({
       opacity: {
         name: 'Opacity',
@@ -134,6 +141,7 @@ export default defineComponent({
 
     return {
       state,
+      vuex,
     }
   },
 })

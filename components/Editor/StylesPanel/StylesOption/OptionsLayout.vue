@@ -1,96 +1,138 @@
 <template>
   <div id="options-layout">
     <div class="margin-wrapper">
-      <!-- <div class="margin-left">
-        {{ $store.state.styleData.styleData.marginLeft }}}
+      <div class="margin-left">
+        {{
+          vuex.styleData.styleData ? vuex.styleData.styleData.marginLeft : ''
+        }}
       </div>
       <div class="margin-right">
-        {{ $store.state.styleData.styleData.marginRight }}
+        {{
+          vuex.styleData.styleData ? vuex.styleData.styleData.marginRight : ''
+        }}
       </div>
       <div class="margin-top">
-        {{ $store.state.styleData.styleData.marginTop }}
+        {{ vuex.styleData.styleData ? vuex.styleData.styleData.marginTop : '' }}
       </div>
       <div class="margin-bottom">
-        {{ $store.state.styleData.styleData.marginBottom }}
-      </div> -->
+        {{
+          vuex.styleData.styleData ? vuex.styleData.styleData.marginBottom : ''
+        }}
+      </div>
       <div class="padding-wrapper">
-        <!-- <div class="padding-left">
-          {{ $store.state.styleData.styleData.paddingLeft }}
+        <div class="padding-left">
+          {{
+            vuex.styleData.styleData ? vuex.styleData.styleData.paddingLeft : ''
+          }}
         </div>
         <div class="padding-right">
-          {{ $store.state.styleData.styleData.paddingRight }}
+          {{
+            vuex.styleData.styleData
+              ? vuex.styleData.styleData.paddingRight
+              : ''
+          }}
         </div>
         <div class="padding-top">
-          {{ $store.state.styleData.styleData.paddingTop }}
+          {{
+            vuex.styleData.styleData ? vuex.styleData.styleData.paddingTop : ''
+          }}
         </div>
         <div class="padding-bottom">
-          {{ $store.state.styleData.styleData.paddingBottom }}
-        </div> -->
+          {{
+            vuex.styleData.styleData
+              ? vuex.styleData.styleData.paddingBottom
+              : ''
+          }}
+        </div>
         <div class="empty-box"></div>
       </div>
     </div>
     <div class="dimension-wrapper">
       <div class="position-wrapper">
         <div class="x-position">X</div>
-        <!-- <div class="x-position-value">
-          {{ $store.state.styleData.target.getBoundingClientRect().x }}
-        </div> -->
+        <div class="x-position-value">
+          {{
+            vuex.styleData.target
+              ? vuex.styleData.target.getBoundingClientRect().x
+              : ''
+          }}
+        </div>
         <div class="y-position">Y</div>
-        <!-- <div class="y-position-value">
-          {{ $store.state.styleData.target.getBoundingClientRect().y }}
-        </div> -->
+        <div class="y-position-value">
+          {{
+            vuex.styleData.target
+              ? vuex.styleData.target.getBoundingClientRect().y
+              : ''
+          }}
+        </div>
       </div>
       <div class="size-wrapper">
         <div class="width-text">W</div>
-        <!-- <div class="width-value">
-          {{ $store.state.styleData.target.getBoundingClientRect().width }}
-        </div> -->
+        <div class="width-value">
+          {{
+            vuex.styleData.target
+              ? vuex.styleData.target.getBoundingClientRect().width
+              : ''
+          }}
+        </div>
         <div class="height-text">H</div>
-        <!-- <div class="height-value">
-          {{ $store.state.styleData.target.getBoundingClientRect().height }}
-        </div> -->
+        <div class="height-value">
+          {{
+            vuex.styleData.target
+              ? vuex.styleData.target.getBoundingClientRect().height
+              : ''
+          }}
+        </div>
       </div>
     </div>
     <div class="input-wrapper">
       <div class="width-box">
         <div class="width-input">Width</div>
-        <!-- <input
+        <input
           class="width-input-value"
           name="width"
           :placeholder="
-            $store.state.styleData.target.getBoundingClientRect().width
+            vuex.styleData.target
+              ? vuex.styleData.target.getBoundingClientRect().width
+              : ''
           "
           @keydown.enter="submitNewStyle"
-        /> -->
+        />
       </div>
       <div class="height-box">
         <div class="height-input">Height</div>
-        <!-- <input
+        <input
           class="height-input-value"
           name="height"
           :placeholder="
-            $store.state.styleData.target.getBoundingClientRect().height
+            vuex.styleData.target
+              ? vuex.styleData.target.getBoundingClientRect().height
+              : ''
           "
           @keydown.enter="submitNewStyle"
-        /> -->
+        />
       </div>
       <div class="margin-box">
         <div class="margin-input">Margin</div>
-        <!-- <input
+        <input
           class="margin-input-value"
           name="margin"
-          :placeholder="$store.state.styleData.styleData.margin"
+          :placeholder="
+            vuex.styleData.styleData ? vuex.styleData.styleData.margin : ''
+          "
           @keydown.enter="submitNewStyle"
-        /> -->
+        />
       </div>
       <div class="padding-box">
         <div class="padding-input">Padding</div>
-        <!-- <input
+        <input
           class="padding-input-value"
           name="padding"
-          :placeholder="$store.state.styleData.styleData.padding"
+          :placeholder="
+            vuex.styleData.styleData ? vuex.styleData.styleData.padding : ''
+          "
           @keydown.enter="submitNewStyle"
-        /> -->
+        />
       </div>
     </div>
   </div>
@@ -98,9 +140,12 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api'
+import useVuex from '@/modules/vue/use-vuex'
 
 export default defineComponent({
-  setup() {
+  setup(props, ctx) {
+    const vuex = useVuex(ctx)
+
     function submitNewStyle(e: MouseEvent) {
       let changedData
       // ClickIndicator.instances.forEach((instance) => {
@@ -115,6 +160,7 @@ export default defineComponent({
 
     return {
       submitNewStyle,
+      vuex,
     }
   },
 })

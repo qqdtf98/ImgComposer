@@ -4,14 +4,13 @@
       id="styles-panel"
       :class="mergeClassNames(state.collapsed && 'collapsed')"
     >
-      <h1 class="header">
+      <h1 class="header" @click="setStyleData">
         <span>Styles</span>
         <button class="collapse-btn" @click="togglePanel">
           <i class="icon-arrowhead-right" />
         </button>
       </h1>
       <div class="layout-tab-box">
-        <!-- <div class="layout-tab">{{ store.state.data }}</div> -->
         <div class="layout-tab" @click="changeTab">Options</div>
         <div class="layout-tab" @click="changeTab">Animation</div>
       </div>
@@ -37,11 +36,23 @@ import vueCustomScrollbar from 'vue-custom-scrollbar'
 import StylesAnimation from './StylesAnimation/index.vue'
 import StylesOption from './StylesOption/index.vue'
 import mergeClassNames from '@/modules/merge-class-names'
-import { store } from '@/store'
+import useVuex from '@/modules/vue/use-vuex'
 
 export default defineComponent({
   components: { vueCustomScrollbar, StylesAnimation, StylesOption },
-  setup() {
+  setup(props, ctx) {
+    const vuex = useVuex(ctx)
+
+    function setStyleData(e: MouseEvent) {
+      const target = e.target as HTMLElement
+      if (target) {
+        console.log('select')
+        vuex.styleData.SET_STYLE_DATA(getComputedStyle(target))
+        vuex.styleData.SET_TARGET(target)
+        console.log(vuex.styleData.styleData.backgroundColor)
+      }
+    }
+
     const state = reactive({
       collapsed: false, // Whether the panel is collapsed or not
     })
@@ -88,6 +99,8 @@ export default defineComponent({
       togglePanel,
       changeTab,
       show,
+      vuex,
+      setStyleData,
     }
   },
 })
