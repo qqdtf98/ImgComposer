@@ -2,6 +2,7 @@
   <div>
     <menu-bar />
     <styles-panel />
+    <studio-panel />
   </div>
 </template>
 
@@ -9,10 +10,11 @@
 import { defineComponent, onMounted } from '@vue/composition-api'
 import MenuBar from './MenuBar/index.vue'
 import StylesPanel from './StylesPanel/index.vue'
+import StudioPanel from './StudioPanel/index.vue'
 import ProjectService from '@/services/project-service'
 
 export default defineComponent({
-  components: { MenuBar, StylesPanel },
+  components: { MenuBar, StylesPanel, StudioPanel },
   props: {
     projectId: Number,
   },
