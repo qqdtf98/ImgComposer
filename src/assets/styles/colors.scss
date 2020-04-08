@@ -1,5 +1,5 @@
 $ae-dark: #3a3a3c; // Default background color
-$ae-white-blue: #f3f3f5;
+$ae-white-blue: #f0f0f3;
 $ae-white: #fff;
 $ae-black: #000;
 $ae-violet: #4f19e9;
@@ -39,6 +39,13 @@ $ae-border: $ae-black;
   }
 }
 
+@mixin auto-separator-color {
+  border-color: $ae-white-blue;
+  @include dark-mode {
+    border-color: $ae-dark;
+  }
+}
+
 @mixin auto-bg-color {
   background-color: $ae-white-blue;
   @include dark-mode {
@@ -58,13 +65,5 @@ $ae-border: $ae-black;
   color: $ae-white;
   @include dark-mode {
     background-color: $ae-blue;
-  }
-}
-
-.svg-bg {
-  fill: #000;
-
-  @include dark-mode() {
-    fill: #fff;
   }
 }
