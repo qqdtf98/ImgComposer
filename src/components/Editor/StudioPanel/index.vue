@@ -52,10 +52,10 @@ export default defineComponent({
 #studio-panel {
   position: fixed;
   top: $menu-bar-height;
+  bottom: 0;
   left: 0;
   @include auto-bg-color;
   border-right: 1px solid;
-  border-bottom: 1px solid;
   @include auto-border-color;
   width: 280px;
   transition: transform 300ms ease;
