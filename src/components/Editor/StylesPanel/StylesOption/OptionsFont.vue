@@ -140,8 +140,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import '@/assets/styles/globalstyle.scss';
-
 #options-font {
   display: flex;
   margin-top: 0.3rem;

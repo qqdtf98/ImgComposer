@@ -108,8 +108,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import '@/assets/styles/globalstyle';
-
 #options-background {
   display: flex;
   margin-top: 0.3rem;
