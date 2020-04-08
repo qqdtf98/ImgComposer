@@ -9,6 +9,8 @@
 </template>
 
 <script lang="ts">
+// TODO: Change the component name to Canvas
+
 import {
   defineComponent,
   ref,
@@ -16,14 +18,15 @@ import {
   Ref,
   reactive,
 } from '@vue/composition-api'
+import { Selector } from './modules/Selector'
+import { Marker } from './modules/Marker'
+import { Tools } from './modules/Tools'
 import mergeClassNames from '@/modules/merge-class-names'
-import { isOutside } from '@/modules/is-outside'
-import { useVuex } from '@/modules/vue-hooks'
-import { classify } from '@/modules/classify'
 import { bubbleIframeEvents } from '@/modules/bubble-iframe-events'
+import { iframeSampleHtml } from '@/miscellaneous/iframe-sample-html'
 
 export default defineComponent({
-  setup(props, ctx) {
+  setup() {
     const sandboxId = 'sandbox'
     const iframeClassName = 'sandbox-iframe'
     const iframeState = reactive({
@@ -33,13 +36,18 @@ export default defineComponent({
 
     onMounted(() => {
       const iframe = iframeRef.value
-      const iframeDoc = iframe.contentDocument
-
+      Marker.setIframe(iframe)
+      Tools.setIframe(iframe)
       bubbleIframeEvents(iframe, window)
 
-      if (iframeDoc) {
-        iframeDoc.documentElement.innerHTML = 'hello world'
-      }
+      const iframeDoc = iframe.contentDocument
+      const iframeWindow = iframe.contentWindow
+
+      if (!iframeDoc || !iframeWindow) return
+      // Load html
+      iframeDoc.documentElement.innerHTML = iframeSampleHtml
+
+      const selector = new Selector(iframe)
     })
 
     return {
@@ -64,15 +72,15 @@ export default defineComponent({
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: $ae-white;
 
   .sandbox-iframe {
     position: absolute;
     top: 0;
-    left: 0;
+    left: 50%;
+    transform: translateX(-50%);
     width: 100%;
+    height: 100%;
     background-color: $ae-white;
-    // pointer-events: none;
 
     &.active {
       pointer-events: all;
