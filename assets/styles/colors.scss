@@ -60,3 +60,11 @@ $ae-border: $ae-black;
     background-color: $ae-blue;
   }
 }
+
+.svg-bg {
+  fill: #000;
+
+  @include dark-mode() {
+    fill: #fff;
+  }
+}
