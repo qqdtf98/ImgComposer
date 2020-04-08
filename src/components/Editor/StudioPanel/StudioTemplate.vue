@@ -8,9 +8,9 @@
     >
       <div class="default-template">
         <block-icon v-if="template === 'block'" class="template-icon" />
-        <image-icon v-if="template === 'image'" class="template-icon" />
-        <link-icon v-if="template === 'link'" class="template-icon" />
-        <text-icon v-if="template === 'text'" class="template-icon" />
+        <image-icon v-else-if="template === 'image'" class="template-icon" />
+        <link-icon v-else-if="template === 'link'" class="template-icon" />
+        <text-icon v-else-if="template === 'text'" class="template-icon" />
         <span class="template-text">{{ templateList[template].name }}</span>
       </div>
       <div v-if="templateList[template].options" class="optional-template">
