@@ -5,10 +5,10 @@
       <range-slider
         v-model="opacityValues.opacity"
         class="filter-slider"
-        min="opacityOptions.min"
-        max="opacityOptions.max"
-        step="opacityOptions.step"
-        name="opacityOptions.name"
+        :min="opacityOptions.min"
+        :max="opacityOptions.max"
+        :step="opacityOptions.step"
+        :name="opacityOptions.name"
         submit-sorce-style="opacityOptions.name"
       />
       <input class="opacity-input" :placeholder="opacityValues.opacity" />
