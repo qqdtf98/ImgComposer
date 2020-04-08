@@ -20,7 +20,6 @@ export default defineComponent({
     onMounted(() => {
       ProjectService.getProjectData(props.projectId).then((res) => {
         if (res.data.responseCode === 'SUCCESS') {
-          console.log(res)
           // TODO set project data at store
         }
       })

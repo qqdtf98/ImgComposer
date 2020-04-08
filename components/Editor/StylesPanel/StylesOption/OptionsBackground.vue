@@ -131,6 +131,7 @@ export default defineComponent({
         margin-top: 0.4rem;
         margin-bottom: 0.4rem;
         color: #868686;
+        margin-right: 0.7rem;
       }
       .bg-color-before {
         width: 3.5rem;

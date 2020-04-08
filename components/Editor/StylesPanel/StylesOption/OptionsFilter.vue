@@ -1,147 +1,161 @@
 <template>
   <div id="options-filter">
     <div class="opacity-wrapper">
-      <div class="opacity-text">{{ state.opacity.name }}</div>
-      <!-- <range-slider
-        v-model="$store.state.styleData.styleData[state.opacity.type]"
+      <div class="opacity-text">{{ opacityOptions.name }}</div>
+      <range-slider
+        v-model="opacityValues.opacity"
         class="filter-slider"
-        min="state.opacity.min"
-        max="state.opacity.max"
-        step="state.opacity.step"
-        name="state.opacity.name"
-        submit-sorce-style="state.opacity.name"
-        @input="state.opacity.onInput"
-      /> -->
-      <input
-        class="opacity-input"
-        :placeholder="
-          vuex.styleData.styleData
-            ? vuex.styleData.styleData[state.opacity.type]
-            : ''
-        "
+        min="opacityOptions.min"
+        max="opacityOptions.max"
+        step="opacityOptions.step"
+        name="opacityOptions.name"
+        submit-sorce-style="opacityOptions.name"
       />
+      <input class="opacity-input" :placeholder="opacityValues.opacity" />
     </div>
-    <div v-for="(filter, i) in state.filters" :key="i" class="filter-wrapper">
-      <div class="filter-text">{{ filter.name }}</div>
-      <!-- <range-slider
+    <div v-for="(filter, i) in filters" :key="i" class="filter-wrapper">
+      <div class="filter-text">{{ filter }}</div>
+      <range-slider
+        v-model="sliderValues[filter]"
         class="filter-slider"
-        min="filter.min"
-        max="filter.max"
-        step="filter.step"
-        name="filter.type"
-        submit-sorce-style="filter.name"
-        @input="filter.onInput"
-      /> -->
-      <input class="filter-input" :placeholder="filter.setValue" />
+        :min="filterOptions[filter].min"
+        :max="filterOptions[filter].max"
+        :step="filterOptions[filter].step"
+        :name="filter"
+        submit-sorce-style="filter"
+      />
+      <input class="filter-input" :placeholder="sliderValues[filter]" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from '@vue/composition-api'
+import { defineComponent, reactive, watch } from '@vue/composition-api'
+import 'vue-range-slider/dist/vue-range-slider.scss'
+import RangeSlider from 'vue-range-slider'
 import useVuex from '@/modules/vue/use-vuex'
 
 export default defineComponent({
+  components: { RangeSlider },
   setup(props, ctx) {
     const vuex = useVuex(ctx)
 
-    const state = reactive({
-      opacity: {
-        name: 'Opacity',
-        type: 'opacity',
+    // opacity의 static한 값. slider에 사용됨.
+    const opacityOptions = {
+      name: 'opacity',
+      min: 0,
+      max: 1,
+      step: 0.1,
+    }
+
+    // filter property의 static한 값. slider에 사용됨
+    const filterOptions: Record<
+      string,
+      {
+        regExp: RegExp
+        min: number
+        max: number
+        step: number
+      }
+    > = {
+      blur: {
+        regExp: /blur\((.*?)\)/g,
+        min: 0,
+        max: 30,
+        step: 1,
+      },
+      brightness: {
+        regExp: /brightness\((.*?)\)/g,
+        min: 0,
+        max: 100,
+        step: 5,
+      },
+      contrast: {
+        regExp: /contrast\((.*?)\)/g,
+        min: 0,
+        max: 200,
+        step: 5,
+      },
+      grayscale: {
+        regExp: /grayscale\((.*?)\)/g,
         min: 0,
         max: 1,
-        step: 0.01,
-        vModel: '',
-        onInput: () => {},
+        step: 0.1,
       },
-      filters: [
-        {
-          name: 'Blur',
-          type: 'filter',
-          RegExp: /blur\((.*?)\)/g,
-          min: 0,
-          max: 100,
-          step: 1,
-          vModel: '',
-          onInput: () => {},
-        },
-        {
-          name: 'Brightness',
-          type: 'filter',
-          RegExp: /filter\((.*?)\)/g,
-          min: 0,
-          max: 100,
-          step: 1,
-          vModel: '',
-          onInput: () => {},
-        },
-        {
-          name: 'Constrast',
-          type: 'filter',
-          RegExp: /contrast\((.*?)\)/g,
-          min: 0,
-          max: 200,
-          step: 1,
-          vModel: '',
-          onInput: () => {},
-        },
-        {
-          name: 'Grayscale',
-          type: 'filter',
-          RegExp: /grayscale\((.*?)\)/g,
-          min: 0,
-          max: 100,
-          step: 1,
-          vModel: '',
-          onInput: () => {},
-        },
-        {
-          name: 'Hue',
-          type: 'filter',
-          RegExp: /hue\((.*?)\)/g,
-          min: 0,
-          max: 360,
-          step: 3,
-          vModel: '',
-          onInput: () => {},
-        },
-        {
-          name: 'Invert',
-          type: 'filter',
-          RegExp: /invert\((.*?)\)/g,
-          min: 0,
-          max: 100,
-          step: 1,
-          vModel: '',
-          onInput: () => {},
-        },
-        {
-          name: 'Saturate',
-          type: 'filter',
-          RegExp: /saturate\((.*?)\)/g,
-          min: 0,
-          max: 200,
-          step: 1,
-          vModel: '',
-          onInput: () => {},
-        },
-        {
-          name: 'Sepia',
-          type: 'filter',
-          RegExp: /sepia\((.*?)\)/g,
-          min: 0,
-          max: 100,
-          step: 1,
-          vModel: '',
-          onInput: () => {},
-        },
-      ],
+      hue: {
+        regExp: /hue\((.*?)\)/g,
+        min: 0,
+        max: 360,
+        step: 3,
+      },
+      invert: {
+        regExp: /invert\((.*?)\)/g,
+        min: 0,
+        max: 100,
+        step: 1,
+      },
+      saturate: {
+        regExp: /saturate\((.*?)\)/g,
+        min: 0,
+        max: 100,
+        step: 1,
+      },
+      sepia: {
+        regExp: /sepia\((.*?)\)/g,
+        min: 0,
+        max: 100,
+        step: 1,
+      },
+    }
+
+    const filters = Object.keys(filterOptions)
+
+    // filter의 slider v-model로 사용됨. input에 따라 변한다.
+    const sliderValues: Record<string, number> = reactive({
+      blur: 0,
+      brightness: 0,
+      contrast: 0,
+      grayscale: 0,
+      hue: 0,
+      invert: 0,
+      saturate: 0,
+      sepia: 0,
     })
 
+    // opacity의 slider v-model 변수로 사용.
+    const opacityValues: Record<string, number> = reactive({
+      opacity: 1,
+    })
+    watch(
+      () => vuex.styleData.styleData,
+      () => {
+        // iframe에서 element를 선택할 때마다 filter의 값을 변경함.
+        if (vuex.styleData.styleData) {
+          // filter의 property에 따라 value 설정
+          for (const filter of filters) {
+            const value = filterOptions[filter].regExp.exec(
+              vuex.styleData.styleData.filter
+            )
+            // ?? 한번씩 번갈아가면서 바뀜
+            console.log(
+              filterOptions[filter].regExp.exec(vuex.styleData.styleData.filter)
+            )
+            sliderValues[filter] = value ? parseFloat(value[1]) : 0
+          }
+          opacityValues.opacity = vuex.styleData.styleData.opacity
+            ? parseFloat(vuex.styleData.styleData.opacity)
+            : 1
+        }
+      }
+    )
+
     return {
-      state,
       vuex,
+      filterOptions,
+      filters,
+      sliderValues,
+      opacityOptions,
+      opacityValues,
     }
   },
 })
@@ -158,15 +172,16 @@ export default defineComponent({
   width: 100%;
   .opacity-wrapper {
     display: flex;
-    margin-top: 0.3rem;
+    margin-bottom: 0.3rem;
     justify-content: center;
     flex-direction: row;
+    margin-top: 0.3rem;
     align-items: center;
+    width: 100%;
     .opacity-text {
       font-size: 0.9rem;
       text-align: center;
       width: 7rem;
-      margin-right: 0.5rem;
       color: #868686;
     }
     .filter-slider {
@@ -189,7 +204,7 @@ export default defineComponent({
       background: none;
       border: none;
       border-bottom: 1px solid #768ea7;
-      width: 3.5rem;
+      width: 2.5rem;
     }
   }
 
@@ -199,12 +214,12 @@ export default defineComponent({
     justify-content: center;
     flex-direction: row;
     align-items: center;
+    margin-top: 0.3rem;
     width: 100%;
     .filter-text {
       font-size: 0.9rem;
       text-align: center;
       width: 7rem;
-      margin-right: 0.5rem;
       color: #868686;
     }
     .filter-slider {
@@ -227,7 +242,7 @@ export default defineComponent({
       background: none;
       border: none;
       border-bottom: 1px solid #768ea7;
-      width: 3.5rem;
+      width: 2.5rem;
     }
   }
 }

@@ -46,10 +46,8 @@ export default defineComponent({
     function setStyleData(e: MouseEvent) {
       const target = e.target as HTMLElement
       if (target) {
-        console.log('select')
         vuex.styleData.SET_STYLE_DATA(getComputedStyle(target))
         vuex.styleData.SET_TARGET(target)
-        console.log(vuex.styleData.styleData.backgroundColor)
       }
     }
 
