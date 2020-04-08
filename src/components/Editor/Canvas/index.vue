@@ -1,5 +1,5 @@
 <template>
-  <div :id="sandboxId">
+  <div :id="canvasId">
     <iframe
       ref="iframeRef"
       frameborder="0"
@@ -26,8 +26,8 @@ import { iframeSampleHtml } from '@/miscellaneous/iframe-sample-html'
 
 export default defineComponent({
   setup() {
-    const sandboxId = 'sandbox'
-    const iframeClassName = 'sandbox-iframe'
+    const canvasId = 'canvas'
+    const iframeClassName = 'canvas-iframe'
     const iframeState = reactive({
       isActive: false,
     })
@@ -49,7 +49,7 @@ export default defineComponent({
     })
 
     return {
-      sandboxId,
+      canvasId,
       iframeClassName,
       iframeState,
       iframeRef,
@@ -62,7 +62,7 @@ export default defineComponent({
 <style lang="scss">
 @use '@/assets/styles/package' as *;
 
-#sandbox {
+#canvas {
   position: fixed;
   top: $menu-bar-height;
   right: 0;
@@ -71,7 +71,7 @@ export default defineComponent({
   width: 100%;
   height: 100%;
 
-  .sandbox-iframe {
+  .canvas-iframe {
     position: absolute;
     top: 0;
     left: 50%;

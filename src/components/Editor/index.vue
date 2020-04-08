@@ -1,7 +1,7 @@
 <template>
   <div>
     <menu-bar />
-    <sandbox />
+    <Canvas />
     <styles-panel />
     <studio-panel />
   </div>
@@ -10,13 +10,13 @@
 <script lang="ts">
 import { defineComponent, onMounted } from '@vue/composition-api'
 import MenuBar from './MenuBar/index.vue'
-import Sandbox from './Sandbox/index.vue'
+import Canvas from './Canvas/index.vue'
 import StylesPanel from './StylesPanel/index.vue'
 import StudioPanel from './StudioPanel/index.vue'
 import ProjectService from '@/services/project-service'
 
 export default defineComponent({
-  components: { MenuBar, Sandbox, StylesPanel, StudioPanel },
+  components: { MenuBar, Canvas, StylesPanel, StudioPanel },
   props: {
     projectId: Number,
   },
