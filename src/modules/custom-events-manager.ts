@@ -1,16 +1,16 @@
 type AvailableEventNames = 'onmarkerschange'
 
+type CemStorage = Record<
+  AvailableEventNames,
+  {
+    target: HTMLElement | Element
+    listener: EventListenerOrEventListenerObject
+  }[]
+>
+
 // CustomEventManager
 export class Cem {
-  private static storage:
-    | Record<
-        AvailableEventNames,
-        {
-          target: HTMLElement | Element
-          listener: EventListenerOrEventListenerObject
-        }[]
-      >
-    | {} = {}
+  private static storage: CemStorage = {} as CemStorage
 
   /**
    * If the array with a key of event name is not set, create one

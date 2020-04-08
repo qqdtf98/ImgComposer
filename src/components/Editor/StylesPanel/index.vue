@@ -36,7 +36,7 @@ import vueCustomScrollbar from 'vue-custom-scrollbar'
 import StylesAnimation from './StylesAnimation/index.vue'
 import StylesOption from './StylesOption/index.vue'
 import mergeClassNames from '@/modules/merge-class-names'
-import useVuex from '@/modules/vue/use-vuex'
+import { useVuex } from '@/modules/vue-hooks'
 
 export default defineComponent({
   components: { vueCustomScrollbar, StylesAnimation, StylesOption },

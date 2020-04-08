@@ -140,7 +140,7 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api'
-import useVuex from '@/modules/vue/use-vuex'
+import { useVuex } from '@/modules/vue-hooks'
 
 export default defineComponent({
   setup(props, ctx) {

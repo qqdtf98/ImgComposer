@@ -1,19 +1,18 @@
 import { mutationTree } from 'nuxt-typed-vuex'
 
-export const state = () =>
-  ({
-    styleData: null,
-    target: null,
-    changedData: null,
-  } as {
-    styleData: CSSStyleDeclaration
-    target: HTMLElement
-    changedData: {
-      payload: HTMLElement
-      style: string
-      value: string
-    }
-  })
+export const state: () => {
+  styleData: CSSStyleDeclaration | null
+  target: HTMLElement | null
+  changedData: {
+    payload: HTMLElement
+    style: string
+    value: string
+  } | null
+} = () => ({
+  styleData: null,
+  target: null,
+  changedData: null,
+})
 
 export const mutations = mutationTree(state, {
   SET_STYLE_DATA: (state, style) => (state.styleData = style),

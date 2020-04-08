@@ -48,7 +48,7 @@
 <script lang="ts">
 import { defineComponent, reactive } from '@vue/composition-api'
 import { Chrome } from 'vue-color'
-import useVuex from '@/modules/vue/use-vuex'
+import { useVuex } from '@/modules/vue-hooks'
 
 export default defineComponent({
   components: { ChromeColor: Chrome },

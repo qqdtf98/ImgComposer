@@ -10,12 +10,13 @@
 <script lang="ts">
 import { defineComponent, onMounted } from '@vue/composition-api'
 import MenuBar from './MenuBar/index.vue'
+import Sandbox from './Sandbox/index.vue'
 import StylesPanel from './StylesPanel/index.vue'
 import StudioPanel from './StudioPanel/index.vue'
 import ProjectService from '@/services/project-service'
 
 export default defineComponent({
-  components: { MenuBar, StylesPanel, StudioPanel },
+  components: { MenuBar, Sandbox, StylesPanel, StudioPanel },
   props: {
     projectId: Number,
   },

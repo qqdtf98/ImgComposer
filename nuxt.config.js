@@ -1,4 +1,6 @@
-export default {
+/** @type {import('@nuxt/types').Configuration} */
+const config = {
+  srcDir: 'src/',
   mode: 'spa',
   /*
    ** Headers of the page
@@ -53,3 +55,5 @@ export default {
     // extend(config, ctx) {},
   },
 }
+
+export default config

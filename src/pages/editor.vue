@@ -4,13 +4,15 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api'
+import { useRoute, useRouter } from '../modules/vue-hooks'
 import Editor from '@/components/Editor/index.vue'
 
 export default defineComponent({
   components: { Editor },
   setup(...args) {
-    const route = args[1].root.$route
-    const router = args[1].root.$router
+    const ctx = args[1]
+    const route = useRoute(ctx)
+    const router = useRouter(ctx)
 
     // Extract project ID from the URL query
     const projectId = Number(route.query.projectId)

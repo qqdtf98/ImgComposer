@@ -33,7 +33,7 @@
 import { defineComponent, reactive, watch } from '@vue/composition-api'
 import 'vue-range-slider/dist/vue-range-slider.scss'
 import RangeSlider from 'vue-range-slider'
-import useVuex from '@/modules/vue/use-vuex'
+import { useVuex } from '@/modules/vue-hooks'
 
 export default defineComponent({
   components: { RangeSlider },

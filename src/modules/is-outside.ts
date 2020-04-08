@@ -3,7 +3,7 @@ export const isOutside = (target: HTMLElement, selectors: string[]) => {
 
   for (const selector of selectors) {
     const selectorTarget = document.querySelector(selector)
-    if (selectorTarget.isSameNode(target)) {
+    if (selectorTarget && selectorTarget.isSameNode(target)) {
       return false
     }
     if (target.closest(selector)) {

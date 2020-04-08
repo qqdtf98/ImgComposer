@@ -2,7 +2,7 @@ import _ from 'lodash'
 import { Cem } from '../../../../modules/custom-events-manager'
 
 export class Marker {
-  public static iframe: HTMLIFrameElement = null
+  public static iframe: HTMLIFrameElement
   public static markers: {
     target: HTMLElement
     boundary: HTMLElement
@@ -17,6 +17,11 @@ export class Marker {
       return
     }
     Marker.iframe = iframe
+
+    if (!iframe.contentWindow) {
+      return
+    }
+
     iframe.contentWindow.addEventListener('click', (e) => {
       const target = e.target as HTMLElement
 
@@ -52,7 +57,7 @@ export class Marker {
   }
 
   public static addMarker(target: HTMLElement) {
-    if (!Marker.iframe) {
+    if (!Marker.iframe || !Marker.iframe.contentDocument) {
       console.error(`Creating Marker instnace without setting the iframe`)
       return
     }
@@ -81,8 +86,10 @@ export class Marker {
 
   public static removeMarker(markedIndex: number) {
     const { boundary } = Marker.markers[markedIndex]
-    boundary.parentElement.removeChild(boundary)
-    _.pullAt(Marker.markers, markedIndex)
+    if (boundary.parentElement) {
+      boundary.parentElement.removeChild(boundary)
+      _.pullAt(Marker.markers, markedIndex)
+    }
   }
 
   public static isAlreadyMarked(target: HTMLElement) {
@@ -103,7 +110,9 @@ export class Marker {
   public static resetMarkers() {
     for (const marker of Marker.markers) {
       const { boundary } = marker
-      boundary.parentElement.removeChild(boundary)
+      if (boundary.parentElement) {
+        boundary.parentElement.removeChild(boundary)
+      }
     }
     Marker.markers = []
   }
