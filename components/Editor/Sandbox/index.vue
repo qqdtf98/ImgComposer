@@ -20,7 +20,6 @@ import {
 } from '@vue/composition-api'
 import { Selector } from './modules/Selector'
 import { Marker } from './modules/Marker'
-import { Tools } from './modules/Tools'
 import mergeClassNames from '@/modules/merge-class-names'
 import { bubbleIframeEvents } from '@/modules/bubble-iframe-events'
 import { iframeSampleHtml } from '@/miscellaneous/iframe-sample-html'
@@ -37,7 +36,6 @@ export default defineComponent({
     onMounted(() => {
       const iframe = iframeRef.value
       Marker.setIframe(iframe)
-      Tools.setIframe(iframe)
       bubbleIframeEvents(iframe, window)
 
       const iframeDoc = iframe.contentDocument
