@@ -1,6 +1,7 @@
 <template>
   <div>
     <menu-bar />
+    <sandbox />
     <styles-panel />
     <studio-panel />
   </div>

@@ -100,9 +100,9 @@ export default defineComponent({
   height: 100vh;
 
   .projects-list {
+    @include auto-distinct-bg-color;
     padding: 20px;
     border-radius: 10px;
-    background-color: $ae-black;
     width: 100%;
     max-width: 400px;
 
@@ -114,7 +114,6 @@ export default defineComponent({
 
     .header {
       font-size: 40px;
-      color: $ae-white;
       margin-bottom: 20px;
     }
 
@@ -125,7 +124,6 @@ export default defineComponent({
     }
 
     .project-item {
-      color: $ae-white;
       font-size: 15px;
       user-select: none;
       padding: 0 10px;
@@ -134,7 +132,7 @@ export default defineComponent({
       margin: 0 -10px;
       border-radius: 3px;
       cursor: pointer;
-      transition: background-color 200ms ease;
+      transition: background-color 200ms ease, color 200ms ease;
       display: flex;
       align-items: center;
       line-height: 1;
@@ -144,7 +142,7 @@ export default defineComponent({
       }
 
       &:hover {
-        background-color: $ae-blue;
+        @include auto-blue-color;
       }
     }
   }
