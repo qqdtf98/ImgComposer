@@ -14,6 +14,12 @@
         <span class="template-text">{{ templateList[template].name }}</span>
       </div>
       <div v-if="templateList[template].options" class="optional-template">
+        <!--
+          To 성민.
+          `div` 태그는 만능이고 모든 곳에서 사용할 수 있지만
+          `button`, `span`, `section`, `main` 등의 의미 있는(semantic)
+          HTML 마크업을 사용하는 게 더 좋아요.
+        -->
         <button
           v-for="(list, j) in templateList[template].optionList"
           :key="j"
@@ -21,9 +27,9 @@
         >
           {{ list }}
         </button>
-        </div>
       </div>
     </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -68,19 +74,22 @@ export default defineComponent({
     const templates = Object.keys(templateList)
 
     function insertTemplate(e: MouseEvent) {
-      let target = e.target as HTMLElement
+      // To 성민.
+      // while(1) 로 부모를 타고 올라가면서 `.template-wrapper`를 찾는것보다
+      // DOM API에서 제공하는 `closest()` 메소드를 사용해서 더 간결하고 효율적이게 만들었어요.
+      // 좋은 시도였습니다.
+      const target: HTMLElement = (e.target as HTMLElement).closest(
+        '.template-wrapper'
+      ) as HTMLElement
+
       if (target) {
-        while (1) {
-          if (target.className === 'template-wrapper') break
-          else if (target.parentElement) {
-            target = target.parentElement
-          }
-        }
         let moveEvent: (e: MouseEvent) => void
         let upEvent: (e: MouseEvent) => void
+
         const copyTarget = target.cloneNode(true) as HTMLElement
         const initLeftInter = e.clientX - target.getBoundingClientRect().left
         const initTopInter = e.clientY - target.getBoundingClientRect().top
+
         copyTarget.style.opacity = '0.8'
         copyTarget.style.position = 'fixed'
         copyTarget.style.left = target.style.left
@@ -95,6 +104,7 @@ export default defineComponent({
             copyTarget.style.top = e.clientY - initTopInter + 'px'
           })
         )
+
         window.addEventListener(
           'mouseup',
           (upEvent = () => {
@@ -125,66 +135,75 @@ export default defineComponent({
   justify-content: center;
   margin-top: 10px;
   margin-bottom: 10px;
+
   .template-wrapper {
-    margin-top: 7px;
-    margin-bottom: 7px;
-    width: 230px;
     @include auto-distinct-bg-color;
-    border-radius: 0.84rem;
+    margin-bottom: 12px;
+    padding: 15px 15px;
+    width: 240px;
+    min-height: 100px;
+    border-radius: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    transition: opacity 300ms ease;
+
     &:hover {
-      cursor: pointer;
-      background-color: #575757;
+      opacity: 0.7;
     }
+
     .default-template {
       display: flex;
       flex-direction: row;
       align-items: center;
-      width: 160px;
-      justify-content: center;
-      position: relative;
-      height: 85px;
+      justify-content: space-between;
+      width: calc(100% - 50px);
+
       .template-icon {
-        width: 60px;
-        position: absolute;
+        width: 50px;
         left: 0;
       }
+
       .template-text {
         font-weight: 500;
         font-size: 23px;
-        letter-spacing: 1px;
-        position: absolute;
         right: 0;
         text-align: center;
-        width: 80px;
-        color: #bebebe;
+        color: #a3a3a3;
+        user-select: none;
       }
     }
+
     .optional-template {
-      border-top: 0.7px solid #6b6b6be1;
+      @include auto-separator-color;
+      border-top: 1px solid;
       display: flex;
       flex-direction: row;
       align-items: center;
-      width: 200px;
+      width: 100%;
       justify-content: center;
-      position: relative;
-      margin-bottom: 12px;
+      padding-top: 15px;
+      margin-top: 15px;
+
       .template-option {
-        margin-top: 12px;
-        border-radius: 0.5rem;
-        margin-right: 0.4rem;
-        margin-left: 0.4rem;
-        width: 90px;
-        text-align: center;
-        padding-top: 0.3rem;
         @include auto-bg-color;
-        padding-bottom: 0.3rem;
+        @include auto-text-color;
+        border-radius: 8px;
+        text-align: center;
+        padding: 8px;
+        flex: 1;
+        margin-right: 10px;
+        font-size: 15px;
+        font-weight: 500;
+
+        &:last-child {
+          margin-right: 0;
+        }
+
         &:hover {
-          background-color: #4f89d6;
-          cursor: pointer;
+          @include auto-blue-color;
+          transition: background-color 300ms ease;
         }
       }
     }
