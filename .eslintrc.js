@@ -17,5 +17,6 @@ module.exports = {
     'no-unused-vars': [1],
     '@typescript-eslint/no-unused-vars': [1],
     'no-console': ['warn', { allow: ['warn', 'error', 'info'] }],
+    'import/order': [0],
   },
 }

@@ -1,5 +1,5 @@
+import { Cem } from '@/modules/custom-events-manager'
 import _ from 'lodash'
-import { Cem } from '../../../../modules/custom-events-manager'
 
 export class Marker {
   public static iframe: HTMLIFrameElement
