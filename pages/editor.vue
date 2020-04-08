@@ -1,5 +1,5 @@
 <template>
-  <editor />
+  <editor :project-id="projectId" />
 </template>
 
 <script lang="ts">
@@ -13,16 +13,18 @@ export default defineComponent({
     const router = args[1].root.$router
 
     // Extract project ID from the URL query
-    const { projectId } = route.query
+    const projectId = Number(route.query.projectId)
 
     if (process.client) {
-      if (projectId === undefined) {
+      if (!projectId) {
         alert('프로젝트가 선택되지 않았습니다.')
         router.replace({ path: '/' })
       }
     }
 
-    return {}
+    return {
+      projectId,
+    }
   },
 })
 </script>

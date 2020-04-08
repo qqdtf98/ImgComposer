@@ -1,0 +1,81 @@
+.color-none {
+  background-color: white;
+  position: relative;
+  opacity: 0.8;
+  border: 3px dotted #808080 !important;
+}
+.chrome-picker {
+  background-image: conic-gradient(#ff4141, #ffff51, #55fc55, #5555ff, #ff5959);
+}
+.color1 {
+  background-color: #e6696e;
+  // background-image: linear-gradient(to bottom, #e6696e, #e67a7d);
+}
+
+.color2 {
+  background-color: #e8765c;
+}
+
+.color3 {
+  background-color: #dd8042;
+}
+
+.color4 {
+  background-color: #d69d2f;
+}
+
+.color5 {
+  background-color: #6ca64e;
+}
+
+.color6 {
+  background-color: #5ba68f;
+}
+
+.color7 {
+  background-color: #629eb1;
+}
+
+.color8 {
+  background-color: #6c92c3;
+}
+
+.color9 {
+  background-color: #737ec4;
+}
+
+.color10 {
+  background-color: #9177c0;
+}
+
+.color11 {
+  background-color: #dd7190;
+}
+
+.color12 {
+  background-color: #87919d;
+}
+
+.color13 {
+  background-color: #8d928e;
+}
+
+.color14 {
+  background-color: #9c908b;
+}
+
+input::-webkit-input-placeholder {
+  text-align: right;
+}
+input::-moz-placeholder {
+  text-align: right;
+}
+input:-ms-input-placeholder {
+  text-align: right;
+}
+input:-moz-placeholder {
+  text-align: right;
+}
+input::placeholder {
+  text-align: right;
+}

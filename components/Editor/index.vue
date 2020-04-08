@@ -3,18 +3,31 @@
     <menu-bar />
     <sandbox />
     <styles-panel />
+    <studio-panel />
   </div>
 </template>
 
 <script lang="ts">
+import { defineComponent, onMounted } from '@vue/composition-api'
 import MenuBar from './MenuBar/index.vue'
 import StylesPanel from './StylesPanel/index.vue'
-import Sandbox from '@/components/Editor/Sandbox/index.vue'
+import StudioPanel from './StudioPanel/index.vue'
+import ProjectService from '@/services/project-service'
 
-export default {
-  components: { MenuBar, StylesPanel, Sandbox },
-  setup() {
+export default defineComponent({
+  components: { MenuBar, StylesPanel, StudioPanel },
+  props: {
+    projectId: Number,
+  },
+  setup(props) {
+    onMounted(() => {
+      ProjectService.getProjectData(props.projectId).then((res) => {
+        if (res.data.responseCode === 'SUCCESS') {
+          // TODO set project data at store
+        }
+      })
+    })
     return {}
   },
-}
+})
 </script>
