@@ -1,0 +1,17 @@
+@use '@/assets/styles/package' as *;
+
+.auto-svg-fill {
+  fill: #000;
+
+  @include dark-mode() {
+    fill: #fff;
+  }
+}
+
+.auto-svg-stroke {
+  stroke: #000;
+
+  @include dark-mode() {
+    stroke: #fff;
+  }
+}

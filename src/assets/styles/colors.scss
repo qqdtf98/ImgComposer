@@ -1,0 +1,69 @@
+$ae-dark: #3a3a3c; // Default background color
+$ae-white-blue: #f0f0f3;
+$ae-white: #fff;
+$ae-black: #000;
+$ae-violet: #4f19e9;
+$ae-blue: #1471ff;
+$ae-sky: #4294ff;
+
+$ae-border: $ae-black;
+
+// dark mode
+@mixin dark-mode {
+  @media (prefers-color-scheme: dark) {
+    & {
+      @content;
+    }
+  }
+}
+
+@mixin light-mode {
+  @media (prefers-color-scheme: light) {
+    & {
+      @content;
+    }
+  }
+}
+
+@mixin auto-text-color {
+  color: $ae-black;
+  @include dark-mode {
+    color: $ae-white;
+  }
+}
+
+@mixin auto-border-color {
+  border-color: #dadadb;
+  @include dark-mode {
+    border-color: $ae-black;
+  }
+}
+
+@mixin auto-separator-color {
+  border-color: $ae-white-blue;
+  @include dark-mode {
+    border-color: $ae-dark;
+  }
+}
+
+@mixin auto-bg-color {
+  background-color: $ae-white-blue;
+  @include dark-mode {
+    background-color: $ae-dark;
+  }
+}
+
+@mixin auto-distinct-bg-color {
+  background-color: $ae-white;
+  @include dark-mode {
+    background-color: $ae-black;
+  }
+}
+
+@mixin auto-blue-color {
+  background-color: $ae-sky;
+  color: $ae-white;
+  @include dark-mode {
+    background-color: $ae-blue;
+  }
+}
