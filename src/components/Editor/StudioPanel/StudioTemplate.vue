@@ -14,16 +14,16 @@
         <span class="template-text">{{ templateList[template].name }}</span>
       </div>
       <div v-if="templateList[template].options" class="optional-template">
-        <div
+        <button
           v-for="(list, j) in templateList[template].optionList"
           :key="j"
           class="template-option"
         >
           {{ list }}
+        </button>
         </div>
       </div>
     </div>
-  </div>
 </template>
 
 <script lang="ts">
