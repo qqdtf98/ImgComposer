@@ -88,7 +88,7 @@ export default defineComponent({
     text-align: center;
     border-bottom: 1px solid;
     @include auto-border-color;
-    height: 50px;
+    height: 70px;
     display: flex;
     align-items: center;
     justify-content: space-between;
