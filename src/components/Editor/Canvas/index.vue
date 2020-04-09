@@ -17,15 +17,19 @@ import {
   onMounted,
   Ref,
   reactive,
+  watch,
 } from '@vue/composition-api'
 import { Selector } from './modules/Selector'
 import { Marker } from './modules/Marker'
 import mergeClassNames from '@/modules/merge-class-names'
 import { bubbleIframeEvents } from '@/modules/bubble-iframe-events'
 import { iframeSampleHtml } from '@/miscellaneous/iframe-sample-html'
+import { useVuex } from '../../../modules/vue-hooks'
 
 export default defineComponent({
-  setup() {
+  setup(props, ctx) {
+    const vuex = useVuex(ctx)
+
     const canvasId = 'canvas'
     const iframeClassName = 'canvas-iframe'
     const iframeState = reactive({
@@ -48,12 +52,20 @@ export default defineComponent({
       const selector = new Selector(iframe)
     })
 
+    watch(
+      () => vuex.styleData.changedData,
+      () => {
+        console.log(vuex.styleData.changedData)
+      }
+    )
+
     return {
       canvasId,
       iframeClassName,
       iframeState,
       iframeRef,
       mergeClassNames,
+      vuex,
     }
   },
 })
