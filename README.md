@@ -78,7 +78,7 @@ HTML 마크업에 직접적으로 삽입되는 inner style 대신 class, id 등�
 
 **Font**
 
-- Familly
+- ~~Familly~~
 - Size
 - Weight
 - Color
@@ -88,8 +88,8 @@ HTML 마크업에 직접적으로 삽입되는 inner style 대신 class, id 등�
 **Background**
 
 - Color
-- Gradient
-- Image
+- ~~Gradient~~
+- ~~Image~~
 
 **Border**
 
@@ -103,10 +103,7 @@ HTML 마크업에 직접적으로 삽입되는 inner style 대신 class, id 등�
 - Shadow
   - Inner shadow
   - Outer shadow
-- Transform
-  - Scale
-  - TranslateX
-  - TranslateY
+- ~~Transform~~
 
 ## 프로젝트 Style Guide
 
