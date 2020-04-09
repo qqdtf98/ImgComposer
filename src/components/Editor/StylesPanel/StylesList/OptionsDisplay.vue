@@ -1,10 +1,10 @@
 <template>
-  <div id="options-position">
+  <div id="options-display">
     <button
       v-for="(property, i) in properties"
       :key="i"
-      class="position-property"
-      @click="submitPositionValue(property)"
+      class="display-property"
+      @click="submitDisplayValue(property)"
     >
       {{ property }}
     </button>
@@ -18,11 +18,11 @@ import { useVuex } from '@/modules/vue-hooks'
 export default defineComponent({
   setup(props, ctx) {
     const vuex = useVuex(ctx)
-    const properties: string[] = ['relative', 'absolute', 'fixed']
-    function submitPositionValue(prop: string) {
+    const properties: string[] = ['block', 'inline-block', 'inline', 'flex']
+    function submitDisplayValue(prop: string) {
       if (vuex.styleData.target) {
         const changedData = {
-          style: 'position',
+          style: 'display',
           value: prop,
         }
         vuex.styleData.SET_CHANGED_DATA(changedData)
@@ -31,7 +31,7 @@ export default defineComponent({
 
     return {
       properties,
-      submitPositionValue,
+      submitDisplayValue,
       vuex,
     }
   },
@@ -41,18 +41,18 @@ export default defineComponent({
 <style lang="scss">
 @use '@/assets/styles/package' as *;
 
-#options-position {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  margin-top: 7px;
-  .position-property {
+#options-display {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 7px;
+  margin-top: 13px;
+  margin-bottom: 6px;
+  .display-property {
     @include auto-distinct-bg-color;
     @include auto-text-color;
     margin-right: 0.2rem;
     margin-left: 0.2rem;
-    width: 5rem;
+    width: 7rem;
     padding-right: 0.1rem;
     padding-left: 0.1rem;
     padding-top: 0.6rem;

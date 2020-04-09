@@ -6,6 +6,7 @@
         <img class="layout-icon" src="@/assets/images/down.svg" />
       </div>
       <div class="nested">
+        <OptionsDisplay v-if="style === 'Display'" />
         <OptionsPosition v-if="style === 'Position'" />
         <OptionsLayout v-if="style === 'Geometry'" />
         <OptionsBackground v-if="style === 'Background Color'" />
@@ -20,6 +21,7 @@ import OptionsFilter from './OptionsFilter.vue'
 import OptionsBackground from './OptionsBackground.vue'
 import OptionsFont from './OptionsFont.vue'
 import OptionsPosition from './OptionsPosition.vue'
+import OptionsDisplay from './OptionsDisplay.vue'
 import OptionsLayout from './OptionsLayout.vue'
 
 export default defineComponent({
@@ -28,6 +30,7 @@ export default defineComponent({
     OptionsFilter,
     OptionsFont,
     OptionsLayout,
+    OptionsDisplay,
     OptionsPosition,
   },
   setup() {
