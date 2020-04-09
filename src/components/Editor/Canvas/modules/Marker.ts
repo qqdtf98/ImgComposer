@@ -38,14 +38,12 @@ export class Marker {
           } else {
             // Deselect the element if it is the only element marked
             Marker.removeMarker(markedIndex)
-            Vuex.store.styleData.SET_STYLE_DATA(null)
-            Vuex.store.styleData.SET_TARGET(null)
+            Marker.resetVuex()
           }
         } else {
           // Deselect the element if it is the only element marked
           Marker.removeMarker(markedIndex)
-          Vuex.store.styleData.SET_STYLE_DATA(null)
-          Vuex.store.styleData.SET_TARGET(null)
+          Marker.resetVuex()
         }
       } else {
         // New target to be selected
@@ -62,6 +60,14 @@ export class Marker {
       // Dispatch an event about markers change
       // Cem.dispatchEvent('onmarkerschange')
     })
+  }
+
+  /**
+   * Set Vuex store's styleData to null
+   */
+  public static resetVuex() {
+    Vuex.store.styleData.SET_STYLE_DATA(null)
+    Vuex.store.styleData.SET_TARGET(null)
   }
 
   public static addMarker(target: HTMLElement) {
