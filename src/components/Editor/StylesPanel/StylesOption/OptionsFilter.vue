@@ -170,7 +170,6 @@ export default defineComponent({
     // range-slider를 사용하여 opacity값을 변경할 때 changedData 저장
     function submitOpacityValue(value: number) {
       const changedData = {
-        payload: vuex.styleData.target,
         style: 'opacity',
         value,
       }
@@ -181,7 +180,6 @@ export default defineComponent({
     function submitOpacityInputValue(e: InputEvent) {
       const target = e.target as HTMLElement
       const changedData = {
-        payload: vuex.styleData.target,
         style: 'opacity',
         value: (target as HTMLInputElement)?.value,
       }
@@ -191,7 +189,6 @@ export default defineComponent({
     // range-slider를 사용하여 filter값을 변경할 때 filter 종류에 따라 changedData 저장
     function submitFilterValue(value: number, filter: string) {
       const changedData = {
-        payload: vuex.styleData.target,
         style: filter,
         value,
       }
@@ -202,7 +199,6 @@ export default defineComponent({
     function submitFilterInputValue(e: InputEvent, filter: string) {
       const target = e.target as HTMLElement
       const changedData = {
-        payload: vuex.styleData.target,
         style: filter,
         value: (target as HTMLInputElement)?.value,
       }

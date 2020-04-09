@@ -98,14 +98,12 @@ export default defineComponent({
         if (target instanceof HTMLElement) {
           if (target.className === 'color-none') {
             changedData = {
-              payload: vuex.styleData.target,
-              style: 'fontColor',
+              style: 'color',
               value: 'transparent',
             }
           } else {
             changedData = {
-              payload: vuex.styleData.target,
-              style: 'fontColor',
+              style: 'color',
               value: getComputedStyle(target).backgroundColor,
             }
           }
@@ -117,8 +115,7 @@ export default defineComponent({
     function submitPickerValue(color: VueColor) {
       if (vuex.styleData.target) {
         const changedData = {
-          payload: vuex.styleData.target,
-          style: 'fontColor',
+          style: 'color',
           value: color.hex,
         }
         vuex.styleData.SET_CHANGED_DATA(changedData)

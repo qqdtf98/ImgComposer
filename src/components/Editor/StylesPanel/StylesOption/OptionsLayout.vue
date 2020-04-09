@@ -149,7 +149,6 @@ export default defineComponent({
     function submitLayoutValue(e: MouseEvent) {
       const target = e.target as HTMLElement
       const changedData = {
-        payload: vuex.styleData.target,
         style: target?.getAttribute('name'),
         value: (target as HTMLInputElement)?.value + 'px',
       }

@@ -4,7 +4,6 @@ export const state: () => {
   styleData: CSSStyleDeclaration | null
   target: HTMLElement | null
   changedData: {
-    payload: HTMLElement
     style: string
     value: string
   } | null
