@@ -76,7 +76,7 @@ export default defineComponent({
 
 #canvas {
   position: fixed;
-  top: $menu-bar-height;
+  top: $menu-bar-height + $tab-height;
   right: 0;
   bottom: 0;
   left: 0;
@@ -84,10 +84,10 @@ export default defineComponent({
   height: 100%;
 
   .canvas-iframe {
-    position: absolute;
+    // position: absolute;
     top: 0;
-    left: 50%;
-    transform: translateX(-50%);
+    // left: 50%;
+    // transform: translateX(-50%);
     width: 100%;
     height: 100%;
     background-color: $ae-white;
