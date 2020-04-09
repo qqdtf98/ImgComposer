@@ -10,8 +10,13 @@
         :step="opacityOptions.step"
         :name="opacityOptions.name"
         submit-sorce-style="opacityOptions.name"
+        @input="submitOpacityValue"
       />
-      <input class="opacity-input" :placeholder="opacityValues.opacity" />
+      <input
+        v-model="opacityValues.opacity"
+        class="opacity-input"
+        @keyup.enter="submitOpacityInputValue"
+      />
     </div>
     <div v-for="(filter, i) in filters" :key="i" class="filter-wrapper">
       <div class="filter-text">{{ filter }}</div>
@@ -23,8 +28,13 @@
         :step="filterOptions[filter].step"
         :name="filter"
         submit-sorce-style="filter"
+        @input="submitFilterValue($event, filter)"
       />
-      <input class="filter-input" :placeholder="sliderValues[filter]" />
+      <input
+        v-model="sliderValues[filter]"
+        class="filter-input"
+        @keyup.enter="submitFilterInputValue($event, filter)"
+      />
     </div>
   </div>
 </template>
@@ -122,10 +132,13 @@ export default defineComponent({
       sepia: 0,
     })
 
+    const sliders = Object.keys(sliderValues)
+
     // opacity의 slider v-model 변수로 사용.
     const opacityValues: Record<string, number> = reactive({
       opacity: 1,
     })
+
     watch(
       () => vuex.styleData.styleData,
       () => {
@@ -145,9 +158,52 @@ export default defineComponent({
           opacityValues.opacity = vuex.styleData.styleData.opacity
             ? parseFloat(vuex.styleData.styleData.opacity)
             : 1
+        } else {
+          opacityValues.opacity = 1
+          for (const slider in sliders) {
+            sliderValues[sliders[slider]] = 0
+          }
         }
       }
     )
+
+    // range-slider를 사용하여 opacity값을 변경할 때 changedData 저장
+    function submitOpacityValue(value: number) {
+      const changedData = {
+        style: 'opacity',
+        value,
+      }
+      vuex.styleData.SET_CHANGED_DATA(changedData)
+    }
+
+    // input을 사용하여 opacity값을 변경할 때 changedData 저장
+    function submitOpacityInputValue(e: InputEvent) {
+      const target = e.target as HTMLElement
+      const changedData = {
+        style: 'opacity',
+        value: (target as HTMLInputElement)?.value,
+      }
+      vuex.styleData.SET_CHANGED_DATA(changedData)
+    }
+
+    // range-slider를 사용하여 filter값을 변경할 때 filter 종류에 따라 changedData 저장
+    function submitFilterValue(value: number, filter: string) {
+      const changedData = {
+        style: filter,
+        value,
+      }
+      vuex.styleData.SET_CHANGED_DATA(changedData)
+    }
+
+    // input을 사용하여 filter값을 변경할 때 filter 종류에 따라 changedData 저장
+    function submitFilterInputValue(e: InputEvent, filter: string) {
+      const target = e.target as HTMLElement
+      const changedData = {
+        style: filter,
+        value: (target as HTMLInputElement)?.value,
+      }
+      vuex.styleData.SET_CHANGED_DATA(changedData)
+    }
 
     return {
       vuex,
@@ -156,6 +212,10 @@ export default defineComponent({
       sliderValues,
       opacityOptions,
       opacityValues,
+      submitOpacityValue,
+      submitFilterValue,
+      submitOpacityInputValue,
+      submitFilterInputValue,
     }
   },
 })

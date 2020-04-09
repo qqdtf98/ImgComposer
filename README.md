@@ -65,6 +65,8 @@ HTML 마크업에 직접적으로 삽입되는 inner style 대신 class, id 등�
 
 - Position: `relative`, `absolute`, `fixed`
 - Display: `block`, `inline-block`, `inline`, `flex`
+  - Flex: `flex-direction`, `align-items`, `justify-content`
+    - Flex Children: `flex`
 - Margin
 - Padding
 

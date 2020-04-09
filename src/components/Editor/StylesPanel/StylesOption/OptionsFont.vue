@@ -2,18 +2,51 @@
   <div id="options-font">
     <div class="font-property-wrapper">
       <div class="font-align-wrapper">
-        <img class="font-align-left" src="@/assets/images/left-align.svg" />
-        <img class="font-align-center" src="@/assets/images/center-align.svg" />
-        <img class="font-align-right" src="@/assets/images/right-align.svg" />
+        <img
+          name="left"
+          class="font-align-left"
+          src="@/assets/images/left-align.svg"
+          @click="submitTextAlign"
+        />
+        <img
+          name="center"
+          class="font-align-center"
+          src="@/assets/images/center-align.svg"
+          @click="submitTextAlign"
+        />
+        <img
+          name="right"
+          class="font-align-right"
+          src="@/assets/images/right-align.svg"
+          @click="submitTextAlign"
+        />
       </div>
       <div class="font-style-wrapper">
-        <img class="font-weight-property" src="@/assets/images/thick.svg" />
-        <img class="font-line-property" src="@/assets/images/line-font.svg" />
-        <img class="font-italic-property" src="@/assets/images/italic.svg" />
-        <img class="font-case-property" src="@/assets/images/bigAndSmall.svg" />
+        <img
+          property="fontWeight"
+          value="bold"
+          class="font-weight-property"
+          src="@/assets/images/thick.svg"
+          @click="submitFontStyle"
+        />
+        <img
+          property="textDecoration"
+          value="underline"
+          class="font-line-property"
+          src="@/assets/images/line-font.svg"
+          @click="submitFontStyle"
+        />
+        <img
+          property="fontStyle"
+          value="italic"
+          class="font-italic-property"
+          src="@/assets/images/italic.svg"
+          @click="submitFontStyle"
+        />
       </div>
     </div>
     <div class="font-attribute-wrapper">
+      <!-- TODO font-family 어떤식으로 변경할 것인지 -->
       <div class="font-family-wrapper">
         <div class="font-family-text">Font Family</div>
         <select id="font-family-select">
@@ -41,7 +74,7 @@
     <div class="font-color-wrapper">
       <div class="font-color-text">Font color</div>
       <div class="font-color-list">
-        <button name="color" class="color-none" @click="submitFontColor" />
+        <button name="color" class="color-none" @click="submitDefaultValue" />
         <button
           v-for="i in 14"
           id="color-button"
@@ -49,18 +82,18 @@
           class="color-choose"
           name="color"
           :class="'color' + i"
-          @click="submitFontColor"
+          @click="submitDefaultValue"
         />
         <button class="chrome-picker" @click="activateChromePicker" />
       </div>
     </div>
-    <!-- <chrome-color
+    <chrome-color
       v-show="picker.isChromePicker"
       v-model="font.fontColor"
       class="chrome"
       :value="font.fontColor"
-      @input="fontColorChanged"
-    ></chrome-color> -->
+      @input="submitPickerValue"
+    ></chrome-color>
   </div>
 </template>
 
@@ -68,9 +101,10 @@
 import { defineComponent, reactive } from '@vue/composition-api'
 import { Chrome } from 'vue-color'
 import { useVuex } from '@/modules/vue-hooks'
+import { VueColor } from '@/types/vue-color'
 
 export default defineComponent({
-  components: { ChromePicker: Chrome },
+  components: { ChromeColor: Chrome },
   setup(props, ctx) {
     const vuex = useVuex(ctx)
 
@@ -90,50 +124,72 @@ export default defineComponent({
       fontColor: '#fff',
     })
 
-    function submitFontColor(e: MouseEvent) {
+    // default color box를 선택했을 때 changedData 저장
+    function submitDefaultValue(e: MouseEvent) {
       let changedData
       const target = e.target
-      if (target instanceof HTMLElement) {
-        if (target.className === 'color-none') {
-          // ClickIndicator.instances.forEach((instance) => {
-          //   changedData = {
-          //     payload: instance.target,
-          //     style: target.name,
-          //     value: 'transparent',
-          //   }
-          // })
-        } else {
-          // ClickIndicator.instances.forEach((instance) => {
-          //   changedData = {
-          //     payload: instance.target,
-          //     style: target.name,
-          //     value: getComputedStyle(target).backgroundColor,
-          //   }
-          // })
+      if (vuex.styleData.target) {
+        if (target instanceof HTMLElement) {
+          if (target.className === 'color-none') {
+            changedData = {
+              style: 'color',
+              value: 'transparent',
+            }
+          } else {
+            changedData = {
+              style: 'color',
+              value: getComputedStyle(target).backgroundColor,
+            }
+          }
+          vuex.styleData.SET_CHANGED_DATA(changedData)
         }
-        // this.$store.commit('setChangedData', changedData)
       }
     }
 
-    function fontColorChanged() {
-      let changedData
-      // ClickIndicator.instances.forEach(instance => {
-      //   changedData = {
-      //     payload: instance.target,
-      //     style: 'fontColor',
-      //     value: color.hex
-      //   }
-      // })
-      // this.$store.commit('setChangedData', changedData)
+    // chrome-picker를 선택했을 때 changedData 저장
+    function submitPickerValue(color: VueColor) {
+      if (vuex.styleData.target) {
+        const changedData = {
+          style: 'color',
+          value: color.hex,
+        }
+        vuex.styleData.SET_CHANGED_DATA(changedData)
+      }
+    }
+
+    // text-align 속성 changedData에 저장
+    function submitTextAlign(e: MouseEvent) {
+      const target = e.target as HTMLElement
+      if (vuex.styleData.target) {
+        const changedData = {
+          style: 'textAlign',
+          value: target.getAttribute('name'),
+        }
+        vuex.styleData.SET_CHANGED_DATA(changedData)
+      }
+    }
+
+    // font-style의 특정 속성 changedData에 저장
+    function submitFontStyle(e: MouseEvent) {
+      const target = e.target as HTMLElement
+      if (vuex.styleData.target) {
+        const changedData = {
+          style: target?.getAttribute('property'),
+          value: target?.getAttribute('value'),
+        }
+        vuex.styleData.SET_CHANGED_DATA(changedData)
+      }
     }
 
     return {
       picker,
       activateChromePicker,
-      submitFontColor,
-      fontColorChanged,
+      submitDefaultValue,
+      submitPickerValue,
       font,
       vuex,
+      submitTextAlign,
+      submitFontStyle,
     }
   },
 })
@@ -154,7 +210,8 @@ export default defineComponent({
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    .font-align-wrapper {
+    .font-align-wrapper,
+    .font-style-wrapper {
       width: 80%;
       height: 3rem;
       position: relative;
@@ -164,31 +221,27 @@ export default defineComponent({
       justify-content: center;
       .font-align-left,
       .font-align-center,
-      .font-align-right {
-        position: absolute;
-        width: 1.7rem;
-        height: 1.7rem;
-      }
-      .font-align-left {
-        left: 0;
-      }
-      .font-align-right {
-        right: 0;
-      }
-    }
-    .font-style-wrapper {
-      width: 100%;
-      height: 3rem;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      align-items: center;
-      justify-content: center;
+      .font-align-right,
       .font-weight-property,
       .font-line-property,
-      .font-italic-property,
-      .font-case-property {
-        width: 1.7rem;
-        height: 1.7rem;
+      .font-italic-property {
+        position: absolute;
+        width: 2rem;
+        height: 2rem;
+        padding: 0.3rem;
+        border-radius: 0.4rem;
+        cursor: pointer;
+        &:hover {
+          background-color: #646464;
+        }
+      }
+      .font-align-left,
+      .font-weight-property {
+        left: 0;
+      }
+      .font-align-right,
+      .font-italic-property {
+        right: 0;
       }
     }
   }

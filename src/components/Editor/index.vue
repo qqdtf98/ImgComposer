@@ -22,7 +22,14 @@ export default defineComponent({
   },
   setup(props) {
     onMounted(() => {
-      ProjectService.getProjectData(props.projectId).then((res) => {
+      const { projectId } = props
+
+      if (!projectId) {
+        alert('프로젝트 ID가 없습니다.')
+        return
+      }
+
+      ProjectService.getProjectData(projectId).then((res) => {
         if (res.data.responseCode === 'SUCCESS') {
           // TODO set project data at store
         }

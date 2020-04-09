@@ -10,7 +10,7 @@ class ProjectService {
     })
   }
 
-  async getProjectData(seq) {
+  async getProjectData(seq: number) {
     return await axios(apiUrl.project.get.url, {
       params: {
         project_seq: seq,
@@ -18,7 +18,7 @@ class ProjectService {
     })
   }
 
-  async createNewProject(name) {
+  async createNewProject(name: string) {
     return await axios.post(apiUrl.project.create.url, {
       projects: [
         {

@@ -1,4 +1,4 @@
-import { Cem } from '@/modules/custom-events-manager'
+import { Vuex } from '@/modules/vuex'
 import _ from 'lodash'
 
 export class Marker {
@@ -28,7 +28,7 @@ export class Marker {
       const markedIndex = Marker.isAlreadyMarked(target)
       if (markedIndex !== null) {
         // Already selected
-        if (!e.shiftKey) {
+        if (!e.shiftKey && !e.ctrlKey) {
           // Without shift
           if (Marker.markers.length > 1) {
             // If there are multiple elements marked,
@@ -38,21 +38,29 @@ export class Marker {
           } else {
             // Deselect the element if it is the only element marked
             Marker.removeMarker(markedIndex)
+            Vuex.store.styleData.SET_STYLE_DATA(null)
+            Vuex.store.styleData.SET_TARGET(null)
           }
         } else {
           // Deselect the element if it is the only element marked
           Marker.removeMarker(markedIndex)
+          Vuex.store.styleData.SET_STYLE_DATA(null)
+          Vuex.store.styleData.SET_TARGET(null)
         }
       } else {
         // New target to be selected
-        if (!e.shiftKey) {
+        if (!e.shiftKey && !e.ctrlKey) {
           Marker.resetMarkers()
         }
         Marker.addMarker(e.target as HTMLElement)
+        Vuex.store.styleData.SET_STYLE_DATA(
+          getComputedStyle(e.target as HTMLElement)
+        )
+        Vuex.store.styleData.SET_TARGET(e.target as HTMLElement)
       }
 
       // Dispatch an event about markers change
-      Cem.dispatchEvent('onmarkerschange')
+      // Cem.dispatchEvent('onmarkerschange')
     })
   }
 

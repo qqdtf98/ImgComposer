@@ -96,7 +96,7 @@
               ? vuex.styleData.target.getBoundingClientRect().width
               : ''
           "
-          @keydown.enter="submitNewStyle"
+          @keydown.enter="submitLayoutValue"
         />
       </div>
       <div class="height-box">
@@ -109,7 +109,7 @@
               ? vuex.styleData.target.getBoundingClientRect().height
               : ''
           "
-          @keydown.enter="submitNewStyle"
+          @keydown.enter="submitLayoutValue"
         />
       </div>
       <div class="margin-box">
@@ -120,7 +120,7 @@
           :placeholder="
             vuex.styleData.styleData ? vuex.styleData.styleData.margin : ''
           "
-          @keydown.enter="submitNewStyle"
+          @keydown.enter="submitLayoutValue"
         />
       </div>
       <div class="padding-box">
@@ -131,7 +131,7 @@
           :placeholder="
             vuex.styleData.styleData ? vuex.styleData.styleData.padding : ''
           "
-          @keydown.enter="submitNewStyle"
+          @keydown.enter="submitLayoutValue"
         />
       </div>
     </div>
@@ -146,20 +146,18 @@ export default defineComponent({
   setup(props, ctx) {
     const vuex = useVuex(ctx)
 
-    function submitNewStyle(e: MouseEvent) {
-      let changedData
-      // ClickIndicator.instances.forEach((instance) => {
-      //   changedData = {
-      //     payload: instance.target,
-      //     style: e.target.name,
-      //     value: e.target.value + 'px',
-      //   }
-      // })
-      // this.$store.commit('setChangedData', changedData)
+    // input 태그를 사용해 value와 style을 changedData에 저장
+    function submitLayoutValue(e: MouseEvent) {
+      const target = e.target as HTMLElement
+      const changedData = {
+        style: target?.getAttribute('name'),
+        value: (target as HTMLInputElement)?.value + 'px',
+      }
+      vuex.styleData.SET_CHANGED_DATA(changedData)
     }
 
     return {
-      submitNewStyle,
+      submitLayoutValue,
       vuex,
     }
   },
