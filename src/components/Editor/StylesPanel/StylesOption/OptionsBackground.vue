@@ -17,7 +17,7 @@
         <button
           name="backgroundColor"
           class="color-none"
-          @click="submitNewStyle"
+          @click="submitDefaultValue"
         />
         <button
           v-for="i in 14"
@@ -26,17 +26,17 @@
           name="backgroundColor"
           class="color-choose"
           :class="'color' + i"
-          @click="submitNewStyle"
+          @click="submitDefaultValue"
         />
         <button class="chrome-picker" @click="activateChromePicker" />
       </div>
-      <!-- <chrome-color
+      <chrome-color
         v-show="picker.isChromePicker"
         v-model="background.backgroundColor"
         class="chrome"
         :value="background.backgroundColor"
-        @input="backgroundColorChanged"
-      ></chrome-color> -->
+        @input="submitPickerValue"
+      ></chrome-color>
     </div>
     <div class="bg-img-wrapper">
       <div class="bg-img-text">Background Image</div>
@@ -49,6 +49,7 @@
 import { defineComponent, reactive } from '@vue/composition-api'
 import { Chrome } from 'vue-color'
 import { useVuex } from '@/modules/vue-hooks'
+import { VueColor } from '@/types/vue-color'
 
 export default defineComponent({
   components: { ChromeColor: Chrome },
@@ -67,40 +68,50 @@ export default defineComponent({
       }
     }
 
-    function submitNewStyle(e: MouseEvent) {
+    function submitDefaultValue(e: MouseEvent) {
+      const target = e.target
       let changedData
-      // ClickIndicator.instances.forEach((instance) => {
-      //   changedData = {
-      //     payload: instance.target,
-      //     style: e.target.name,
-      //     value: e.target.value + 'px',
-      //   }
-      // })
-      // this.$store.commit('setChangedData', changedData)
+      if (vuex.styleData.target) {
+        if (target instanceof HTMLElement) {
+          if (target.className === 'color-none') {
+            changedData = {
+              payload: vuex.styleData.target,
+              style: 'backgroundColor',
+              value: 'transparent',
+            }
+          } else {
+            changedData = {
+              payload: vuex.styleData.target,
+              style: 'backgroundColor',
+              value: getComputedStyle(target).backgroundColor,
+            }
+          }
+          vuex.styleData.SET_CHANGED_DATA(changedData)
+        }
+      }
     }
 
     const background = reactive({
       backgroundColor: '#fff',
     })
 
-    function backgroundColorChanged() {
-      let changedData
-      // ClickIndicator.instances.forEach(instance => {
-      //   changedData = {
-      //     payload: instance.target,
-      //     style: 'backgroundColor',
-      //     value: color.hex
-      //   }
-      // })
-      // this.$store.commit('setChangedData', changedData)
+    function submitPickerValue(color: VueColor) {
+      if (vuex.styleData.target) {
+        const changedData = {
+          payload: vuex.styleData.target,
+          style: 'backgroundColor',
+          value: color.hex,
+        }
+        vuex.styleData.SET_CHANGED_DATA(changedData)
+      }
     }
 
     return {
       picker,
       activateChromePicker,
-      submitNewStyle,
+      submitDefaultValue,
       background,
-      backgroundColorChanged,
+      submitPickerValue,
       vuex,
     }
   },

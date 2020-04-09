@@ -41,7 +41,7 @@
     <div class="font-color-wrapper">
       <div class="font-color-text">Font color</div>
       <div class="font-color-list">
-        <button name="color" class="color-none" @click="submitFontColor" />
+        <button name="color" class="color-none" @click="submitDefaultValue" />
         <button
           v-for="i in 14"
           id="color-button"
@@ -49,18 +49,18 @@
           class="color-choose"
           name="color"
           :class="'color' + i"
-          @click="submitFontColor"
+          @click="submitDefaultValue"
         />
         <button class="chrome-picker" @click="activateChromePicker" />
       </div>
     </div>
-    <!-- <chrome-color
+    <chrome-color
       v-show="picker.isChromePicker"
       v-model="font.fontColor"
       class="chrome"
       :value="font.fontColor"
-      @input="fontColorChanged"
-    ></chrome-color> -->
+      @input="submitPickerValue"
+    ></chrome-color>
   </div>
 </template>
 
@@ -68,9 +68,10 @@
 import { defineComponent, reactive } from '@vue/composition-api'
 import { Chrome } from 'vue-color'
 import { useVuex } from '@/modules/vue-hooks'
+import { VueColor } from '@/types/vue-color'
 
 export default defineComponent({
-  components: { ChromePicker: Chrome },
+  components: { ChromeColor: Chrome },
   setup(props, ctx) {
     const vuex = useVuex(ctx)
 
@@ -90,48 +91,45 @@ export default defineComponent({
       fontColor: '#fff',
     })
 
-    function submitFontColor(e: MouseEvent) {
+    function submitDefaultValue(e: MouseEvent) {
       let changedData
       const target = e.target
-      if (target instanceof HTMLElement) {
-        if (target.className === 'color-none') {
-          // ClickIndicator.instances.forEach((instance) => {
-          //   changedData = {
-          //     payload: instance.target,
-          //     style: target.name,
-          //     value: 'transparent',
-          //   }
-          // })
-        } else {
-          // ClickIndicator.instances.forEach((instance) => {
-          //   changedData = {
-          //     payload: instance.target,
-          //     style: target.name,
-          //     value: getComputedStyle(target).backgroundColor,
-          //   }
-          // })
+      if (vuex.styleData.target) {
+        if (target instanceof HTMLElement) {
+          if (target.className === 'color-none') {
+            changedData = {
+              payload: vuex.styleData.target,
+              style: 'fontColor',
+              value: 'transparent',
+            }
+          } else {
+            changedData = {
+              payload: vuex.styleData.target,
+              style: 'fontColor',
+              value: getComputedStyle(target).backgroundColor,
+            }
+          }
+          vuex.styleData.SET_CHANGED_DATA(changedData)
         }
-        // this.$store.commit('setChangedData', changedData)
       }
     }
 
-    function fontColorChanged() {
-      let changedData
-      // ClickIndicator.instances.forEach(instance => {
-      //   changedData = {
-      //     payload: instance.target,
-      //     style: 'fontColor',
-      //     value: color.hex
-      //   }
-      // })
-      // this.$store.commit('setChangedData', changedData)
+    function submitPickerValue(color: VueColor) {
+      if (vuex.styleData.target) {
+        const changedData = {
+          payload: vuex.styleData.target,
+          style: 'fontColor',
+          value: color.hex,
+        }
+        vuex.styleData.SET_CHANGED_DATA(changedData)
+      }
     }
 
     return {
       picker,
       activateChromePicker,
-      submitFontColor,
-      fontColorChanged,
+      submitDefaultValue,
+      submitPickerValue,
       font,
       vuex,
     }
