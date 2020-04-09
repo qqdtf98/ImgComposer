@@ -38,10 +38,6 @@
         @input="submitPickerValue"
       ></chrome-color>
     </div>
-    <div class="bg-img-wrapper">
-      <div class="bg-img-text">Background Image</div>
-      <button class="bg-img-input">Pick</button>
-    </div>
   </div>
 </template>
 
@@ -175,18 +171,6 @@ export default defineComponent({
           padding-top: 100%;
         }
       }
-    }
-  }
-  .bg-img-wrapper {
-    width: 80%;
-    display: flex;
-    flex-direction: row;
-    .bg-img-text {
-      margin-top: 0.4rem;
-      margin-bottom: 0.4rem;
-      color: #868686;
-    }
-    .bg-img-input {
     }
   }
 }

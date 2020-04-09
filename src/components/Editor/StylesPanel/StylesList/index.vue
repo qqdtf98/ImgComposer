@@ -1,15 +1,23 @@
 <template>
   <div id="layout-options">
-    <div v-for="(style, i) in styles" :key="i" class="layout-list-box">
+    <div
+      v-for="(style, i) in styles"
+      :key="i"
+      state="false"
+      class="layout-list-box"
+    >
       <div class="layout-list">
         <div class="layout-text">{{ style }}</div>
         <img class="layout-icon" src="@/assets/images/down.svg" />
       </div>
-      <div class="nested">
-        <OptionsDisplay v-if="style === 'Display'" />
-        <OptionsPosition v-if="style === 'Position'" />
-        <OptionsLayout v-if="style === 'Geometry'" />
-        <OptionsBackground v-if="style === 'Background Color'" />
+      <div class="nested active">
+        <OptionsDisplay v-if="style === 'Display'" class="template" />
+        <OptionsPosition v-if="style === 'Position'" class="template" />
+        <OptionsGeometry v-if="style === 'Geometry'" class="template" />
+        <OptionsBackground
+          v-if="style === 'Background Color'"
+          class="template"
+        />
       </div>
     </div>
   </div>
@@ -22,14 +30,14 @@ import OptionsBackground from './OptionsBackground.vue'
 import OptionsFont from './OptionsFont.vue'
 import OptionsPosition from './OptionsPosition.vue'
 import OptionsDisplay from './OptionsDisplay.vue'
-import OptionsLayout from './OptionsLayout.vue'
+import OptionsGeometry from './OptionsGeometry.vue'
 
 export default defineComponent({
   components: {
     OptionsBackground,
     OptionsFilter,
     OptionsFont,
-    OptionsLayout,
+    OptionsGeometry,
     OptionsDisplay,
     OptionsPosition,
   },
@@ -37,7 +45,6 @@ export default defineComponent({
     onMounted(() => {
       const toggler = document.getElementsByClassName('layout-list')
       let i
-      let j
       for (i = 0; i < toggler.length; i++) {
         toggler[i].addEventListener('click', function (e) {
           let target = e.target as HTMLElement
@@ -49,18 +56,20 @@ export default defineComponent({
 
           if (target.parentElement) {
             if (target.parentElement.children[1] instanceof HTMLElement) {
-              target.parentElement.children[1].style.transition =
-                'all 300ms ease'
               target.children[1].classList.toggle('icon-rotate')
-              target.parentElement.children[1].classList.toggle('active')
-              for (
-                j = 0;
-                j < target.parentElement.children[1].children.length;
-                j++
-              ) {
-                target.parentElement.children[1].children[j].classList.add(
-                  'template'
-                )
+              if (target.parentElement.getAttribute('state') === 'true') {
+                target.parentElement.setAttribute('state', 'false')
+                target.parentElement.style.height = '50px'
+              } else {
+                target.parentElement.setAttribute('state', 'true')
+                let newHeight = 20
+                let i
+                for (i = 0; i < target.parentElement.children.length; i++) {
+                  newHeight += target.parentElement.children[
+                    i
+                  ].getBoundingClientRect().height
+                }
+                target.parentElement.style.height = newHeight + 'px'
               }
             }
           }
@@ -91,7 +100,9 @@ export default defineComponent({
     text-align: left;
     border-bottom: 1px solid #000000;
     padding: 0.5rem;
-    min-height: 50px;
+    overflow: hidden;
+    height: 50px;
+    transition: height 0.3s ease;
 
     .layout-list {
       display: flex;
