@@ -4,6 +4,7 @@
       v-for="(property, i) in properties"
       :key="i"
       class="position-property"
+      @click="submitDisplayValue(property)"
     >
       {{ property }}
     </button>
@@ -16,10 +17,22 @@ import { useVuex } from '@/modules/vue-hooks'
 
 export default defineComponent({
   setup(props, ctx) {
+    const vuex = useVuex(ctx)
     const properties: string[] = ['relative', 'absolute', 'fixed']
+    function submitDisplayValue(prop: string) {
+      if (vuex.styleData.target) {
+        const changedData = {
+          style: 'position',
+          value: prop,
+        }
+        vuex.styleData.SET_CHANGED_DATA(changedData)
+      }
+    }
 
     return {
       properties,
+      submitDisplayValue,
+      vuex,
     }
   },
 })
