@@ -13,7 +13,7 @@ export class Selector {
     }
 
     // Set selector dom when mouse enter into the iframe's document
-    iframeDoc.addEventListener('mouseenter', () => {
+    iframeDoc.addEventListener('mouseover', () => {
       if (!iframeDoc.querySelector('#any-editor-selector')) {
         const selector = iframeDoc.createElement('div')
         selector.id = 'any-editor-selector'
