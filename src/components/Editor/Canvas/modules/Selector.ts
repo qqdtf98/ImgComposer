@@ -39,6 +39,21 @@ export class Selector {
       }
     })
 
+    // Remove the selector when press ESC
+    iframeWindow.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const selector = iframeDoc.querySelector(
+          '#any-editor-selector'
+        ) as HTMLElement
+
+        if (!selector) {
+          return
+        }
+
+        selector.parentElement?.removeChild(selector)
+      }
+    })
+
     iframeWindow.addEventListener('mousemove', (e) => {
       const target = e.target as HTMLElement
 
