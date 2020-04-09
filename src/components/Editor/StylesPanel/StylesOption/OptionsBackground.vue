@@ -68,6 +68,7 @@ export default defineComponent({
       }
     }
 
+    // default color box에서 선택하였을 때 chagnedData 저장
     function submitDefaultValue(e: MouseEvent) {
       const target = e.target
       let changedData
@@ -93,6 +94,7 @@ export default defineComponent({
       backgroundColor: '#fff',
     })
 
+    // chrome-picker에서 선택하였을 때 chagnedData 저장
     function submitPickerValue(color: VueColor) {
       if (vuex.styleData.target) {
         const changedData = {

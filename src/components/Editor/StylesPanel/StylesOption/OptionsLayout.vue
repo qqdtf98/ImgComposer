@@ -146,6 +146,7 @@ export default defineComponent({
   setup(props, ctx) {
     const vuex = useVuex(ctx)
 
+    // input 태그를 사용해 value와 style을 changedData에 저장
     function submitLayoutValue(e: MouseEvent) {
       const target = e.target as HTMLElement
       const changedData = {
