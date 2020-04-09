@@ -149,10 +149,12 @@ export default defineComponent({
             const value = filterOptions[filter].regExp.exec(
               vuex.styleData.styleData.filter
             )
-            // ?? 한번씩 번갈아가면서 바뀜
-            console.log(
-              filterOptions[filter].regExp.exec(vuex.styleData.styleData.filter)
-            )
+
+            // Regular Expression에는 state가 존재하기 때문에 exec가 중첩돼서 실행.
+            // 매치되지 않을 때 null을 리턴하고 lastIndex가 초기화됩니다.
+            // 임의로 0으로 리셋 가능.
+            filterOptions[filter].regExp.lastIndex = 0
+
             sliderValues[filter] = value ? parseFloat(value[1]) : 0
           }
           opacityValues.opacity = vuex.styleData.styleData.opacity
