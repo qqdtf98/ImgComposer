@@ -64,7 +64,7 @@ export default defineComponent({
   padding: 0 8px 0 10px;
   border-right: 1px solid;
   user-select: none;
-  transition: background-color 300ms ease;
+  transition: background-color 200ms ease, color 200ms ease;
   @include auto-border-color;
 
   .label {
@@ -90,6 +90,7 @@ export default defineComponent({
     opacity: 0;
     z-index: 5;
     pointer-events: none;
+    transition: background-color 200ms ease;
 
     &:hover {
       @include auto-bg-color;
@@ -108,7 +109,9 @@ export default defineComponent({
   &.active {
     // @include auto-distinct-bg-color;
     @include auto-blue-color;
-    font-weight: 600;
+
+    @include light-mode {
+    }
   }
 }
 </style>
