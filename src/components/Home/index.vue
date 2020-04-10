@@ -1,5 +1,5 @@
 <template>
-  <div class="ae-hero">
+  <div class="ae-home">
     <div class="projects-list">
       <h1 class="header">Projects</h1>
 
@@ -93,7 +93,7 @@ export default defineComponent({
 <style lang="scss">
 @use '@/assets/styles/package' as *;
 
-.ae-hero {
+.ae-home {
   display: flex;
   align-items: center;
   justify-content: center;
