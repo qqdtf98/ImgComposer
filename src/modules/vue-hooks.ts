@@ -10,6 +10,13 @@ export function useRouter(ctx: SetupContext): VueRouter {
   return ctx.root.$router
 }
 
+export function useStore(ctx: SetupContext): typeof accessorType {
+  return (ctx.root as any).$accessor
+}
+
+/**
+ * @deprecated Use `useStore` instead
+ */
 export function useVuex(ctx: SetupContext): typeof accessorType {
   return (ctx.root as any).$accessor
 }

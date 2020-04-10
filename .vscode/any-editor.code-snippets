@@ -1,0 +1,19 @@
+{
+  "Sass Package Import": {
+    "scope": "sass, scss",
+    "prefix": "pkg",
+    "body": "@use '@/assets/styles/package' as *;",
+    "description": "Import sass modules globally."
+  },
+  "Vue TypeScript Composition API": {
+    "scope": "vue",
+    "prefix": "ts",
+    "body": [
+      "<script lang=\"ts\">",
+      "import { defineComponent } from '@vue/composition-api'",
+      "",
+      "export default defineComponent({$0})",
+      "</script>"
+    ]
+  }
+}

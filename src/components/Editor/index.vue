@@ -1,9 +1,10 @@
 <template>
   <div>
-    <menu-bar />
+    <MenuBar />
+    <Tabs />
     <Canvas />
-    <styles-panel />
-    <studio-panel />
+    <StylesPanel />
+    <StudioPanel />
   </div>
 </template>
 
@@ -11,12 +12,13 @@
 import { defineComponent, onMounted } from '@vue/composition-api'
 import MenuBar from './MenuBar/index.vue'
 import Canvas from './Canvas/index.vue'
+import Tabs from './Tabs/index.vue'
 import StylesPanel from './StylesPanel/index.vue'
 import StudioPanel from './StudioPanel/index.vue'
 import ProjectService from '@/services/project-service'
 
 export default defineComponent({
-  components: { MenuBar, Canvas, StylesPanel, StudioPanel },
+  components: { MenuBar, Canvas, Tabs, StylesPanel, StudioPanel },
   props: {
     projectId: Number,
   },

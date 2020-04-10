@@ -14,6 +14,8 @@ module.exports = {
   plugins: ['prettier'],
   // add your custom rules here
   rules: {
+    // Vue
+    'vue/attribute-hyphenation': 'off',
     'no-unused-expressions': 'off',
     'no-unused-vars': [1],
     '@typescript-eslint/no-unused-vars': [1],
