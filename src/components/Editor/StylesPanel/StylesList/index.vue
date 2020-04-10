@@ -18,6 +18,7 @@
           v-if="style === 'Background Color'"
           class="template"
         />
+        <OptionsBorder v-if="style === 'Border'" class="template" />
       </div>
     </div>
   </div>
@@ -31,6 +32,7 @@ import OptionsFont from './OptionsFont.vue'
 import OptionsPosition from './OptionsPosition.vue'
 import OptionsDisplay from './OptionsDisplay.vue'
 import OptionsGeometry from './OptionsGeometry.vue'
+import OptionsBorder from './OptionsBorder.vue'
 
 export default defineComponent({
   components: {
@@ -40,6 +42,7 @@ export default defineComponent({
     OptionsGeometry,
     OptionsDisplay,
     OptionsPosition,
+    OptionsBorder,
   },
   setup() {
     onMounted(() => {
