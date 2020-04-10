@@ -107,13 +107,7 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  watch,
-  reactive,
-  ref,
-  watchEffect,
-} from '@vue/composition-api'
+import { defineComponent, watch, reactive, ref } from '@vue/composition-api'
 import { useVuex } from '@/modules/vue-hooks'
 
 export default defineComponent({
@@ -134,9 +128,6 @@ export default defineComponent({
     // width,height의 v-model value
     const widthSelected = ref('px')
     const heightSelected = ref('px')
-    watchEffect(() => {
-      console.log(widthSelected.value)
-    })
 
     const state: Record<string, string> = reactive({
       marginLeft: '',
@@ -348,9 +339,7 @@ export default defineComponent({
     justify-content: center;
     width: 100%;
     .width-box,
-    .height-box,
-    .margin-box,
-    .padding-box {
+    .height-box {
       display: flex;
       align-items: center;
       justify-content: center;
@@ -362,18 +351,14 @@ export default defineComponent({
       margin-top: 0.3rem;
       margin-bottom: 0.3rem;
       .width-input,
-      .height-input,
-      .margin-input,
-      .padding-input {
+      .height-input {
         color: #868686;
         text-align: center;
         width: 30%;
         margin-right: 5%;
       }
       .width-input-value,
-      .height-input-value,
-      .margin-input-value,
-      .padding-input-value {
+      .height-input-value {
         @include auto-text-color;
         @include auto-distinct-bg-color;
         width: 40%;
