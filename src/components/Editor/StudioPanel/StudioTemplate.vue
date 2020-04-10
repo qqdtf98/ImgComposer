@@ -74,10 +74,6 @@ export default defineComponent({
     const templates = Object.keys(templateList)
 
     function insertTemplate(e: MouseEvent) {
-      // To 성민.
-      // while(1) 로 부모를 타고 올라가면서 `.template-wrapper`를 찾는것보다
-      // DOM API에서 제공하는 `closest()` 메소드를 사용해서 더 간결하고 효율적이게 만들었어요.
-      // 좋은 시도였습니다.
       const target: HTMLElement = (e.target as HTMLElement).closest(
         '.template-wrapper'
       ) as HTMLElement
