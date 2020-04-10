@@ -20,6 +20,7 @@
         />
         <OptionsBorder v-if="style === 'Border'" class="template" />
         <OptionsOpacity v-if="style === 'Opacity'" class="template" />
+        <OptionsShadow v-if="style === 'Shadow'" class="template" />
         <OptionsFilter v-if="style === 'Filter'" class="template" />
       </div>
     </div>
@@ -36,6 +37,7 @@ import OptionsDisplay from './OptionsDisplay.vue'
 import OptionsGeometry from './OptionsGeometry.vue'
 import OptionsBorder from './OptionsBorder.vue'
 import OptionsOpacity from './OptionsOpacity.vue'
+import OptionsShadow from './OptionsShadow.vue'
 
 export default defineComponent({
   components: {
@@ -47,6 +49,7 @@ export default defineComponent({
     OptionsPosition,
     OptionsBorder,
     OptionsOpacity,
+    OptionsShadow,
   },
   setup() {
     onMounted(() => {
@@ -91,6 +94,7 @@ export default defineComponent({
       'Background Color',
       'Border',
       'Opacity',
+      'Shadow',
       'Filter',
     ]
 
