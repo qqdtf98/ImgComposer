@@ -20,3 +20,7 @@ export function useStore(ctx: SetupContext): typeof accessorType {
 export function useVuex(ctx: SetupContext): typeof accessorType {
   return (ctx.root as any).$accessor
 }
+
+export function useNextTick(ctx: SetupContext) {
+  return ctx.root.$nextTick
+}

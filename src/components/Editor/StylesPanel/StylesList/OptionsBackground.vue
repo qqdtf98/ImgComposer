@@ -44,24 +44,40 @@
 <script lang="ts">
 import { defineComponent, reactive } from '@vue/composition-api'
 import { Chrome } from 'vue-color'
-import { useVuex } from '@/modules/vue-hooks'
+import { useVuex, useNextTick } from '@/modules/vue-hooks'
 import { VueColor } from '@/types/vue-color'
 
 export default defineComponent({
   components: { ChromeColor: Chrome },
   setup(props, ctx) {
+    const nextTick = useNextTick(ctx)
     const vuex = useVuex(ctx)
 
     const picker = reactive({
       isChromePicker: false,
     })
 
-    function activateChromePicker() {
+    // TODO chromepicker activate 할때마다 높이 다시 계산
+    function activateChromePicker(e: MouseEvent) {
       if (picker.isChromePicker) {
         picker.isChromePicker = false
       } else {
         picker.isChromePicker = true
       }
+      nextTick(() => {
+        let target = e.target as HTMLElement
+        target = (e.target as HTMLElement).closest(
+          '.layout-list-box'
+        ) as HTMLElement
+        let i
+        let newHeight = 20
+        if (target) {
+          for (i = 0; i < target.children.length; i++) {
+            newHeight += target.children[i].getBoundingClientRect().height
+          }
+          target.style.height = newHeight + 'px'
+        }
+      })
     }
 
     // default color box에서 선택하였을 때 chagnedData 저장

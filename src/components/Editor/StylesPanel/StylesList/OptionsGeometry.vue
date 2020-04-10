@@ -131,6 +131,7 @@ export default defineComponent({
       vuex.styleData.SET_CHANGED_DATA(changedData)
     }
 
+    // width,height의 v-model value
     const widthSelected = ref('px')
     const heightSelected = ref('px')
     watchEffect(() => {
@@ -152,6 +153,7 @@ export default defineComponent({
 
     const geometries = Object.keys(state)
 
+    // vuex.styleData.target에 따라 margin, padding 값 셋팅
     watch(
       () => vuex.styleData.target,
       () => {
@@ -171,6 +173,7 @@ export default defineComponent({
       }
     )
 
+    // margin, padding의 input value 값을 changedData에 저장
     function submitGeometryValue(e: MouseEvent) {
       const target = e.target as HTMLElement
       const changedData = {
