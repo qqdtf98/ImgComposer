@@ -1,10 +1,11 @@
 <template>
-  <div :id="canvasId">
+  <div :id="canvasId" ref="canvas">
     <iframe
       ref="iframeRef"
       frameborder="0"
       :class="mergeClassNames(iframeClassName)"
     ></iframe>
+    <Context v-show="isContextActivate" class="canvas-context" />
   </div>
 </template>
 
@@ -25,17 +26,22 @@ import { iframeSampleHtml } from '@/miscellaneous/iframe-sample-html'
 import { useVuex } from '@/modules/vue-hooks'
 import { HtmlStyle } from '@/miscellaneous/sample-html-style'
 import cssom from 'cssom'
+import Context from './Context/index.vue'
+import { Cem } from '../../../modules/custom-events-manager'
 
 export default defineComponent({
+  components: { Context },
   setup(props, ctx) {
     const vuex = useVuex(ctx)
 
+    const canvas = ref<HTMLElement>(null)
     const canvasId = 'canvas'
     const iframeClassName = 'canvas-iframe'
     const iframeState = reactive({
       isActive: false,
     })
     const iframeRef = ref() as Ref<HTMLIFrameElement>
+    const isContextActivate = ref(false)
 
     onMounted(() => {
       const iframe = iframeRef.value
@@ -56,6 +62,8 @@ export default defineComponent({
       console.log(styleParsed.cssRules)
 
       const selector = new Selector(iframe)
+
+      // marker를 생성했을 때 context actuvate
       Cem.addEventListener(
         'onmarkerschange',
         canvas.value as HTMLElement,
@@ -101,12 +109,14 @@ export default defineComponent({
     // )
 
     return {
+      canvas,
       canvasId,
       iframeClassName,
       iframeState,
       iframeRef,
       mergeClassNames,
       vuex,
+      isContextActivate,
     }
   },
 })
