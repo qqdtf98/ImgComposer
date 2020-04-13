@@ -1,38 +1,11 @@
 <template>
   <div id="options-filter">
-    <div class="opacity-wrapper">
-      <div class="opacity-text">{{ opacityOptions.name }}</div>
-      <range-slider
-        v-model="opacityValues.opacity"
-        class="filter-slider"
-        :min="opacityOptions.min"
-        :max="opacityOptions.max"
-        :step="opacityOptions.step"
-        :name="opacityOptions.name"
-        submit-sorce-style="opacityOptions.name"
-        @input="submitOpacityValue"
-      />
-      <input
-        v-model="opacityValues.opacity"
-        class="opacity-input"
-        @keyup.enter="submitOpacityInputValue"
-      />
-    </div>
     <div v-for="(filter, i) in filters" :key="i" class="filter-wrapper">
       <div class="filter-text">{{ filter }}</div>
-      <range-slider
-        v-model="sliderValues[filter]"
-        class="filter-slider"
-        :min="filterOptions[filter].min"
-        :max="filterOptions[filter].max"
-        :step="filterOptions[filter].step"
-        :name="filter"
-        submit-sorce-style="filter"
-        @input="submitFilterValue($event, filter)"
-      />
       <input
         v-model="sliderValues[filter]"
         class="filter-input"
+        :unit="filterOptions[filter].unit"
         @keyup.enter="submitFilterInputValue($event, filter)"
       />
     </div>
@@ -42,79 +15,50 @@
 <script lang="ts">
 import { defineComponent, reactive, watch } from '@vue/composition-api'
 import 'vue-range-slider/dist/vue-range-slider.scss'
-import RangeSlider from 'vue-range-slider'
+// import RangeSlider from 'vue-range-slider'
 import { useVuex } from '@/modules/vue-hooks'
 
 export default defineComponent({
-  components: { RangeSlider },
+  // components: { RangeSlider },
   setup(props, ctx) {
     const vuex = useVuex(ctx)
 
-    // opacity의 static한 값. slider에 사용됨.
-    const opacityOptions = {
-      name: 'opacity',
-      min: 0,
-      max: 1,
-      step: 0.1,
-    }
-
-    // filter property의 static한 값. slider에 사용됨
+    // filter property의 static한 값. slider에 사용됨.
+    // 각 filter에 따라 단위를 unit에 저장.
     const filterOptions: Record<
       string,
       {
         regExp: RegExp
-        min: number
-        max: number
-        step: number
+        unit: string
       }
     > = {
       blur: {
         regExp: /blur\((.*?)\)/g,
-        min: 0,
-        max: 30,
-        step: 1,
+        unit: 'px',
       },
       brightness: {
         regExp: /brightness\((.*?)\)/g,
-        min: 0,
-        max: 100,
-        step: 5,
+        unit: '',
       },
       contrast: {
         regExp: /contrast\((.*?)\)/g,
-        min: 0,
-        max: 200,
-        step: 5,
+        unit: '%',
       },
       grayscale: {
         regExp: /grayscale\((.*?)\)/g,
-        min: 0,
-        max: 1,
-        step: 0.1,
-      },
-      hue: {
-        regExp: /hue\((.*?)\)/g,
-        min: 0,
-        max: 360,
-        step: 3,
+        unit: '%',
       },
       invert: {
         regExp: /invert\((.*?)\)/g,
-        min: 0,
-        max: 100,
-        step: 1,
+        unit: '%',
       },
       saturate: {
         regExp: /saturate\((.*?)\)/g,
-        min: 0,
-        max: 100,
-        step: 1,
+        unit: '%',
       },
       sepia: {
         regExp: /sepia\((.*?)\)/g,
-        min: 0,
-        max: 100,
-        step: 1,
+        unit: '%',
       },
     }
 
@@ -134,11 +78,6 @@ export default defineComponent({
 
     const sliders = Object.keys(sliderValues)
 
-    // opacity의 slider v-model 변수로 사용.
-    const opacityValues: Record<string, number> = reactive({
-      opacity: 1,
-    })
-
     watch(
       () => vuex.styleData.styleData,
       () => {
@@ -157,11 +96,7 @@ export default defineComponent({
 
             sliderValues[filter] = value ? parseFloat(value[1]) : 0
           }
-          opacityValues.opacity = vuex.styleData.styleData.opacity
-            ? parseFloat(vuex.styleData.styleData.opacity)
-            : 1
         } else {
-          opacityValues.opacity = 1
           for (const slider in sliders) {
             sliderValues[sliders[slider]] = 0
           }
@@ -169,40 +104,14 @@ export default defineComponent({
       }
     )
 
-    // range-slider를 사용하여 opacity값을 변경할 때 changedData 저장
-    function submitOpacityValue(value: number) {
-      const changedData = {
-        style: 'opacity',
-        value,
-      }
-      vuex.styleData.SET_CHANGED_DATA(changedData)
-    }
-
-    // input을 사용하여 opacity값을 변경할 때 changedData 저장
-    function submitOpacityInputValue(e: InputEvent) {
-      const target = e.target as HTMLElement
-      const changedData = {
-        style: 'opacity',
-        value: (target as HTMLInputElement)?.value,
-      }
-      vuex.styleData.SET_CHANGED_DATA(changedData)
-    }
-
-    // range-slider를 사용하여 filter값을 변경할 때 filter 종류에 따라 changedData 저장
-    function submitFilterValue(value: number, filter: string) {
-      const changedData = {
-        style: filter,
-        value,
-      }
-      vuex.styleData.SET_CHANGED_DATA(changedData)
-    }
-
     // input을 사용하여 filter값을 변경할 때 filter 종류에 따라 changedData 저장
     function submitFilterInputValue(e: InputEvent, filter: string) {
       const target = e.target as HTMLElement
       const changedData = {
         style: filter,
-        value: (target as HTMLInputElement)?.value,
+        value:
+          (target as HTMLInputElement)?.value +
+          (target as HTMLInputElement)?.getAttribute('unit'),
       }
       vuex.styleData.SET_CHANGED_DATA(changedData)
     }
@@ -212,11 +121,6 @@ export default defineComponent({
       filterOptions,
       filters,
       sliderValues,
-      opacityOptions,
-      opacityValues,
-      submitOpacityValue,
-      submitFilterValue,
-      submitOpacityInputValue,
       submitFilterInputValue,
     }
   },
@@ -224,6 +128,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+@use '@/assets/styles/package' as *;
+
 #options-filter {
   display: flex;
   margin-top: 0.3rem;
@@ -232,43 +138,6 @@ export default defineComponent({
   flex-direction: column;
   align-items: center;
   width: 100%;
-  .opacity-wrapper {
-    display: flex;
-    margin-bottom: 0.3rem;
-    justify-content: center;
-    flex-direction: row;
-    margin-top: 0.3rem;
-    align-items: center;
-    width: 100%;
-    .opacity-text {
-      font-size: 0.9rem;
-      text-align: center;
-      width: 7rem;
-      color: #868686;
-    }
-    .filter-slider {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: calc(100% - 6rem);
-      .range-slider-inner {
-        width: 100%;
-      }
-      .range-slider-inner {
-        width: 70%;
-      }
-      .range-slider-knob {
-        width: 13px !important;
-        height: 13px !important;
-      }
-    }
-    .opacity-input {
-      background: none;
-      border: none;
-      border-bottom: 1px solid #768ea7;
-      width: 2.5rem;
-    }
-  }
 
   .filter-wrapper {
     display: flex;
@@ -277,34 +146,30 @@ export default defineComponent({
     flex-direction: row;
     align-items: center;
     margin-top: 0.3rem;
-    width: 100%;
+    position: relative;
+    height: 1.2rem;
+    width: 80%;
     .filter-text {
+      position: absolute;
+      left: 0;
       font-size: 0.9rem;
-      text-align: center;
+      text-align: left;
       width: 7rem;
       color: #868686;
     }
-    .filter-slider {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: calc(100% - 6rem);
-      .range-slider-inner {
-        width: 100%;
-      }
-      .range-slider-inner {
-        width: 70%;
-      }
-      .range-slider-knob {
-        width: 13px !important;
-        height: 13px !important;
-      }
-    }
     .filter-input {
+      @include auto-text-color;
+      @include auto-distinct-bg-color;
+      position: absolute;
+      right: 0;
       background: none;
       border: none;
-      border-bottom: 1px solid #768ea7;
-      width: 2.5rem;
+      text-align: right;
+      padding-top: 0.2rem;
+      padding-bottom: 0.2rem;
+      padding-right: 0.3rem;
+      border-radius: 0.2rem;
+      width: 4rem;
     }
   }
 }

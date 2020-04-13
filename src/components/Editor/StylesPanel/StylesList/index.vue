@@ -18,6 +18,11 @@
           v-if="style === 'Background Color'"
           class="template"
         />
+        <OptionsBorder v-if="style === 'Border'" class="template" />
+        <OptionsOpacity v-if="style === 'Opacity'" class="template" />
+        <OptionsShadow v-if="style === 'Shadow'" class="template" />
+        <OptionsFilter v-if="style === 'Filter'" class="template" />
+        <OptionsText v-if="style === 'Text'" class="template" />
       </div>
     </div>
   </div>
@@ -27,19 +32,25 @@
 import { defineComponent, onMounted } from '@vue/composition-api'
 import OptionsFilter from './OptionsFilter.vue'
 import OptionsBackground from './OptionsBackground.vue'
-import OptionsFont from './OptionsFont.vue'
+import OptionsText from './OptionsText.vue'
 import OptionsPosition from './OptionsPosition.vue'
 import OptionsDisplay from './OptionsDisplay.vue'
 import OptionsGeometry from './OptionsGeometry.vue'
+import OptionsBorder from './OptionsBorder.vue'
+import OptionsOpacity from './OptionsOpacity.vue'
+import OptionsShadow from './OptionsShadow.vue'
 
 export default defineComponent({
   components: {
     OptionsBackground,
     OptionsFilter,
-    OptionsFont,
+    OptionsText,
     OptionsGeometry,
     OptionsDisplay,
     OptionsPosition,
+    OptionsBorder,
+    OptionsOpacity,
+    OptionsShadow,
   },
   setup() {
     onMounted(() => {
@@ -83,6 +94,10 @@ export default defineComponent({
       'Geometry',
       'Background Color',
       'Border',
+      'Opacity',
+      'Shadow',
+      'Filter',
+      'Text',
     ]
 
     return {

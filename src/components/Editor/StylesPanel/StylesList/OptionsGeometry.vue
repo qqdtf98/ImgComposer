@@ -1,49 +1,55 @@
 <template>
   <div id="options-layout">
     <div class="margin-wrapper">
-      <div class="margin-left">
-        {{
-          vuex.styleData.styleData ? vuex.styleData.styleData.marginLeft : ''
-        }}
-      </div>
-      <div class="margin-right">
-        {{
-          vuex.styleData.styleData ? vuex.styleData.styleData.marginRight : ''
-        }}
-      </div>
-      <div class="margin-top">
-        {{ vuex.styleData.styleData ? vuex.styleData.styleData.marginTop : '' }}
-      </div>
-      <div class="margin-bottom">
-        {{
-          vuex.styleData.styleData ? vuex.styleData.styleData.marginBottom : ''
-        }}
-      </div>
+      <input
+        v-model="state.marginLeft"
+        class="margin-left"
+        name="marginLeft"
+        @keyup.enter="submitGeometryValue"
+      />
+      <input
+        v-model="state.marginRight"
+        class="margin-right"
+        name="marginRight"
+        @keyup.enter="submitGeometryValue"
+      />
+      <input
+        v-model="state.marginTop"
+        class="margin-top"
+        name="marginTop"
+        @keyup.enter="submitGeometryValue"
+      />
+      <input
+        v-model="state.marginBottom"
+        class="margin-bottom"
+        name="marginBottom"
+        @keyup.enter="submitGeometryValue"
+      />
       <div class="padding-wrapper">
-        <div class="padding-left">
-          {{
-            vuex.styleData.styleData ? vuex.styleData.styleData.paddingLeft : ''
-          }}
-        </div>
-        <div class="padding-right">
-          {{
-            vuex.styleData.styleData
-              ? vuex.styleData.styleData.paddingRight
-              : ''
-          }}
-        </div>
-        <div class="padding-top">
-          {{
-            vuex.styleData.styleData ? vuex.styleData.styleData.paddingTop : ''
-          }}
-        </div>
-        <div class="padding-bottom">
-          {{
-            vuex.styleData.styleData
-              ? vuex.styleData.styleData.paddingBottom
-              : ''
-          }}
-        </div>
+        <input
+          v-model="state.paddingLeft"
+          class="padding-left"
+          name="paddingLeft"
+          @keyup.enter="submitGeometryValue"
+        />
+        <input
+          v-model="state.paddingRight"
+          class="padding-right"
+          name="paddingRight"
+          @keyup.enter="submitGeometryValue"
+        />
+        <input
+          v-model="state.paddingTop"
+          class="padding-top"
+          name="paddingTop"
+          @keyup.enter="submitGeometryValue"
+        />
+        <input
+          v-model="state.paddingBottom"
+          class="padding-bottom"
+          name="paddingBottom"
+          @keyup.enter="submitGeometryValue"
+        />
         <div class="empty-box"></div>
       </div>
     </div>
@@ -53,7 +59,7 @@
         <div class="x-position-value">
           {{
             vuex.styleData.target
-              ? vuex.styleData.target.getBoundingClientRect().x
+              ? vuex.styleData.target.getBoundingClientRect().x.toFixed(0)
               : ''
           }}
         </div>
@@ -61,25 +67,7 @@
         <div class="y-position-value">
           {{
             vuex.styleData.target
-              ? vuex.styleData.target.getBoundingClientRect().y
-              : ''
-          }}
-        </div>
-      </div>
-      <div class="size-wrapper">
-        <div class="width-text">W</div>
-        <div class="width-value">
-          {{
-            vuex.styleData.target
-              ? vuex.styleData.target.getBoundingClientRect().width
-              : ''
-          }}
-        </div>
-        <div class="height-text">H</div>
-        <div class="height-value">
-          {{
-            vuex.styleData.target
-              ? vuex.styleData.target.getBoundingClientRect().height
+              ? vuex.styleData.target.getBoundingClientRect().y.toFixed(0)
               : ''
           }}
         </div>
@@ -89,69 +77,115 @@
       <div class="width-box">
         <div class="width-input">Width</div>
         <input
+          v-model="state.width.split('px')[0]"
           class="width-input-value"
           name="width"
-          :placeholder="
-            vuex.styleData.target
-              ? vuex.styleData.target.getBoundingClientRect().width
-              : ''
-          "
           @keydown.enter="submitLayoutValue"
         />
+        <select v-model="widthSelected" class="width-option">
+          <option value="px">px</option>
+          <option value="rem">rem</option>
+          <option value="em">em</option>
+        </select>
       </div>
       <div class="height-box">
         <div class="height-input">Height</div>
         <input
+          v-model="state.height.split('px')[0]"
           class="height-input-value"
           name="height"
-          :placeholder="
-            vuex.styleData.target
-              ? vuex.styleData.target.getBoundingClientRect().height
-              : ''
-          "
           @keydown.enter="submitLayoutValue"
         />
-      </div>
-      <div class="margin-box">
-        <div class="margin-input">Margin</div>
-        <input
-          class="margin-input-value"
-          name="margin"
-          :placeholder="
-            vuex.styleData.styleData ? vuex.styleData.styleData.margin : ''
-          "
-          @keydown.enter="submitLayoutValue"
-        />
-      </div>
-      <div class="padding-box">
-        <div class="padding-input">Padding</div>
-        <input
-          class="padding-input-value"
-          name="padding"
-          :placeholder="
-            vuex.styleData.styleData ? vuex.styleData.styleData.padding : ''
-          "
-          @keydown.enter="submitLayoutValue"
-        />
+        <select v-model="heightSelected" class="height-option">
+          <option value="px">px</option>
+          <option value="rem">rem</option>
+          <option value="em">em</option>
+        </select>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api'
+import { defineComponent, watch, reactive, ref } from '@vue/composition-api'
 import { useVuex } from '@/modules/vue-hooks'
 
 export default defineComponent({
   setup(props, ctx) {
     const vuex = useVuex(ctx)
 
-    // input 태그를 사용해 value와 style을 changedData에 저장
-    function submitLayoutValue(e: MouseEvent) {
+    // input 태그를 사용해 value와 style을 changedData에 저장. width와 height 동시에 저장
+    function submitLayoutValue() {
+      if (vuex.styleData.target) {
+        const widthValue = document.querySelector(
+          '.width-input-value'
+        ) as HTMLElement
+        const heightValue = document.querySelector(
+          '.height-input-value'
+        ) as HTMLElement
+
+        let changedData = {
+          style: widthValue.getAttribute('name'),
+          value: (widthValue as HTMLInputElement)?.value + widthSelected.value,
+        }
+        vuex.styleData.SET_CHANGED_DATA(changedData)
+
+        setTimeout(() => {
+          changedData = {
+            style: heightValue.getAttribute('name'),
+            value:
+              (heightValue as HTMLInputElement)?.value + heightSelected.value,
+          }
+          vuex.styleData.SET_CHANGED_DATA(changedData)
+        }, 0)
+      }
+    }
+
+    // width,height의 v-model value
+    const widthSelected = ref('px')
+    const heightSelected = ref('px')
+
+    const state: Record<string, string> = reactive({
+      marginLeft: '',
+      marginRight: '',
+      marginTop: '',
+      marginBottom: '',
+      paddingLeft: '',
+      paddingRight: '',
+      paddingTop: '',
+      paddingBottom: '',
+      width: '',
+      height: '',
+    })
+
+    const geometries = Object.keys(state)
+
+    // vuex.styleData.target에 따라 margin, padding 값 셋팅
+    watch(
+      () => vuex.styleData.target,
+      () => {
+        if (vuex.styleData.target) {
+          if (vuex.styleData.styleData) {
+            for (const geo in geometries) {
+              const styleProperty = geometries[geo]
+              const styleData = vuex.styleData.styleData as Record<string, any>
+              state[geometries[geo]] = styleData[styleProperty]
+            }
+          }
+        } else {
+          for (const geo in geometries) {
+            state[geometries[geo]] = ''
+          }
+        }
+      }
+    )
+
+    // margin, padding의 input value 값을 changedData에 저장
+    function submitGeometryValue(e: MouseEvent) {
       const target = e.target as HTMLElement
       const changedData = {
         style: target?.getAttribute('name'),
-        value: (target as HTMLInputElement)?.value + 'px',
+        value: (target as HTMLInputElement)?.value,
       }
       vuex.styleData.SET_CHANGED_DATA(changedData)
     }
@@ -159,6 +193,11 @@ export default defineComponent({
     return {
       submitLayoutValue,
       vuex,
+      state,
+      submitGeometryValue,
+      geometries,
+      widthSelected,
+      heightSelected,
     }
   },
 })
@@ -177,11 +216,13 @@ export default defineComponent({
   align-items: center;
   .margin-wrapper {
     background-color: #2e3743;
-    width: 75%;
-    height: 7rem;
+    width: 85%;
+    height: 9rem;
     display: flex;
     margin-top: 0.3rem;
+
     border: 2px solid #4f4f86;
+    border-radius: 0.5rem;
     justify-content: center;
     align-items: center;
     position: relative;
@@ -191,33 +232,37 @@ export default defineComponent({
     .margin-bottom {
       color: #53bfff;
       position: absolute;
+      width: 40px;
+      text-align: center;
+      font-size: 0.8rem;
     }
     .margin-right {
-      right: 0.2rem;
+      right: 0rem;
       top: 50%;
       transform: translateY(-50%);
     }
     .margin-left {
-      left: 0.2rem;
+      left: 0rem;
       top: 50%;
       transform: translateY(-50%);
     }
     .margin-top {
-      top: 0.2rem;
+      top: 0rem;
       left: 50%;
       transform: translateX(-50%);
     }
     .margin-bottom {
-      bottom: 0.2rem;
+      bottom: 0rem;
       left: 50%;
       transform: translateX(-50%);
     }
     .padding-wrapper {
       background-color: #333f3a;
-      width: 75%;
-      height: 4rem;
+      width: 65%;
+      height: 5.5rem;
       display: flex;
       border: 2px solid #2f6534;
+      border-radius: 0.5rem;
       justify-content: center;
       align-items: center;
       position: relative;
@@ -227,31 +272,35 @@ export default defineComponent({
       .padding-bottom {
         color: #81c882;
         position: absolute;
+        width: 30px;
+        text-align: center;
+        font-size: 0.8rem;
       }
       .padding-right {
-        right: 0.2rem;
+        right: 0;
         top: 50%;
         transform: translateY(-50%);
       }
       .padding-left {
-        left: 0.2rem;
+        left: 0;
         top: 50%;
         transform: translateY(-50%);
       }
       .padding-top {
-        top: 0.2rem;
+        top: 0;
         left: 50%;
         transform: translateX(-50%);
       }
       .padding-bottom {
-        bottom: 0.2rem;
+        bottom: 0;
         left: 50%;
         transform: translateX(-50%);
       }
       .empty-box {
-        width: 75%;
+        width: 55%;
         background-color: #292931;
-        height: 1.5rem;
+        height: 2rem;
+        border-radius: 0.4rem;
       }
     }
   }
@@ -306,39 +355,42 @@ export default defineComponent({
     justify-content: center;
     width: 100%;
     .width-box,
-    .height-box,
-    .margin-box,
-    .padding-box {
+    .height-box {
       display: flex;
       align-items: center;
       justify-content: center;
       display: flex;
-      width: 80%;
+      width: 90%;
       flex-direction: row;
       height: 2rem;
-      position: relative;
+      // position: relative;
       margin-top: 0.3rem;
       margin-bottom: 0.3rem;
       .width-input,
-      .height-input,
-      .margin-input,
-      .padding-input {
+      .height-input {
         color: #868686;
         text-align: center;
         width: 30%;
-        position: absolute;
-        left: 0;
+        margin-right: 5%;
       }
       .width-input-value,
-      .height-input-value,
-      .margin-input-value,
-      .padding-input-value {
+      .height-input-value {
+        @include auto-text-color;
+        @include auto-distinct-bg-color;
         width: 40%;
-        position: absolute;
-        background: none;
-        right: 0;
+        border-radius: 0.4rem;
+        padding: 0.4rem;
+        margin-right: 2%;
+        text-align: right;
+      }
+      .width-option,
+      .height-option {
+        @include auto-text-color;
+        @include auto-distinct-bg-color;
+        border-radius: 0.4rem;
+        padding: 0.4rem;
+        width: 23%;
         border: none;
-        border-bottom: 1px solid #768ea7;
       }
     }
   }

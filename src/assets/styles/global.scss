@@ -26,6 +26,12 @@ body {
   @include auto-bg-color;
 }
 
+input {
+  background: none;
+  border: none;
+  appearance: none;
+}
+
 button {
   border: none;
   background: none;

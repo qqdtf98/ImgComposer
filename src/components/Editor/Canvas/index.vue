@@ -9,8 +9,6 @@
 </template>
 
 <script lang="ts">
-// TODO: Change the component name to Canvas
-
 import {
   defineComponent,
   ref,
