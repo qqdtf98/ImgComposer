@@ -1,4 +1,5 @@
 import { useVuex } from '../../../../modules/vue-hooks'
+import { Cem } from '@/modules/custom-events-manager'
     const vuex = useVuex(ctx)
     watch(
       () => vuex.editorInfo.matchedCssRules,
@@ -12,6 +13,10 @@ import { useVuex } from '../../../../modules/vue-hooks'
     function selectCssSelector(e: MouseEvent, rule: CSSStyleRule) {
       vuex.editorInfo.SET_SELECTED_CSS_RULE(rule)
 
+      setTimeout(() => {
+        Cem.dispatchEvent('openstyles')
+      }, 0)
+    }
     }
 
     }

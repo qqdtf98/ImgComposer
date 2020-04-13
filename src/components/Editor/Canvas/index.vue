@@ -56,6 +56,41 @@ export default defineComponent({
       console.log(styleParsed.cssRules)
 
       const selector = new Selector(iframe)
+      Cem.addEventListener(
+        'onmarkerschange',
+        canvas.value as HTMLElement,
+        (e) => {
+          isContextActivate.value = true
+          const context = document.querySelector(
+            '.canvas-context'
+          ) as HTMLElement
+
+          if (!vuex.styleData.target) return
+
+          context.style.left =
+            vuex.styleData.target.getBoundingClientRect().left +
+            vuex.styleData.target.getBoundingClientRect().width / 2 +
+            'px'
+          context.style.top =
+            vuex.styleData.target.getBoundingClientRect().top +
+            vuex.styleData.target.getBoundingClientRect().height / 2 +
+            'px'
+        }
+      )
+
+      // marker 해제했을 때 context deactivate
+      Cem.addEventListener(
+        'deactivatecontext',
+        canvas.value as HTMLElement,
+        (e) => {
+          isContextActivate.value = false
+        }
+      )
+
+      // selector 선택했을 때 context deactivate
+      Cem.addEventListener('openstyles', canvas.value as HTMLElement, (e) => {
+        isContextActivate.value = false
+      })
     })
 
     // watch(

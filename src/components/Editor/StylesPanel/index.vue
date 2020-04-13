@@ -54,8 +54,34 @@ export default defineComponent({
       state.collapsed = !state.collapsed
     }
 
+      Cem.addEventListener(
+        'onmarkerschange',
+        stylePanel.value as HTMLElement,
+        (e) => {
+          state.collapsed = true
+        }
+      )
+
+      // marker를 해제했을 때 styles 닫기
+      Cem.addEventListener(
+        'deactivatecontext',
+        stylePanel.value as HTMLElement,
+        (e) => {
+          state.collapsed = true
+        }
+      )
+
+      // selector를 선택했을 때 styles 열기
+      Cem.addEventListener(
+        'openstyles',
+        stylePanel.value as HTMLElement,
+        (e) => {
+          state.collapsed = false
+          selectorSelected.value = true
           if (!vuex.editorInfo.selectedCssRule) return
           selectorValue.value = vuex.editorInfo.selectedCssRule.selectorText
+        }
+      )
     return {
       state,
       mergeClassNames,
