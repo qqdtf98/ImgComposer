@@ -3,9 +3,9 @@
     <div class="radius-box">
       <div class="radius-input">radius</div>
       <input
-        v-model="state.radius.split('px')[0]"
+        v-model="borderRadius"
         class="radius-input-value"
-        name="radius"
+        name="borderRadius"
         @keydown.enter="submitLayoutValue"
       />
       <select v-model="radiusSelected" class="radius-option">
@@ -17,9 +17,9 @@
     <div class="width-box">
       <div class="width-input">Width</div>
       <input
-        v-model="state.width.split('px')[0]"
-        class="width-input-value"
-        name="width"
+        v-model="state.width"
+        class="border-width-input-value"
+        name="borderWidth"
         @keydown.enter="submitLayoutValue"
       />
       <select v-model="widthSelected" class="width-option">
@@ -56,7 +56,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, reactive } from '@vue/composition-api'
+import { defineComponent, ref, reactive, watch } from '@vue/composition-api'
 import { Chrome } from 'vue-color'
 import { useVuex, useNextTick } from '@/modules/vue-hooks'
 import { VueColor } from '@/types/vue-color'
@@ -71,11 +71,26 @@ export default defineComponent({
 
     const widthSelected = ref('px')
     const radiusSelected = ref('px')
+    const borderRadius = ''
 
     const state: Record<string, string> = reactive({
-      width: '',
-      radius: '',
+      width: '0',
+      style: 'solid',
+      color: 'black',
     })
+
+    const borderState = Object.keys(state)
+
+    watch(
+      () => vuex.styleData.target,
+      () => {
+        if (vuex.styleData.target) {
+          if (vuex.styleData.styleData) {
+          }
+        } else {
+        }
+      }
+    )
 
     const picker = reactive({
       isChromePicker: false,
@@ -117,6 +132,34 @@ export default defineComponent({
       }
     }
 
+    // TODO border radius, width 값 전송하는 함수 작성하기
+
+    function submitLayoutValue() {
+      if (vuex.styleData.target) {
+        const widthValue = document.querySelector(
+          '.radius-input-value'
+        ) as HTMLElement
+        const heightValue = document.querySelector(
+          '.border-width-input-value'
+        ) as HTMLElement
+
+        let changedData = {
+          style: widthValue.getAttribute('name'),
+          value: (widthValue as HTMLInputElement)?.value + widthSelected.value,
+        }
+        vuex.styleData.SET_CHANGED_DATA(changedData)
+
+        setTimeout(() => {
+          changedData = {
+            style: heightValue.getAttribute('name'),
+            value:
+              (heightValue as HTMLInputElement)?.value + radiusSelected.value,
+          }
+          vuex.styleData.SET_CHANGED_DATA(changedData)
+        }, 0)
+      }
+    }
+
     return {
       widthSelected,
       radiusSelected,
@@ -126,6 +169,8 @@ export default defineComponent({
       activateChromePicker,
       submitPickerValue,
       styles,
+      borderRadius,
+      submitLayoutValue,
     }
   },
 })
@@ -159,7 +204,7 @@ export default defineComponent({
       width: 30%;
       margin-right: 5%;
     }
-    .width-input-value,
+    .border-width-input-value,
     .radius-input-value {
       @include auto-text-color;
       @include auto-distinct-bg-color;
