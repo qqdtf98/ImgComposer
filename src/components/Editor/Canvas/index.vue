@@ -24,7 +24,9 @@ import { Marker } from './modules/Marker'
 import mergeClassNames from '@/modules/merge-class-names'
 import { bubbleIframeEvents } from '@/modules/bubble-iframe-events'
 import { iframeSampleHtml } from '@/miscellaneous/iframe-sample-html'
-import { useVuex } from '../../../modules/vue-hooks'
+import { useVuex } from '@/modules/vue-hooks'
+import { HtmlStyle } from '@/miscellaneous/sample-html-style'
+import cssom from 'cssom'
 
 export default defineComponent({
   setup(props, ctx) {
@@ -48,16 +50,22 @@ export default defineComponent({
       if (!iframeDoc || !iframeWindow) return
       // Load html
       iframeDoc.documentElement.innerHTML = iframeSampleHtml
+      const style = document.createElement('style')
+      style.innerHTML = HtmlStyle
+      iframeDoc.head.appendChild(style)
+
+      const styleParsed = cssom.parse(HtmlStyle)
+      console.log(styleParsed.cssRules)
 
       const selector = new Selector(iframe)
     })
 
-    watch(
-      () => vuex.styleData.changedData,
-      () => {
-        console.log(vuex.styleData.changedData)
-      }
-    )
+    // watch(
+    //   () => vuex.styleData.changedData,
+    //   () => {
+    //     console.log(vuex.styleData.changedData)
+    //   }
+    // )
 
     return {
       canvasId,

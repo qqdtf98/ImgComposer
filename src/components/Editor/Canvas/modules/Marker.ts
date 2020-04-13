@@ -1,3 +1,4 @@
+import { getMatchedCssRules } from '@/modules/get-matched-css-rules'
 import { Vuex } from '@/modules/vuex'
 import _ from 'lodash'
 
@@ -55,6 +56,7 @@ export class Marker {
           getComputedStyle(e.target as HTMLElement)
         )
         Vuex.store.styleData.SET_TARGET(e.target as HTMLElement)
+        console.log(getMatchedCssRules(e.target as Element))
       }
 
       // Dispatch an event about markers change

@@ -41,7 +41,7 @@ export default defineComponent({
 
     store.editorInfo.SET_OPENED_FILES(dummies)
 
-    console.log(store.editorInfo.openedFiles)
+    // console.log(store.editorInfo.openedFiles)
 
     return {
       store,
