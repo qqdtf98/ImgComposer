@@ -114,15 +114,31 @@ export default defineComponent({
   setup(props, ctx) {
     const vuex = useVuex(ctx)
 
-    // input 태그를 사용해 value와 style을 changedData에 저장
-    function submitLayoutValue(e: MouseEvent) {
-      const target = e.target as HTMLElement
-      const changedData = {
-        style: target?.getAttribute('name'),
-        // TODO width일때는 widthSelected, height일때는 heightSelected
-        value: (target as HTMLInputElement)?.value + widthSelected.value,
+    // input 태그를 사용해 value와 style을 changedData에 저장. width와 height 동시에 저장
+    function submitLayoutValue() {
+      if (vuex.styleData.target) {
+        const widthValue = document.querySelector(
+          '.width-input-value'
+        ) as HTMLElement
+        const heightValue = document.querySelector(
+          '.height-input-value'
+        ) as HTMLElement
+
+        let changedData = {
+          style: widthValue.getAttribute('name'),
+          value: (widthValue as HTMLInputElement)?.value + widthSelected.value,
+        }
+        vuex.styleData.SET_CHANGED_DATA(changedData)
+
+        setTimeout(() => {
+          changedData = {
+            style: heightValue.getAttribute('name'),
+            value:
+              (heightValue as HTMLInputElement)?.value + heightSelected.value,
+          }
+          vuex.styleData.SET_CHANGED_DATA(changedData)
+        }, 0)
       }
-      vuex.styleData.SET_CHANGED_DATA(changedData)
     }
 
     // width,height의 v-model value
