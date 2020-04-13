@@ -2,6 +2,7 @@
   <div id="options-opacity">
     <div class="opacity-wrapper">
       <div class="slider-wrapper" @mousemove="setValuePosition">
+        <!-- TODO opacity값 소수점 한자리만 표시 -->
         <range-slider
           v-model="opacityValues.opacity"
           class="filter-slider"
@@ -44,24 +45,26 @@ export default defineComponent({
     }
 
     // opacity의 slider v-model 변수로 사용.
-    const opacityValues: Record<string, number> = reactive({
-      opacity: 1,
+    const opacityValues: Record<string, string> = reactive({
+      opacity: '1',
     })
 
     const valueState = ref(false)
 
+    // range-slider에 마우스 오버 시 opacity-value 보이게 함
     function setValuePosition(e: MouseEvent) {
-      const target = e.target as HTMLElement
-      const knob = target.querySelector('.range-slider-knob') as HTMLElement
-
-      // TODO opacity 기능 완성하기
-      if (!knob) return
       if (vuex.styleData.target) {
-        valueState.value = true
-        const value = document.querySelector('.opacity-value') as HTMLElement
-        const rect = knob.getBoundingClientRect()
-        value.style.left = rect.left + 'px'
-        value.style.top = rect.top + 20 + 'px'
+        const target = e.target as HTMLElement
+        const knob = target.querySelector('.range-slider-knob') as HTMLElement
+
+        if (!knob) return
+        if (vuex.styleData.target) {
+          valueState.value = true
+          const value = document.querySelector('.opacity-value') as HTMLElement
+          const rect = knob.getBoundingClientRect()
+          value.style.left = rect.left + 'px'
+          value.style.top = rect.top + 20 + 'px'
+        }
       }
     }
 
@@ -71,10 +74,10 @@ export default defineComponent({
         // iframe에서 element를 선택할 때마다 filter의 값을 변경함.
         if (vuex.styleData.styleData) {
           opacityValues.opacity = vuex.styleData.styleData.opacity
-            ? parseFloat(vuex.styleData.styleData.opacity)
-            : 1
+            ? parseFloat(vuex.styleData.styleData.opacity).toFixed(1)
+            : '1'
         } else {
-          opacityValues.opacity = 1
+          opacityValues.opacity = '1'
         }
       }
     )
@@ -155,12 +158,12 @@ export default defineComponent({
       background: none;
       border: none;
       position: fixed;
-      padding-right: 0.1rem;
-      padding-left: 0.1rem;
+      padding-right: 0.3rem;
+      padding-left: 0.3rem;
       font-size: 0.9rem;
-      border-radius: 0.3rem;
+      border-radius: 0.2rem;
       border-bottom: 1px solid #768ea7;
-      background-color: #3f3ffd;
+      background-color: #8fcf65;
     }
   }
 }
