@@ -54,6 +54,8 @@ export default defineComponent({
       state.collapsed = !state.collapsed
     }
 
+          if (!vuex.editorInfo.selectedCssRule) return
+          selectorValue.value = vuex.editorInfo.selectedCssRule.selectorText
     return {
       state,
       mergeClassNames,
