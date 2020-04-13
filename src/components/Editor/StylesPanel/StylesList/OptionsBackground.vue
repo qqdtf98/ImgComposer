@@ -2,7 +2,7 @@
   <div id="options-background">
     <div class="bg-color-wrapper">
       <div class="bg-color-box">
-        <div class="bg-color-text">Background Color</div>
+        <div class="bg-color-text">Color</div>
         <div
           class="bg-color-before"
           :style="{
@@ -57,7 +57,6 @@ export default defineComponent({
       isChromePicker: false,
     })
 
-    // TODO chromepicker activate 할때마다 높이 다시 계산
     function activateChromePicker(e: MouseEvent) {
       if (picker.isChromePicker) {
         picker.isChromePicker = false
