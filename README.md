@@ -76,11 +76,12 @@ HTML 마크업에 직접적으로 삽입되는 inner style 대신 class, id 등�
 - Height
 - Top, Right, Bottom Left (for `relative` position)
 
-**Font**
+**Text**
 
 - ~~Familly~~
 - Size
 - Weight
+- Align
 - Color
 - Line height
 - Letter spacing
