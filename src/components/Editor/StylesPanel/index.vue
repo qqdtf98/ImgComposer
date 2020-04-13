@@ -1,11 +1,14 @@
 <template>
-  <span>
+  <span ref="stylePanel">
     <div
       id="styles-panel"
       :class="mergeClassNames(state.collapsed && 'collapsed')"
     >
       <h1 class="header" @click="setStyleData">
         <span>Styles</span>
+        <div v-show="selectorSelected" class="selector-value">
+          {{ selectorValue }}
+        </div>
         <button class="collapse-btn" @click="togglePanel">
           <i class="icon-arrowhead-right" />
         </button>
@@ -26,16 +29,25 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, onMounted } from '@vue/composition-api'
+import {
+  defineComponent,
+  reactive,
+  onMounted,
+  ref,
+  watch,
+} from '@vue/composition-api'
 import vueCustomScrollbar from 'vue-custom-scrollbar'
 import StylesList from '@/components/Editor/StylesPanel/StylesList/index.vue'
 import mergeClassNames from '@/modules/merge-class-names'
 import { useVuex } from '@/modules/vue-hooks'
+import { Cem } from '@/modules/custom-events-manager'
 
 export default defineComponent({
   components: { vueCustomScrollbar, StylesList },
   setup(props, ctx) {
     const vuex = useVuex(ctx)
+
+    const stylePanel = ref<HTMLElement>(null)
 
     function setStyleData(e: MouseEvent) {
       const target = e.target as HTMLElement
@@ -46,7 +58,7 @@ export default defineComponent({
     }
 
     const state = reactive({
-      collapsed: false, // Whether the panel is collapsed or not
+      collapsed: true, // Whether the panel is collapsed or not
     })
 
     // Collapse/uncollapse the styles panel
@@ -54,6 +66,8 @@ export default defineComponent({
       state.collapsed = !state.collapsed
     }
 
+    onMounted(() => {
+      // marker를 생성했을 때 styles 닫기
       Cem.addEventListener(
         'onmarkerschange',
         stylePanel.value as HTMLElement,
@@ -82,12 +96,26 @@ export default defineComponent({
           selectorValue.value = vuex.editorInfo.selectedCssRule.selectorText
         }
       )
+    })
+
+    const selectorValue = ref('')
+
+    const selectorSelected = ref(false)
+
+    watch(
+      () => vuex.editorInfo.selectedCssRule,
+      () => {}
+    )
+
     return {
       state,
       mergeClassNames,
       togglePanel,
       vuex,
+      stylePanel,
       setStyleData,
+      selectorSelected,
+      selectorValue,
     }
   },
 })
@@ -135,9 +163,11 @@ export default defineComponent({
         @include auto-distinct-bg-color;
       }
     }
+    .selector-value {
+    }
   }
   .layout-scroll-area {
-    height: calc(85% - 0.6rem);
+    height: calc(100% - 0.6rem);
     .layout-options {
       height: 100%;
     }
