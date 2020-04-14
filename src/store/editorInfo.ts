@@ -1,12 +1,16 @@
 import { AnyEditorFile } from '@/interfaces/any-editor-file'
+import cssom from 'cssom'
 import { mutationTree } from 'nuxt-typed-vuex'
 
 type EditorInfoState = {
   openedFiles: AnyEditorFile[]
   activeFileIndex: number | null
+  // 선택된 element에 적용된 cssStyleRule[]
   matchedCssRules: CSSStyleRule[]
+  // 선택된 element에 적용된 css 중에 사용자가 선택한 cssStyleRule
   selectedCssRule: CSSStyleRule | null
-  parsedCssRules: CSSStyleRule[]
+  // 파일 전체에 사용된 cssStyleRule[]
+  parsedCssRules: cssom.CSSRule[]
 }
 
 export const state = () =>
@@ -27,6 +31,6 @@ export const mutations = mutationTree(state, {
     (state.matchedCssRules = rules),
   SET_SELECTED_CSS_RULE: (state, rule: CSSStyleRule) =>
     (state.selectedCssRule = rule),
-  SET_PARSED_CSS_RULES: (state, rules: CSSStyleRule[]) =>
+  SET_PARSED_CSS_RULES: (state, rules: cssom.CSSRule[]) =>
     (state.parsedCssRules = rules),
 })
