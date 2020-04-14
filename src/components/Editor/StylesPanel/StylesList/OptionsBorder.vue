@@ -6,7 +6,7 @@
         v-model="borderRadius"
         class="radius-input-value"
         name="borderRadius"
-        @keydown.enter="submitLayoutValue"
+        @keydown.enter="submitBorderRadiusValue"
       />
       <select v-model="radiusSelected" class="radius-option">
         <option value="px">px</option>
@@ -20,7 +20,7 @@
         v-model="state.width"
         class="border-width-input-value"
         name="borderWidth"
-        @keydown.enter="submitLayoutValue"
+        @keydown.enter="submitWidthValue"
       />
       <select v-model="widthSelected" class="width-option">
         <option value="px">px</option>
@@ -32,10 +32,11 @@
       <div class="style-input">Style</div>
       <div class="style-btn">
         <button
-          v-for="(style, i) in styles"
+          v-for="(style, i) in styleList"
           :key="i"
+          :state="styles[style].state"
           class="position-style"
-          @click="submitPositionValue(style)"
+          @click="submitStyleValue($event, style)"
         >
           {{ style }}
         </button>
@@ -67,7 +68,19 @@ export default defineComponent({
     const nextTick = useNextTick(ctx)
     const vuex = useVuex(ctx)
 
-    const styles: string[] = ['solid', 'dotted', 'dashed']
+    const styles: Record<
+      string,
+      {
+        state: boolean
+        name: string
+      }
+    > = reactive({
+      solid: { state: false, name: 'solid' },
+      dotted: { state: false, name: 'dotted' },
+      dashed: { state: false, name: 'dashed' },
+    })
+
+    const styleList = Object.keys(styles)
 
     const widthSelected = ref('px')
     const radiusSelected = ref('px')
@@ -122,25 +135,58 @@ export default defineComponent({
       })
     }
 
-    function submitPickerValue(color: VueColor) {
-      // if (vuex.styleData.target) {
-      //   const changedData = {
-      //     style: 'backgroundColor',
-      //     value: color.hex,
-      //   }
-      //   vuex.styleData.SET_CHANGED_DATA(changedData)
-      // }
+    // input 태그와 select의 value를 사용하여 borderRadius 값을 css rule에 적용
+    function submitBorderRadiusValue(e: MouseEvent) {
+      const target = e.target as HTMLElement
+      if (!vuex.editorInfo.selectedCssRule) return
+      vuex.editorInfo.selectedCssRule.style.borderRadius =
+        (target as HTMLInputElement)?.value + radiusSelected.value
     }
 
-    // TODO border radius, width 값 변경하는 함수 작성하기
+    const currentStyle = ref('')
 
-    function submitLayoutValue() {
+    // border style을 선택했을 때 width와 color를 조합하여 css selector에 반영
+    function submitStyleValue(e: MouseEvent, style: string) {
       if (vuex.styleData.target) {
-        const widthValue = document.querySelector(
-          '.radius-input-value'
-        ) as HTMLElement
-        const heightValue = document.querySelector(
+        const btnList = document.querySelectorAll(
+          '.position-style'
+        ) as NodeListOf<HTMLElement>
+        const target = e.target as HTMLElement
+        const width = document.querySelector(
           '.border-width-input-value'
+        ) as HTMLInputElement
+        if (styles[style].state) {
+          styles[style].state = false
+          target.style.backgroundColor = '#000'
+        } else {
+          if (!vuex.editorInfo.selectedCssRule) return
+          for (const i in styleList) {
+            styles[styleList[i]].state = false
+            btnList[i].style.backgroundColor = '#000'
+          }
+          styles[style].state = true
+          target.style.backgroundColor = 'blue'
+          currentStyle.value = style
+          vuex.editorInfo.selectedCssRule.style.border =
+            width.value +
+            widthSelected.value +
+            ' ' +
+            style +
+            ' ' +
+            currentColor.value
+        }
+      }
+    }
+
+    const currentColor = ref('')
+
+    // border color를 선택했을 때 width와 style을 조합하여 css selector에 반영
+    function submitPickerValue(color: VueColor) {
+      if (vuex.styleData.target) {
+        if (!vuex.editorInfo.selectedCssRule) return
+        const width = document.querySelector(
+          '.border-width-input-value'
+        ) as HTMLInputElement
         const rgba = color.rgba
 
         vuex.editorInfo.selectedCssRule.style.border =
@@ -151,15 +197,23 @@ export default defineComponent({
           ' ' +
           `rgba(${rgba.r}, ${rgba.g}, ${rgba.b}, ${rgba.a})`
         currentColor.value = `rgba(${rgba.r}, ${rgba.g}, ${rgba.b}, ${rgba.a})`
+      }
+    }
 
-        // setTimeout(() => {
-        //   changedData = {
-        //     style: heightValue.getAttribute('name'),
-        //     value:
-        //       (heightValue as HTMLInputElement)?.value + radiusSelected.value,
-        //   }
-        //   vuex.styleData.SET_CHANGED_DATA(changedData)
-        // }, 0)
+    // border width를 선택했을 때 style과 color를 조합하여 css selector에 반영
+    function submitWidthValue() {
+      if (vuex.styleData.target) {
+        if (!vuex.editorInfo.selectedCssRule) return
+        const width = document.querySelector(
+          '.border-width-input-value'
+        ) as HTMLInputElement
+        vuex.editorInfo.selectedCssRule.style.border =
+          width.value +
+          widthSelected.value +
+          ' ' +
+          currentStyle.value +
+          ' ' +
+          currentColor.value
       }
     }
 
@@ -170,10 +224,13 @@ export default defineComponent({
       picker,
       background,
       activateChromePicker,
-      submitPickerValue,
       styles,
       borderRadius,
-      submitLayoutValue,
+      submitBorderRadiusValue,
+      styleList,
+      submitStyleValue,
+      submitPickerValue,
+      submitWidthValue,
     }
   },
 })
@@ -260,6 +317,7 @@ export default defineComponent({
         border-radius: 0.3rem;
         &:hover {
           background-color: #1471ff;
+          cursor: pointer;
         }
       }
     }
