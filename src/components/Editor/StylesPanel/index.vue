@@ -102,13 +102,6 @@ export default defineComponent({
 
     const selectorSelected = ref(false)
 
-    watch(
-      () => vuex.editorInfo.parsedCssRules,
-      () => {
-        console.log(vuex.editorInfo.parsedCssRules)
-      }
-    )
-
     return {
       state,
       mergeClassNames,

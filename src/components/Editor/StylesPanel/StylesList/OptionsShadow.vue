@@ -49,7 +49,6 @@ export default defineComponent({
   setup(props, ctx) {
     const nextTick = useNextTick(ctx)
     const vuex = useVuex(ctx)
-    // TODO shadow 기능 작성하기
     const shadowTypes: Record<
       string,
       {

@@ -56,7 +56,7 @@
         <input
           v-model="state.lineHeight"
           name="lineHeight"
-          class="filter-input"
+          class="font-filter-input"
           @keyup.enter="submitTextValue"
         />
       </div>
@@ -65,7 +65,7 @@
         <input
           v-model="state.letterSpacing"
           name="letterSpacing"
-          class="filter-input"
+          class="font-filter-input"
           @keyup.enter="submitTextValue"
         />
       </div>
@@ -413,7 +413,7 @@ export default defineComponent({
         width: 7rem;
         color: #868686;
       }
-      .filter-input {
+      .font-filter-input {
         @include auto-text-color;
         @include auto-distinct-bg-color;
         position: absolute;

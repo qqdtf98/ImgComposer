@@ -34,6 +34,7 @@ export default defineComponent({
       ProjectService.getProjectData(projectId).then((res) => {
         if (res.data.responseCode === 'SUCCESS') {
           // TODO set project data at store
+          console.log(res.data.data)
         }
       })
     })
