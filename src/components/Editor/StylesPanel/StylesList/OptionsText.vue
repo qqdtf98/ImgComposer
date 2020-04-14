@@ -184,7 +184,8 @@ export default defineComponent({
     function submitPickerValue(color: VueColor) {
       if (vuex.styleData.target) {
         if (!vuex.editorInfo.selectedCssRule) return
-        vuex.editorInfo.selectedCssRule.style.color = color.hex
+        const rgba = color.rgba
+        vuex.editorInfo.selectedCssRule.style.color = `rgba(${rgba.r}, ${rgba.g}, ${rgba.b}, ${rgba.a})`
       }
     }
 

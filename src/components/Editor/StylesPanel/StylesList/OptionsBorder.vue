@@ -141,13 +141,16 @@ export default defineComponent({
         ) as HTMLElement
         const heightValue = document.querySelector(
           '.border-width-input-value'
-        ) as HTMLElement
+        const rgba = color.rgba
 
-        // let changedData = {
-        //   style: widthValue.getAttribute('name'),
-        //   value: (widthValue as HTMLInputElement)?.value + widthSelected.value,
-        // }
-        // vuex.styleData.SET_CHANGED_DATA(changedData)
+        vuex.editorInfo.selectedCssRule.style.border =
+          width.value +
+          widthSelected.value +
+          ' ' +
+          currentStyle.value +
+          ' ' +
+          `rgba(${rgba.r}, ${rgba.g}, ${rgba.b}, ${rgba.a})`
+        currentColor.value = `rgba(${rgba.r}, ${rgba.g}, ${rgba.b}, ${rgba.a})`
 
         // setTimeout(() => {
         //   changedData = {
