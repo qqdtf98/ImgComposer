@@ -46,6 +46,7 @@ import { defineComponent, reactive } from '@vue/composition-api'
 import { Chrome } from 'vue-color'
 import { useVuex, useNextTick } from '@/modules/vue-hooks'
 import { VueColor } from '@/types/vue-color'
+import _ from 'lodash'
 
 export default defineComponent({
   components: { ChromeColor: Chrome },
@@ -82,21 +83,18 @@ export default defineComponent({
     // default color box에서 선택하였을 때 chagnedData 저장
     function submitDefaultValue(e: MouseEvent) {
       const target = e.target
-      let changedData
       if (vuex.styleData.target) {
         if (target instanceof HTMLElement) {
           if (target.className === 'color-none') {
-            changedData = {
-              style: 'backgroundColor',
-              value: 'transparent',
-            }
+            if (!vuex.editorInfo.selectedCssRule) return
+            vuex.editorInfo.selectedCssRule.style.backgroundColor =
+              'transparent'
           } else {
-            changedData = {
-              style: 'backgroundColor',
-              value: getComputedStyle(target).backgroundColor,
-            }
+            if (!vuex.editorInfo.selectedCssRule) return
+            vuex.editorInfo.selectedCssRule.style.backgroundColor = getComputedStyle(
+              target
+            ).backgroundColor
           }
-          vuex.styleData.SET_CHANGED_DATA(changedData)
         }
       }
     }
@@ -108,11 +106,8 @@ export default defineComponent({
     // chrome-picker에서 선택하였을 때 chagnedData 저장
     function submitPickerValue(color: VueColor) {
       if (vuex.styleData.target) {
-        const changedData = {
-          style: 'backgroundColor',
-          value: color.hex,
-        }
-        vuex.styleData.SET_CHANGED_DATA(changedData)
+        if (!vuex.editorInfo.selectedCssRule) return
+        vuex.editorInfo.selectedCssRule.style.backgroundColor = color.hex
       }
     }
 

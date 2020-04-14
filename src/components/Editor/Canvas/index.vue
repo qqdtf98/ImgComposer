@@ -59,7 +59,7 @@ export default defineComponent({
       iframeDoc.head.appendChild(style)
 
       const styleParsed = cssom.parse(HtmlStyle)
-      console.log(styleParsed.cssRules)
+      vuex.editorInfo.SET_PARSED_CSS_RULES(styleParsed.cssRules)
 
       const selector = new Selector(iframe)
 
@@ -100,13 +100,6 @@ export default defineComponent({
         isContextActivate.value = false
       })
     })
-
-    // watch(
-    //   () => vuex.styleData.changedData,
-    //   () => {
-    //     console.log(vuex.styleData.changedData)
-    //   }
-    // )
 
     return {
       canvas,

@@ -123,16 +123,16 @@ export default defineComponent({
     }
 
     function submitPickerValue(color: VueColor) {
-      if (vuex.styleData.target) {
-        const changedData = {
-          style: 'backgroundColor',
-          value: color.hex,
-        }
-        vuex.styleData.SET_CHANGED_DATA(changedData)
-      }
+      // if (vuex.styleData.target) {
+      //   const changedData = {
+      //     style: 'backgroundColor',
+      //     value: color.hex,
+      //   }
+      //   vuex.styleData.SET_CHANGED_DATA(changedData)
+      // }
     }
 
-    // TODO border radius, width 값 전송하는 함수 작성하기
+    // TODO border radius, width 값 변경하는 함수 작성하기
 
     function submitLayoutValue() {
       if (vuex.styleData.target) {
@@ -143,20 +143,20 @@ export default defineComponent({
           '.border-width-input-value'
         ) as HTMLElement
 
-        let changedData = {
-          style: widthValue.getAttribute('name'),
-          value: (widthValue as HTMLInputElement)?.value + widthSelected.value,
-        }
-        vuex.styleData.SET_CHANGED_DATA(changedData)
+        // let changedData = {
+        //   style: widthValue.getAttribute('name'),
+        //   value: (widthValue as HTMLInputElement)?.value + widthSelected.value,
+        // }
+        // vuex.styleData.SET_CHANGED_DATA(changedData)
 
-        setTimeout(() => {
-          changedData = {
-            style: heightValue.getAttribute('name'),
-            value:
-              (heightValue as HTMLInputElement)?.value + radiusSelected.value,
-          }
-          vuex.styleData.SET_CHANGED_DATA(changedData)
-        }, 0)
+        // setTimeout(() => {
+        //   changedData = {
+        //     style: heightValue.getAttribute('name'),
+        //     value:
+        //       (heightValue as HTMLInputElement)?.value + radiusSelected.value,
+        //   }
+        //   vuex.styleData.SET_CHANGED_DATA(changedData)
+        // }, 0)
       }
     }
 

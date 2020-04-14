@@ -14,11 +14,7 @@
           @input="submitOpacityValue"
         />
       </div>
-      <div
-        v-show="valueState"
-        class="opacity-value"
-        @keyup.enter="submitOpacityInputValue"
-      >
+      <div v-show="valueState" class="opacity-value">
         {{ opacityValues.opacity }}
       </div>
     </div>
@@ -82,30 +78,18 @@ export default defineComponent({
       }
     )
 
-    // range-slider를 사용하여 opacity값을 변경할 때 changedData 저장
-    function submitOpacityValue(value: number) {
-      const changedData = {
-        style: 'opacity',
-        value,
+    // range-slider를 사용하여 opacity값을 변경할 때 css selector 변경
+    function submitOpacityValue(value: string) {
+      if (vuex.styleData.target) {
+        if (!vuex.editorInfo.selectedCssRule) return
+        vuex.editorInfo.selectedCssRule.style.opacity = value
       }
-      vuex.styleData.SET_CHANGED_DATA(changedData)
-    }
-
-    // input을 사용하여 opacity값을 변경할 때 changedData 저장
-    function submitOpacityInputValue(e: InputEvent) {
-      const target = e.target as HTMLElement
-      const changedData = {
-        style: 'opacity',
-        value: (target as HTMLInputElement)?.value,
-      }
-      vuex.styleData.SET_CHANGED_DATA(changedData)
     }
 
     return {
       opacityValues,
       opacityOptions,
       submitOpacityValue,
-      submitOpacityInputValue,
       valueState,
       setValuePosition,
     }

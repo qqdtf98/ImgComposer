@@ -19,13 +19,12 @@ export default defineComponent({
   setup(props, ctx) {
     const vuex = useVuex(ctx)
     const properties: string[] = ['relative', 'absolute', 'fixed']
+
+    // position 값을 사용하여 css selector 변경
     function submitPositionValue(prop: string) {
       if (vuex.styleData.target) {
-        const changedData = {
-          style: 'position',
-          value: prop,
-        }
-        vuex.styleData.SET_CHANGED_DATA(changedData)
+        if (!vuex.editorInfo.selectedCssRule) return
+        vuex.editorInfo.selectedCssRule.style.position = prop
       }
     }
 

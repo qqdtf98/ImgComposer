@@ -21,11 +21,8 @@ export default defineComponent({
     const properties: string[] = ['block', 'inline-block', 'inline', 'flex']
     function submitDisplayValue(prop: string) {
       if (vuex.styleData.target) {
-        const changedData = {
-          style: 'display',
-          value: prop,
-        }
-        vuex.styleData.SET_CHANGED_DATA(changedData)
+        if (!vuex.editorInfo.selectedCssRule) return
+        vuex.editorInfo.selectedCssRule.style.display = prop
       }
     }
 

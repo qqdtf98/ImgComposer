@@ -104,16 +104,19 @@ export default defineComponent({
       }
     )
 
-    // input을 사용하여 filter값을 변경할 때 filter 종류에 따라 changedData 저장
+    // input을 사용하여 filter값을 변경할 때 filter 종류에 따라 css rule에 반영
     function submitFilterInputValue(e: InputEvent, filter: string) {
-      const target = e.target as HTMLElement
-      const changedData = {
-        style: filter,
-        value:
+      if (vuex.styleData.target) {
+        const target = e.target as HTMLElement
+        // TODO filter 종류에 맞게 한꺼번에 string 합쳐서 변경하기
+        if (!vuex.editorInfo.selectedCssRule) return
+        vuex.editorInfo.selectedCssRule.style.filter =
+          filter +
+          '(' +
           (target as HTMLInputElement)?.value +
-          (target as HTMLInputElement)?.getAttribute('unit'),
+          (target as HTMLInputElement)?.getAttribute('unit') +
+          ')'
       }
-      vuex.styleData.SET_CHANGED_DATA(changedData)
     }
 
     return {

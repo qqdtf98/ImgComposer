@@ -114,7 +114,8 @@ export default defineComponent({
   setup(props, ctx) {
     const vuex = useVuex(ctx)
 
-    // input 태그를 사용해 value와 style을 changedData에 저장. width와 height 동시에 저장
+    // input 태그를 사용해 value와 style을 css rule에 반영.
+    // width와 height 동시에 저장
     function submitLayoutValue() {
       if (vuex.styleData.target) {
         const widthValue = document.querySelector(
@@ -124,20 +125,12 @@ export default defineComponent({
           '.height-input-value'
         ) as HTMLElement
 
-        let changedData = {
-          style: widthValue.getAttribute('name'),
-          value: (widthValue as HTMLInputElement)?.value + widthSelected.value,
-        }
-        vuex.styleData.SET_CHANGED_DATA(changedData)
+        if (!vuex.editorInfo.selectedCssRule) return
+        vuex.editorInfo.selectedCssRule.style.width =
+          (widthValue as HTMLInputElement)?.value + widthSelected.value
 
-        setTimeout(() => {
-          changedData = {
-            style: heightValue.getAttribute('name'),
-            value:
-              (heightValue as HTMLInputElement)?.value + heightSelected.value,
-          }
-          vuex.styleData.SET_CHANGED_DATA(changedData)
-        }, 0)
+        vuex.editorInfo.selectedCssRule.style.height =
+          (heightValue as HTMLInputElement)?.value + heightSelected.value
       }
     }
 
@@ -180,14 +173,18 @@ export default defineComponent({
       }
     )
 
-    // margin, padding의 input value 값을 changedData에 저장
+    // margin, padding의 input value 값을 css selector에 반영
     function submitGeometryValue(e: MouseEvent) {
       const target = e.target as HTMLElement
-      const changedData = {
-        style: target?.getAttribute('name'),
-        value: (target as HTMLInputElement)?.value,
+      if (!vuex.editorInfo.selectedCssRule) return
+      const type = target.getAttribute('name')
+      if (type) {
+        const styleRule = vuex.editorInfo.selectedCssRule.style as Record<
+          string | number,
+          any
+        >
+        styleRule[type] = (target as HTMLInputElement)?.value
       }
-      vuex.styleData.SET_CHANGED_DATA(changedData)
     }
 
     return {
