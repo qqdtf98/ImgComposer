@@ -23,17 +23,31 @@
         <option value="em">em</option>
       </select>
     </div>
+    <div class="shadow-color-box">
+      <div class="color-input">Color</div>
+      <button class="chrome-picker" @click="activateChromePicker" />
+    </div>
+    <chrome-color
+      v-show="picker.isChromePicker"
+      v-model="background.backgroundColor"
+      class="chrome"
+      :value="background.backgroundColor"
+      @input="submitPickerValue"
+    ></chrome-color>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, reactive, watch, ref } from '@vue/composition-api'
 import { useVuex, useNextTick } from '@/modules/vue-hooks'
+import { Chrome } from 'vue-color'
 import RangeSlider from 'vue-range-slider'
+import { VueColor } from '@/types/vue-color'
 
 export default defineComponent({
-  components: { RangeSlider },
+  components: { RangeSlider, ChromeColor: Chrome },
   setup(props, ctx) {
+    const nextTick = useNextTick(ctx)
     const vuex = useVuex(ctx)
     // TODO shadow 기능 작성하기
     const shadowTypes: Record<
@@ -108,6 +122,52 @@ export default defineComponent({
       }
     )
 
+    const picker = reactive({
+      isChromePicker: false,
+    })
+
+    const background = reactive({
+      backgroundColor: '#fff',
+    })
+
+    function activateChromePicker(e: MouseEvent) {
+      if (picker.isChromePicker) {
+        picker.isChromePicker = false
+      } else {
+        picker.isChromePicker = true
+      }
+      nextTick(() => {
+        let target = e.target as HTMLElement
+        target = (e.target as HTMLElement).closest(
+          '.layout-list-box'
+        ) as HTMLElement
+        let i
+        let newHeight = 20
+        if (target) {
+          for (i = 0; i < target.children.length; i++) {
+            newHeight += target.children[i].getBoundingClientRect().height
+          }
+          target.style.height = newHeight + 'px'
+        }
+      })
+    }
+
+    const currentColor = ref('px')
+
+    // boxShadow의 color를 colorpicker를 통해 선택한 후 css selector에 반영
+    function submitPickerValue(color: VueColor) {
+      if (vuex.styleData.target) {
+        if (!vuex.editorInfo.selectedCssRule) return
+        const width = document.querySelector(
+          '.border-width-input-value'
+        ) as HTMLInputElement
+        const rgba = color.rgba
+        currentColor.value = `rgba(${rgba.r}, ${rgba.g}, ${rgba.b}, ${rgba.a})`
+        vuex.editorInfo.selectedCssRule.style.boxShadow =
+          currentBoxShadow.value + currentColor.value + currentStyle.value
+      }
+    }
+
     const currentStyle = ref('')
 
     // boxshadow style을 currenStyle에 저장
@@ -134,6 +194,8 @@ export default defineComponent({
       }
     }
 
+    const currentBoxShadow = ref('')
+
     // box shadow value를 css selector에 적용
     function submitBoxShadowValue(e: MouseEvent) {
       if (vuex.styleData.target) {
@@ -150,8 +212,9 @@ export default defineComponent({
             shadowValues[valueList[i]].selected +
             ' '
         }
+        currentBoxShadow.value = boxShadowValue
         vuex.editorInfo.selectedCssRule.style.boxShadow =
-          boxShadowValue + currentStyle.value
+          boxShadowValue + currentColor.value + currentStyle.value
       }
     }
 
@@ -163,6 +226,10 @@ export default defineComponent({
       vuex,
       submitBoxShadowValue,
       submitBoxShadowStyle,
+      picker,
+      background,
+      activateChromePicker,
+      submitPickerValue,
     }
   },
 })
@@ -234,6 +301,34 @@ export default defineComponent({
       padding: 0.4rem;
       width: 20%;
       border: none;
+    }
+  }
+  .shadow-color-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 90%;
+    flex-direction: row;
+    position: relative;
+    height: 2rem;
+    margin-top: 0.3rem;
+    margin-bottom: 0.3rem;
+    .color-input {
+      position: absolute;
+      left: 0;
+      color: #868686;
+      text-align: left;
+      width: 30%;
+      margin-right: 5%;
+    }
+    .chrome-picker {
+      position: absolute;
+      right: 0;
+      width: 40%;
+      border-radius: 0.4rem;
+      padding: 0.4rem;
+      margin-right: 2%;
+      text-align: right;
     }
   }
 }
