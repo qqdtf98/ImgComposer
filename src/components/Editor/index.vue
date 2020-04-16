@@ -15,6 +15,7 @@ import Canvas from './Canvas/index.vue'
 import Tabs from './Tabs/index.vue'
 import StylesPanel from './StylesPanel/index.vue'
 import StudioPanel from './StudioPanel/index.vue'
+import { useVuex } from '@/modules/vue-hooks'
 import ProjectService from '@/services/project-service'
 
 export default defineComponent({
@@ -22,8 +23,9 @@ export default defineComponent({
   props: {
     projectId: Number,
   },
-  setup(props) {
-    onMounted(() => {
+  setup(props, ctx) {
+    const vuex = useVuex(ctx)
+    onMounted(async () => {
       const { projectId } = props
 
       if (!projectId) {
@@ -31,12 +33,16 @@ export default defineComponent({
         return
       }
 
-      ProjectService.getProjectData(projectId).then((res) => {
-        if (res.data.responseCode === 'SUCCESS') {
-          // TODO set project data at store
-          console.log(res.data.data)
+      const res = await ProjectService.getProjectData(projectId)
+      if (res.data.responseCode === 'SUCCESS') {
+        // TODO set project data at store
+        const folders = res.data.data.folders
+        for (const i in folders) {
+          for (const j in folders[i].files) {
+            vuex.fileData.storeFiles(folders[i].files[j])
+          }
         }
-      })
+      }
     })
     return {}
   },

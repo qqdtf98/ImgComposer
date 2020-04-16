@@ -1,5 +1,6 @@
 import { getAccessorType, mutationTree } from 'nuxt-typed-vuex'
 import * as editorInfo from './editorInfo'
+import * as fileData from './fileData'
 import * as styleData from './styleData'
 
 export const state = () => ({
@@ -18,5 +19,6 @@ export const accessorType = getAccessorType({
   modules: {
     styleData,
     editorInfo,
+    fileData,
   },
 })
