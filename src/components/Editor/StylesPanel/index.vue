@@ -4,7 +4,7 @@
       id="styles-panel"
       :class="mergeClassNames(state.collapsed && 'collapsed')"
     >
-      <h1 class="header" @click="setStyleData">
+      <h1 class="header">
         <span>Styles</span>
         <div v-show="selectorSelected" class="selector-value">
           {{ selectorValue }}
@@ -16,6 +16,7 @@
       <vue-custom-scrollbar class="layout-scroll-area">
         <StylesList class="layout-options" />
       </vue-custom-scrollbar>
+      <FileListPanel />
     </div>
 
     <button
@@ -37,13 +38,14 @@ import {
   watch,
 } from '@vue/composition-api'
 import vueCustomScrollbar from 'vue-custom-scrollbar'
+import FileListPanel from '@/components/Editor/FileListPanel/index.vue'
 import StylesList from '@/components/Editor/StylesPanel/StylesList/index.vue'
 import mergeClassNames from '@/modules/merge-class-names'
 import { useVuex } from '@/modules/vue-hooks'
 import { Cem } from '@/modules/custom-events-manager'
 
 export default defineComponent({
-  components: { vueCustomScrollbar, StylesList },
+  components: { vueCustomScrollbar, StylesList, FileListPanel },
   setup(props, ctx) {
     const vuex = useVuex(ctx)
 
@@ -162,7 +164,7 @@ export default defineComponent({
     }
   }
   .layout-scroll-area {
-    height: calc(100% - 0.6rem);
+    height: calc(100% - 115px);
     .layout-options {
       height: 100%;
     }
