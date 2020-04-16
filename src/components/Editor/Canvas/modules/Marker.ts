@@ -1,6 +1,7 @@
 import { getMatchedCssRules } from '@/modules/get-matched-css-rules'
 import { Vuex } from '@/modules/vuex'
 import _ from 'lodash'
+import { Cem } from '@/modules/custom-events-manager'
 
 export class Marker {
   public static iframe: HTMLIFrameElement
@@ -40,11 +41,15 @@ export class Marker {
             // Deselect the element if it is the only element marked
             Marker.removeMarker(markedIndex)
             Marker.resetVuex()
+            // Dispatch an event about markers change
+            Cem.dispatchEvent('deactivatecontext')
           }
         } else {
           // Deselect the element if it is the only element marked
           Marker.removeMarker(markedIndex)
           Marker.resetVuex()
+          // Dispatch an event about markers change
+          Cem.dispatchEvent('deactivatecontext')
         }
       } else {
         // New target to be selected
@@ -56,7 +61,9 @@ export class Marker {
           getComputedStyle(e.target as HTMLElement)
         )
         Vuex.store.styleData.SET_TARGET(e.target as HTMLElement)
-        console.log(getMatchedCssRules(e.target as Element))
+        Vuex.store.editorInfo.SET_MATCHED_CSS_RULES(
+          getMatchedCssRules(e.target as Element)
+        )
       }
 
       // Dispatch an event about markers change

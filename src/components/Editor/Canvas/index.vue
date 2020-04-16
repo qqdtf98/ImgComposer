@@ -1,10 +1,11 @@
 <template>
-  <div :id="canvasId">
+  <div :id="canvasId" ref="canvas">
     <iframe
       ref="iframeRef"
       frameborder="0"
       :class="mergeClassNames(iframeClassName)"
     ></iframe>
+    <Context v-show="isContextActivate" class="canvas-context" />
   </div>
 </template>
 
@@ -25,17 +26,22 @@ import { iframeSampleHtml } from '@/miscellaneous/iframe-sample-html'
 import { useVuex } from '@/modules/vue-hooks'
 import { HtmlStyle } from '@/miscellaneous/sample-html-style'
 import cssom from 'cssom'
+import Context from './Context/index.vue'
+import { Cem } from '../../../modules/custom-events-manager'
 
 export default defineComponent({
+  components: { Context },
   setup(props, ctx) {
     const vuex = useVuex(ctx)
 
+    const canvas = ref<HTMLElement>(null)
     const canvasId = 'canvas'
     const iframeClassName = 'canvas-iframe'
     const iframeState = reactive({
       isActive: false,
     })
     const iframeRef = ref() as Ref<HTMLIFrameElement>
+    const isContextActivate = ref(false)
 
     onMounted(() => {
       const iframe = iframeRef.value
@@ -53,25 +59,57 @@ export default defineComponent({
       iframeDoc.head.appendChild(style)
 
       const styleParsed = cssom.parse(HtmlStyle)
-      console.log(styleParsed.cssRules)
+      vuex.editorInfo.SET_PARSED_CSS_RULES(styleParsed.cssRules)
 
       const selector = new Selector(iframe)
+
+      // marker를 생성했을 때 context actuvate
+      Cem.addEventListener(
+        'onmarkerschange',
+        canvas.value as HTMLElement,
+        (e) => {
+          isContextActivate.value = true
+          const context = document.querySelector(
+            '.canvas-context'
+          ) as HTMLElement
+
+          if (!vuex.styleData.target) return
+
+          context.style.left =
+            vuex.styleData.target.getBoundingClientRect().left +
+            vuex.styleData.target.getBoundingClientRect().width / 2 +
+            'px'
+          context.style.top =
+            vuex.styleData.target.getBoundingClientRect().top +
+            vuex.styleData.target.getBoundingClientRect().height / 2 +
+            'px'
+        }
+      )
+
+      // marker 해제했을 때 context deactivate
+      Cem.addEventListener(
+        'deactivatecontext',
+        canvas.value as HTMLElement,
+        (e) => {
+          isContextActivate.value = false
+        }
+      )
+
+      // selector 선택했을 때 context deactivate
+      Cem.addEventListener('openstyles', canvas.value as HTMLElement, (e) => {
+        isContextActivate.value = false
+      })
     })
 
-    // watch(
-    //   () => vuex.styleData.changedData,
-    //   () => {
-    //     console.log(vuex.styleData.changedData)
-    //   }
-    // )
-
     return {
+      canvas,
       canvasId,
       iframeClassName,
       iframeState,
       iframeRef,
       mergeClassNames,
       vuex,
+      isContextActivate,
     }
   },
 })

@@ -6,7 +6,7 @@
         v-model="sliderValues[filter]"
         class="filter-input"
         :unit="filterOptions[filter].unit"
-        @keyup.enter="submitFilterInputValue($event, filter)"
+        @keyup.enter="submitFilterInputValue"
       />
     </div>
   </div>
@@ -68,11 +68,11 @@ export default defineComponent({
     const sliderValues: Record<string, number> = reactive({
       blur: 0,
       brightness: 0,
-      contrast: 0,
+      contrast: 1,
       grayscale: 0,
       hue: 0,
       invert: 0,
-      saturate: 0,
+      saturate: 1,
       sepia: 0,
     })
 
@@ -93,27 +93,50 @@ export default defineComponent({
             // 매치되지 않을 때 null을 리턴하고 lastIndex가 초기화됩니다.
             // 임의로 0으로 리셋 가능.
             filterOptions[filter].regExp.lastIndex = 0
-
-            sliderValues[filter] = value ? parseFloat(value[1]) : 0
+            if (
+              filter === 'contrast' ||
+              filter === 'saturate' ||
+              filter === 'brightness'
+            ) {
+              sliderValues[filter] = value ? parseFloat(value[1]) : 1
+            } else {
+              sliderValues[filter] = value ? parseFloat(value[1]) : 0
+            }
           }
         } else {
           for (const slider in sliders) {
-            sliderValues[sliders[slider]] = 0
+            console.log(sliders[slider])
+            if (
+              sliders[slider] === 'contrast' ||
+              sliders[slider] === 'saturate' ||
+              sliders[slider] === 'brightness'
+            ) {
+              console.log('??')
+              sliderValues[sliders[slider]] = 1
+            } else {
+              sliderValues[sliders[slider]] = 0
+            }
           }
         }
       }
     )
 
-    // input을 사용하여 filter값을 변경할 때 filter 종류에 따라 changedData 저장
-    function submitFilterInputValue(e: InputEvent, filter: string) {
-      const target = e.target as HTMLElement
-      const changedData = {
-        style: filter,
-        value:
-          (target as HTMLInputElement)?.value +
-          (target as HTMLInputElement)?.getAttribute('unit'),
+    // input을 사용하여 filter값을 변경할 때 filter 종류에 따라 css rule에 반영
+    function submitFilterInputValue(e: InputEvent) {
+      if (vuex.styleData.target) {
+        const inputValue = document.querySelectorAll(
+          '.filter-input'
+        ) as NodeListOf<HTMLInputElement>
+        if (!vuex.editorInfo.selectedCssRule) return
+        let i
+        let filterValue = ''
+        for (i = 0; i < inputValue.length; i++) {
+          filterValue =
+            filterValue + filters[i] + '(' + inputValue[i].value + ')' + ' '
+        }
+        console.log(filterValue)
+        vuex.editorInfo.selectedCssRule.style.filter = filterValue
       }
-      vuex.styleData.SET_CHANGED_DATA(changedData)
     }
 
     return {

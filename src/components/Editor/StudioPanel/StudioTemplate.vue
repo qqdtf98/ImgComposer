@@ -14,12 +14,6 @@
         <span class="template-text">{{ templateList[template].name }}</span>
       </div>
       <div v-if="templateList[template].options" class="optional-template">
-        <!--
-          To 성민.
-          `div` 태그는 만능이고 모든 곳에서 사용할 수 있지만
-          `button`, `span`, `section`, `main` 등의 의미 있는(semantic)
-          HTML 마크업을 사용하는 게 더 좋아요.
-        -->
         <button
           v-for="(list, j) in templateList[template].optionList"
           :key="j"

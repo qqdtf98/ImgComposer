@@ -56,7 +56,7 @@
         <input
           v-model="state.lineHeight"
           name="lineHeight"
-          class="filter-input"
+          class="font-filter-input"
           @keyup.enter="submitTextValue"
         />
       </div>
@@ -65,7 +65,7 @@
         <input
           v-model="state.letterSpacing"
           name="letterSpacing"
-          class="filter-input"
+          class="font-filter-input"
           @keyup.enter="submitTextValue"
         />
       </div>
@@ -163,98 +163,93 @@ export default defineComponent({
       fontColor: '#fff',
     })
 
-    // default color box를 선택했을 때 changedData 저장
+    // default color box를 선택했을 때 css selector 변경
     function submitDefaultValue(e: MouseEvent) {
-      let changedData
       const target = e.target
       if (vuex.styleData.target) {
         if (target instanceof HTMLElement) {
+          if (!vuex.editorInfo.selectedCssRule) return
           if (target.className === 'color-none') {
-            changedData = {
-              style: 'color',
-              value: 'transparent',
-            }
+            vuex.editorInfo.selectedCssRule.style.color = 'transparent'
           } else {
-            changedData = {
-              style: 'color',
-              value: getComputedStyle(target).backgroundColor,
-            }
+            vuex.editorInfo.selectedCssRule.style.color = getComputedStyle(
+              target
+            ).backgroundColor
           }
-          vuex.styleData.SET_CHANGED_DATA(changedData)
         }
       }
     }
 
-    // chrome-picker를 선택했을 때 changedData 저장
+    // chrome-picker를 선택했을 때 값을 css rule에 반영
     function submitPickerValue(color: VueColor) {
       if (vuex.styleData.target) {
-        const changedData = {
-          style: 'color',
-          value: color.hex,
-        }
-        vuex.styleData.SET_CHANGED_DATA(changedData)
+        if (!vuex.editorInfo.selectedCssRule) return
+        const rgba = color.rgba
+        vuex.editorInfo.selectedCssRule.style.color = `rgba(${rgba.r}, ${rgba.g}, ${rgba.b}, ${rgba.a})`
       }
     }
 
-    // fontweight를 changedData에 저장
+    // fontweight값을 css rule에 반영
     function submitWeightValue(e: MouseEvent, property: string) {
-      const target = e.target as HTMLElement
       if (vuex.styleData.target) {
-        const changedData = {
-          style: 'fontWeight',
-          value: property.toLowerCase(),
-        }
-        vuex.styleData.SET_CHANGED_DATA(changedData)
+        if (!vuex.editorInfo.selectedCssRule) return
+        vuex.editorInfo.selectedCssRule.style.fontWeight = property.toLowerCase()
       }
     }
 
     const sizeSelected = ref('px')
 
-    // input 태그를 사용해 입력한 fontSize 값을 changedData에 저장
+    // input 태그를 사용해 입력한 fontSize 값을 css rule에 반영
     function submitFontSize(e: InputEvent) {
       if (vuex.styleData.target) {
         const target = e.target as HTMLElement
-        const changedData = {
-          style: 'fontSize',
-          value: (target as HTMLInputElement).value + sizeSelected.value,
-        }
-        vuex.styleData.SET_CHANGED_DATA(changedData)
+        if (!vuex.editorInfo.selectedCssRule) return
+        vuex.editorInfo.selectedCssRule.style.fontSize =
+          (target as HTMLInputElement).value + sizeSelected.value
       }
     }
 
-    // text-align 속성 changedData에 저장
+    // text-align 속성을 css rule에 반영
     function submitTextAlign(e: MouseEvent) {
       const target = e.target as HTMLElement
       if (vuex.styleData.target) {
-        const changedData = {
-          style: 'textAlign',
-          value: target.getAttribute('name'),
+        if (!vuex.editorInfo.selectedCssRule) return
+        const name = target.getAttribute('name')
+        if (name) {
+          vuex.editorInfo.selectedCssRule.style.textAlign = name
         }
-        vuex.styleData.SET_CHANGED_DATA(changedData)
       }
     }
 
-    // lineHeight와 letterSpacing 값을 changedData에 저장
+    // lineHeight와 letterSpacing 값을 css rule에 반영
     function submitTextValue(e: InputEvent) {
       if (vuex.styleData.target) {
         const target = e.target as HTMLElement
-        const changedData = {
-          style: target.getAttribute('name'),
-          value: (target as HTMLInputElement).value,
+        if (!vuex.editorInfo.selectedCssRule) return
+        const type = target.getAttribute('name')
+        if (type) {
+          const styleRule = vuex.editorInfo.selectedCssRule.style as Record<
+            string | number,
+            any
+          >
+          styleRule[type] = (target as HTMLInputElement)?.value
         }
-        vuex.styleData.SET_CHANGED_DATA(changedData)
       }
     }
 
-    // font-style의 특정 속성 changedData에 저장
+    // font-style의 특정 속성을 css rule에 반영
     function submitFontStyle(e: MouseEvent) {
       const target = e.target as HTMLElement
       if (vuex.styleData.target) {
-        const changedData = {
-          style: target?.getAttribute('property'),
-          value: target?.getAttribute('value'),
+        if (!vuex.editorInfo.selectedCssRule) return
+        const type = target.getAttribute('property')
+        if (type) {
+          const styleRule = vuex.editorInfo.selectedCssRule.style as Record<
+            string | number,
+            any
+          >
+          styleRule[type] = target?.getAttribute('value')
         }
-        vuex.styleData.SET_CHANGED_DATA(changedData)
       }
     }
 
@@ -418,7 +413,7 @@ export default defineComponent({
         width: 7rem;
         color: #868686;
       }
-      .filter-input {
+      .font-filter-input {
         @include auto-text-color;
         @include auto-distinct-bg-color;
         position: absolute;

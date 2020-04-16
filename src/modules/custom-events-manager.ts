@@ -1,4 +1,7 @@
-type AvailableEventNames = 'onmarkerschange'
+type AvailableEventNames =
+  | 'onmarkerschange'
+  | 'deactivatecontext'
+  | 'openstyles'
 
 type CemStorage = Record<
   AvailableEventNames,
