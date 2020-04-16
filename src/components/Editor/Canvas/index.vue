@@ -53,10 +53,52 @@ export default defineComponent({
 
       if (!iframeDoc || !iframeWindow) return
       // Load html
-      iframeDoc.documentElement.innerHTML = iframeSampleHtml
-      const style = document.createElement('style')
-      style.innerHTML = HtmlStyle
-      iframeDoc.head.appendChild(style)
+
+      type File = {
+        fileId: number
+        filePath: string
+        fileName: string
+        fileType: 'html' | 'css' | 'js'
+        data: string
+        htmlCssPair: cssPair[]
+      }
+
+      type cssPair = {
+        htmlFileSeq: number
+        cssFileSeq: number
+      }
+
+      let iframeLoadHtml: string = ''
+      let iframeUsedCss: string = ''
+
+      watch(
+        () => vuex.fileData.selectedFile,
+        () => {
+          if (!vuex.fileData.selectedFile) return
+          const selectedFile: File = vuex.fileData.selectedFile
+          const fileList: File[] = vuex.fileData.fileList
+
+          if (selectedFile?.fileType === 'html') {
+            iframeLoadHtml = selectedFile.data
+            iframeDoc.documentElement.innerHTML = iframeLoadHtml
+
+            let i
+            for (i = 0; i < selectedFile.htmlCssPair.length; i++) {
+              let j
+              for (j = 0; j < fileList.length; j++) {
+                if (
+                  fileList[j].fileId === selectedFile.htmlCssPair[i].cssFileSeq
+                ) {
+                  iframeUsedCss += fileList[j].data
+                }
+              }
+            }
+            const style = document.createElement('style')
+            style.innerHTML = iframeUsedCss
+            iframeDoc.head.appendChild(style)
+          }
+        }
+      )
 
       const styleParsed = cssom.parse(HtmlStyle)
       vuex.editorInfo.SET_PARSED_CSS_RULES(styleParsed.cssRules)
