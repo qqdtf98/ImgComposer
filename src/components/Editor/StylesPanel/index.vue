@@ -51,14 +51,6 @@ export default defineComponent({
 
     const stylePanel = ref<HTMLElement>(null)
 
-    function setStyleData(e: MouseEvent) {
-      const target = e.target as HTMLElement
-      if (target) {
-        vuex.styleData.SET_STYLE_DATA(getComputedStyle(target))
-        vuex.styleData.SET_TARGET(target)
-      }
-    }
-
     const state = reactive({
       collapsed: true, // Whether the panel is collapsed or not
     })
@@ -110,7 +102,6 @@ export default defineComponent({
       togglePanel,
       vuex,
       stylePanel,
-      setStyleData,
       selectorSelected,
       selectorValue,
     }
