@@ -1,9 +1,9 @@
-import { AnyEditorFile } from '@/interfaces/any-editor-file'
+import { File } from '@/interfaces/any-editor-file'
 import cssom from 'cssom'
-import { mutationTree } from 'nuxt-typed-vuex'
+import { actionTree, mutationTree } from 'nuxt-typed-vuex'
 
 type EditorInfoState = {
-  openedFiles: AnyEditorFile[]
+  openedFiles: File[]
   activeFileIndex: number | null
   // 선택된 element에 적용된 cssStyleRule[]
   matchedCssRules: CSSStyleRule[]
@@ -34,3 +34,21 @@ export const mutations = mutationTree(state, {
   SET_PARSED_CSS_RULES: (state, rules: cssom.CSSRule[]) =>
     (state.parsedCssRules = rules),
 })
+
+export const actions = actionTree(
+  {
+    state,
+    mutations,
+  },
+  {
+    storeOpenedFiles({ commit, state }, file: File) {
+      if (file.fileType === 'html') {
+        const newList: File[] = [...state.openedFiles]
+        if (!newList.find((e) => e.fileName === file.fileName)) {
+          newList.push(file)
+          commit('SET_OPENED_FILES', newList)
+        }
+      }
+    },
+  }
+)

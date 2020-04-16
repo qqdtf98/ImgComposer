@@ -33,6 +33,14 @@ export default defineComponent({
 
     function setActiveFileIndex() {
       store.editorInfo.SET_ACTIVE_FILE_INDEX(fileId)
+      const fileList = store.fileData.fileList
+      let i
+      for (i = 0; i < fileList.length; i++) {
+        if (fileList[i].fileId === fileId) {
+          store.fileData.SET_SELECTED_FILE(fileList[i])
+          break
+        }
+      }
     }
 
     function close() {
