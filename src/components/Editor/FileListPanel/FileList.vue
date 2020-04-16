@@ -8,6 +8,7 @@
         v-for="(file, i) in vuex.fileData.fileList"
         :key="i"
         class="project-data-wrapper"
+        @dblclick="loadFile($event, file)"
       >
         <img class="project-icon" src="@/assets/images/fileIcon.svg" />
         <div class="project-data">
@@ -21,13 +22,33 @@
 <script lang="ts">
 import { defineComponent, watch } from '@vue/composition-api'
 import { useVuex } from '../../../modules/vue-hooks'
+import { Cem } from '../../../modules/custom-events-manager'
 
 export default defineComponent({
   setup(props, ctx) {
     const vuex = useVuex(ctx)
 
+    type File = {
+      fileId: number
+      filePath: string
+      fileName: string
+      fileType: 'html' | 'css' | 'js'
+      data: string
+      htmlCssPair: cssPair[] | null
+    }
+
+    type cssPair = {
+      htmlFileSeq: number
+      cssFileSeq: number
+    }
+
+    function loadFile(e: MouseEvent, selectedFile: File) {
+      vuex.fileData.SET_SELECTED_FILE(selectedFile)
+    }
+
     return {
       vuex,
+      loadFile,
     }
   },
 })
@@ -63,6 +84,8 @@ export default defineComponent({
       flex-direction: row;
       margin-top: 0.4rem;
       margin-bottom: 0.4rem;
+      cursor: pointer;
+      user-select: none;
 
       .project-icon {
         margin-right: 0.5rem;
