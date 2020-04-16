@@ -2,7 +2,7 @@
   <section class="tab" :class="{ active: isActive }">
     <button class="surface" @click="setActiveFileIndex" />
     <div class="label">{{ fileName }}</div>
-    <button class="close" @click="close">
+    <button class="close" @click="closeTab">
       <i class="icon-close" />
     </button>
   </section>
@@ -43,15 +43,30 @@ export default defineComponent({
       }
     }
 
-    function close() {
+    function closeTab() {
       const opened = [...store.editorInfo.openedFiles]
+      const fileList = store.editorInfo.openedFiles
+      let i
+      for (i = 0; i < fileList.length; i++) {
+        if (fileList[i].fileId === fileId) {
+          if (store.fileData.selectedFile?.fileId === fileId) {
+            if (i === fileList.length - 1) {
+              store.fileData.SET_SELECTED_FILE(fileList[i - 1])
+              break
+            } else {
+              store.fileData.SET_SELECTED_FILE(fileList[i + 1])
+              break
+            }
+          }
+        }
+      }
       _.remove(opened, (file) => file.fileId === fileId)
       store.editorInfo.SET_OPENED_FILES(opened)
     }
 
     return {
       setActiveFileIndex,
-      close,
+      closeTab,
     }
   },
 })
