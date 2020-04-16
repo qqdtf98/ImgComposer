@@ -28,6 +28,7 @@ import { HtmlStyle } from '@/miscellaneous/sample-html-style'
 import cssom from 'cssom'
 import Context from './Context/index.vue'
 import { Cem } from '../../../modules/custom-events-manager'
+import { File } from '@/interfaces/any-editor-file'
 
 export default defineComponent({
   components: { Context },
@@ -53,20 +54,6 @@ export default defineComponent({
 
       if (!iframeDoc || !iframeWindow) return
       // Load html
-
-      type File = {
-        fileId: number
-        filePath: string
-        fileName: string
-        fileType: 'html' | 'css' | 'js'
-        data: string
-        htmlCssPair: cssPair[]
-      }
-
-      type cssPair = {
-        htmlFileSeq: number
-        cssFileSeq: number
-      }
 
       let iframeLoadHtml: string = ''
       let iframeUsedCss: string = ''

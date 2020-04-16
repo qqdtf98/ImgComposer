@@ -23,24 +23,11 @@
 import { defineComponent, watch } from '@vue/composition-api'
 import { useVuex } from '../../../modules/vue-hooks'
 import { Cem } from '../../../modules/custom-events-manager'
+import { File } from '@/interfaces/any-editor-file'
 
 export default defineComponent({
   setup(props, ctx) {
     const vuex = useVuex(ctx)
-
-    type File = {
-      fileId: number
-      filePath: string
-      fileName: string
-      fileType: 'html' | 'css' | 'js'
-      data: string
-      htmlCssPair: cssPair[] | null
-    }
-
-    type cssPair = {
-      htmlFileSeq: number
-      cssFileSeq: number
-    }
 
     function loadFile(e: MouseEvent, selectedFile: File) {
       vuex.fileData.SET_SELECTED_FILE(selectedFile)

@@ -1,40 +1,6 @@
+import { cssPair, dataType, File } from '@/interfaces/any-editor-file'
 import { reactive } from '@vue/composition-api'
 import { actionTree, mutationTree } from 'nuxt-typed-vuex'
-
-type File = {
-  fileId: number
-  filePath: string
-  fileName: string
-  fileType: 'html' | 'css' | 'js'
-  data: string
-  htmlCssPair: cssPair[]
-}
-
-type dataType = {
-  // eslint-disable-next-line camelcase
-  file_seq: number
-  // eslint-disable-next-line camelcase
-  file_path: string
-  // eslint-disable-next-line camelcase
-  file_name: string
-  // eslint-disable-next-line camelcase
-  file_type: 'html' | 'css' | 'js'
-  contents: string
-  // eslint-disable-next-line camelcase
-  html_css_pair: cssType[]
-}
-
-type cssPair = {
-  htmlFileSeq: number
-  cssFileSeq: number
-}
-
-type cssType = {
-  // eslint-disable-next-line camelcase
-  html_file_seq: number
-  // eslint-disable-next-line camelcase
-  css_file_seq: number
-}
 
 export const state: () => {
   fileList: File[]
@@ -55,7 +21,7 @@ export const actions = actionTree(
     mutations,
   },
   {
-    storeFiles({ commit, dispatch, getters, state }, file: dataType) {
+    storeFiles({ commit, state }, file: dataType) {
       const newList: File[] = [...state.fileList]
       // console.log(typeof file)
       const newFile: File = {
