@@ -31,6 +31,7 @@ export default defineComponent({
   setup({ fileId }) {
     const { store } = Vuex
 
+    // vuex에 현재 열려있는 페이지의 fileId 저장
     function setActiveFileIndex() {
       store.editorInfo.SET_ACTIVE_FILE_INDEX(fileId)
       const fileList = store.fileData.fileList
@@ -43,6 +44,7 @@ export default defineComponent({
       }
     }
 
+    // fileId를 사용하여 해당 탭 닫기
     function closeTab() {
       const opened = [...store.editorInfo.openedFiles]
       const fileList = store.editorInfo.openedFiles

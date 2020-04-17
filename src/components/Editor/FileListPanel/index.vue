@@ -19,6 +19,7 @@ export default defineComponent({
   setup(props, ctx) {
     const isFileListOn = ref(false)
 
+    // fileList 열고 닫을 때마다 file-panel과 layout 길이 변경
     function activateFileList() {
       const stylesCompo = document.querySelector(
         '.layout-scroll-area'

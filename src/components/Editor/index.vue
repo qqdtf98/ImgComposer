@@ -33,9 +33,9 @@ export default defineComponent({
         return
       }
 
+      // projectId로 data받아와서 vuex에 저장
       const res = await ProjectService.getProjectData(projectId)
       if (res.data.responseCode === 'SUCCESS') {
-        // TODO set project data at store
         const folders = res.data.data.folders
         for (const i in folders) {
           for (const j in folders[i].files) {

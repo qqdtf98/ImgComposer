@@ -25,7 +25,6 @@ export default defineComponent({
   setup(props, ctx) {
     const vuex = useVuex(ctx)
 
-    onMounted(() => {})
     watch(
       () => vuex.fileData.selectedFile,
       () => {
