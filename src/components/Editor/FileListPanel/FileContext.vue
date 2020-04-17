@@ -4,7 +4,7 @@
       <img class="delete-file-icon" src="@/assets/images/deleteFile.svg" />
       <div class="delete-file-text">삭제</div>
     </div>
-    <div class="rename-file-menu">
+    <div class="rename-file-menu" @click="renameFile">
       <img class="rename-file-icon" src="@/assets/images/renameFile.svg" />
       <div class="rename-file-text">이름 변경</div>
     </div>
@@ -23,6 +23,9 @@ export default defineComponent({
     },
     closeFileContext: {
       type: Function,
+    },
+    fileElem: {
+      type: HTMLInputElement,
     },
   },
   setup(props, ctx) {
@@ -43,8 +46,14 @@ export default defineComponent({
         }
       })
     }
+
+    function renameFile() {
+      ctx.emit('enable-write')
+    }
+
     return {
       deleteFile,
+      renameFile,
     }
   },
 })

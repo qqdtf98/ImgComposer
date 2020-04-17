@@ -15,12 +15,15 @@
           :key="i"
           class="project-data-wrapper"
           @dblclick="loadFile($event, file)"
-          @contextmenu="openFileContext($event, file.fileId)"
+          @contextmenu="openFileContext($event, file.fileId, file)"
         >
           <img class="project-icon" src="@/assets/images/fileIcon.svg" />
-          <div class="project-data">
-            {{ `${file.fileName}.${file.fileType}` }}
-          </div>
+          <input
+            :value="file.fileName"
+            spellcheck="false"
+            disabled
+            @keyup.enter="setNewFileName"
+          />
         </div>
       </div>
     </vue-custom-scrollbar>
@@ -28,14 +31,22 @@
     <FileContext
       v-show="activateContext === 'file'"
       ref="fileRef"
-      :fileId="selectedFile"
+      :fileId="selectedFileId"
       :closeFileContext="closeFileContext"
+      :fileElem="selectedFile"
+      @enable-write="enableWrite"
     />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, watch, onMounted, ref } from '@vue/composition-api'
+import {
+  defineComponent,
+  watch,
+  onMounted,
+  ref,
+  reactive,
+} from '@vue/composition-api'
 import vueCustomScrollbar from 'vue-custom-scrollbar'
 import { useVuex } from '@/modules/vue-hooks'
 import { Cem } from '@/modules/custom-events-manager'
@@ -44,6 +55,8 @@ import { actionTree } from 'nuxt-typed-vuex'
 import FolderContext from './FolderContext.vue'
 import FileContext from './FileContext.vue'
 import { VueComponent } from '@/types/vue-component'
+import FileService from '../../../services/file-service'
+import { Slider } from 'vue-color'
 
 export default defineComponent({
   components: { vueCustomScrollbar, FolderContext, FileContext },
@@ -59,6 +72,30 @@ export default defineComponent({
         e.preventDefault()
       })
     })
+
+    type TitleValue = {
+      name: string
+      disabled: boolean
+    }
+
+    const titleValues: string[] = []
+
+    const disabledValues = ref<boolean[]>([])
+
+    const index = ref(0)
+
+    watch(
+      () => vuex.fileData.fileList,
+      () => {
+        let i
+        const fileList = vuex.fileData.fileList
+
+        for (i = 0; i < fileList.length; i++) {
+          titleValues.push(`${fileList[i].fileName}.${fileList[i].fileType}`)
+          disabledValues.value.push(true)
+        }
+      }
+    )
 
     const activateContext = ref('')
 
@@ -96,14 +133,53 @@ export default defineComponent({
       }
     }
 
-    const selectedFile = ref(0)
+    const selectedFileId = ref(0)
+    const selectedFile = ref<HTMLInputElement>(null)
+    const selectedFileElem = ref<File>(null)
+
+    let clickedTarget: HTMLInputElement
 
     // open fileContext and set props by fileId
-    function openFileContext(e: MouseEvent, fileId: number) {
+    function openFileContext(e: MouseEvent, fileId: number, file: File) {
+      clickedTarget = e.target as HTMLInputElement
       activateContext.value = 'file'
       const File = fileRef.value?.$el as HTMLElement
       placeContext(File, e)
-      selectedFile.value = fileId
+      selectedFileId.value = fileId
+      selectedFile.value = e.target as HTMLInputElement
+      index.value = fileId
+      selectedFileElem.value = file
+    }
+
+    let blurEvent: () => void
+
+    function enableWrite() {
+      disabledValues.value[index.value] = false
+      clickedTarget.disabled = false
+      closeFileContext()
+      clickedTarget.focus()
+      clickedTarget.addEventListener(
+        'blur',
+        (blurEvent = () => {
+          clickedTarget.disabled = true
+          const title = selectedFile.value?.value as string
+          if (!selectedFileElem.value) return
+
+          // TODO folder_seq 저장해서 fileName 중복체크하기
+          FileService.updateFileName(
+            selectedFileElem.value,
+            title,
+            title?.split('.')[0]
+          ).then((res) => {
+            console.log(res)
+          })
+        })
+      )
+    }
+
+    function setNewFileName() {
+      clickedTarget.blur()
+      clickedTarget.removeEventListener('blur', blurEvent)
     }
 
     // open FolderContext
@@ -136,12 +212,19 @@ export default defineComponent({
       closeFileContext,
       selectedFile,
       openFolderContext,
+      selectedFileId,
+      titleValues,
+      disabledValues,
+      enableWrite,
+      setNewFileName,
     }
   },
 })
 </script>
 
 <style lang="scss">
+@use '@/assets/styles/package' as *;
+
 #file-list {
   width: 100%;
   display: flex;
@@ -168,6 +251,7 @@ export default defineComponent({
     padding: 0 15px;
     width: 100%;
     height: 200px;
+
     .project-data-list {
       width: 95%;
       padding-bottom: 2rem;
@@ -175,13 +259,12 @@ export default defineComponent({
       .project-data-wrapper {
         display: flex;
         flex-direction: row;
-        padding-top: 0.3rem;
-        padding-bottom: 0.3rem;
-        padding-left: 0.4rem;
+        padding: 0.3rem 0.5rem;
         width: 100%;
         border-radius: 0.4rem;
-        cursor: pointer;
+        cursor: default;
         user-select: none;
+
         &:hover {
           background-color: #5858589d;
         }
@@ -191,7 +274,16 @@ export default defineComponent({
         }
 
         .project-data {
+          @include auto-text-color;
           width: 100%;
+          cursor: default;
+        }
+
+        input {
+          color: inherit;
+          outline: none;
+          flex: 1;
+          user-select: none;
         }
       }
     }
