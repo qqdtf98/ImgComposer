@@ -2,7 +2,7 @@
   <section class="tab" :class="{ active: isActive }">
     <button class="surface" @click="setActiveFileIndex" />
     <div class="label">{{ fileName }}</div>
-    <button class="close" @click="close">
+    <button class="close" @click="closeTab">
       <i class="icon-close" />
     </button>
   </section>
@@ -31,19 +31,44 @@ export default defineComponent({
   setup({ fileId }) {
     const { store } = Vuex
 
+    // vuex에 현재 열려있는 페이지의 fileId 저장
     function setActiveFileIndex() {
       store.editorInfo.SET_ACTIVE_FILE_INDEX(fileId)
+      const fileList = store.fileData.fileList
+      let i
+      for (i = 0; i < fileList.length; i++) {
+        if (fileList[i].fileId === fileId) {
+          store.fileData.SET_SELECTED_FILE(fileList[i])
+          break
+        }
+      }
     }
 
-    function close() {
+    // fileId를 사용하여 해당 탭 닫기
+    function closeTab() {
       const opened = [...store.editorInfo.openedFiles]
+      const fileList = store.editorInfo.openedFiles
+      let i
+      for (i = 0; i < fileList.length; i++) {
+        if (fileList[i].fileId === fileId) {
+          if (store.fileData.selectedFile?.fileId === fileId) {
+            if (i === fileList.length - 1) {
+              store.fileData.SET_SELECTED_FILE(fileList[i - 1])
+              break
+            } else {
+              store.fileData.SET_SELECTED_FILE(fileList[i + 1])
+              break
+            }
+          }
+        }
+      }
       _.remove(opened, (file) => file.fileId === fileId)
       store.editorInfo.SET_OPENED_FILES(opened)
     }
 
     return {
       setActiveFileIndex,
-      close,
+      closeTab,
     }
   },
 })

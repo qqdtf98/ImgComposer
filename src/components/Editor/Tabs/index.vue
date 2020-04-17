@@ -2,49 +2,40 @@
   <div id="tabs">
     <div class="scroll-container">
       <Tab
-        v-for="file in store.editorInfo.openedFiles"
+        v-for="file in vuex.editorInfo.openedFiles"
         :key="file.fileId"
         :file-name="file.fileName"
         :fileId="file.fileId"
-        :is-active="store.editorInfo.activeFileIndex === file.fileId"
+        :is-active="vuex.editorInfo.activeFileIndex === file.fileId"
       />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api'
+import { defineComponent, watch, onMounted } from '@vue/composition-api'
 import Tab from './Tab/index.vue'
 import { Vuex } from '@/modules/vuex'
 import { iframeSampleHtml } from '@/miscellaneous/iframe-sample-html'
-import { AnyEditorFile } from '../../../interfaces/any-editor-file'
+import { File } from '../../../interfaces/any-editor-file'
+import { useVuex } from '../../../modules/vue-hooks'
 
 export default defineComponent({
   components: { Tab },
-  setup() {
-    const { store } = Vuex
+  setup(props, ctx) {
+    const vuex = useVuex(ctx)
 
-    const opened = [...store.editorInfo.openedFiles]
-
-    const dummies = [...Array(10).keys()].map(
-      (i) =>
-        ({
-          path: '/',
-          fileId: i,
-          fileName: `markup-${i}.html`,
-          fileType: 'html',
-          data: '',
-        } as AnyEditorFile)
+    watch(
+      () => vuex.fileData.selectedFile,
+      () => {
+        if (!vuex.fileData.selectedFile) return
+        vuex.editorInfo.storeOpenedFiles(vuex.fileData.selectedFile)
+        vuex.editorInfo.SET_ACTIVE_FILE_INDEX(vuex.fileData.selectedFile.fileId)
+      }
     )
 
-    store.editorInfo.SET_ACTIVE_FILE_INDEX(1)
-
-    store.editorInfo.SET_OPENED_FILES(dummies)
-
-    // console.log(store.editorInfo.openedFiles)
-
     return {
-      store,
+      vuex,
     }
   },
 })
