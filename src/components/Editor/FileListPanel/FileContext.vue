@@ -16,11 +16,33 @@ import { defineComponent, watchEffect } from '@vue/composition-api'
 import FileService from '@/services/file-service.ts'
 
 export default defineComponent({
+  props: {
+    fileId: {
+      type: Number,
+    },
+    closeFileContext: {
+      type: Function,
+    },
+  },
   setup(props, ctx) {
     watchEffect(() => {
       console.log(props.fileId)
     })
 
+    function deleteFile() {
+      if (!confirm('정말 삭제하시겠습니까?')) {
+        return
+      }
+      if (!props.fileId) return
+      FileService.deleteFile(props.fileId).then((res) => {
+        if (props.closeFileContext) {
+          props.closeFileContext()
+        }
+      })
+    }
+    return {
+      deleteFile,
+    }
   },
 })
 </script>
