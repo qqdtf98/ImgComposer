@@ -14,6 +14,7 @@
 <script lang="ts">
 import { defineComponent, watchEffect } from '@vue/composition-api'
 import FileService from '@/services/file-service.ts'
+import { useVuex } from '@/modules/vue-hooks'
 
 export default defineComponent({
   props: {
@@ -25,9 +26,7 @@ export default defineComponent({
     },
   },
   setup(props, ctx) {
-    watchEffect(() => {
-      console.log(props.fileId)
-    })
+    const vuex = useVuex(ctx)
 
     function deleteFile() {
       if (!confirm('정말 삭제하시겠습니까?')) {
@@ -35,8 +34,12 @@ export default defineComponent({
       }
       if (!props.fileId) return
       FileService.deleteFile(props.fileId).then((res) => {
-        if (props.closeFileContext) {
-          props.closeFileContext()
+        if (res.data.responseCode === 'SUCCESS') {
+          if (props.closeFileContext) {
+            props.closeFileContext()
+            if (!props.fileId) return
+            vuex.fileData.removeFile(props.fileId)
+          }
         }
       })
     }
