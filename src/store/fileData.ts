@@ -50,5 +50,13 @@ export const actions = actionTree(
       newList.push(newFile)
       commit('SET_FILE_LIST', newList)
     },
+    removeFile({ commit, state }, fileId: number) {
+      const newList: File[] = [...state.fileList]
+      const idx = newList.findIndex(function (file: File) {
+        return file.fileId === fileId
+      })
+      if (idx > -1) newList.splice(idx, 1)
+      commit('SET_FILE_LIST', newList)
+    },
   }
 )
