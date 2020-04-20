@@ -81,7 +81,7 @@ export default defineComponent({
   position: relative;
   font-size: 14px;
   min-width: 160px;
-  height: $tab-height - 1px;
+  height: $tab-height;
   align-self: stretch;
   display: flex;
   align-items: center;

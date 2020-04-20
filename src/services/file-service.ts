@@ -1,4 +1,4 @@
-import { File } from '@/interfaces/any-editor-file.ts'
+import { File, SampleType } from '@/interfaces/any-editor-file.ts'
 import axios from 'axios'
 import apiUrl from '../modules/api-url'
 
@@ -19,6 +19,12 @@ class FileService {
             file.filePath.split(file.fileName)[0] + targetName + '.' + type,
         },
       ],
+    })
+  }
+
+  async createFile(file: SampleType) {
+    return await axios.post(apiUrl.file.create.url, {
+      files: [file],
     })
   }
 
