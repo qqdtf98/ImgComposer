@@ -4,7 +4,7 @@
       <img class="new-folder-icon" src="@/assets/images/newFolder.svg" />
       <div class="new-folder-text">새 폴더</div>
     </div>
-    <div class="new-file-menu">
+    <div class="new-file-menu" @click="addFile">
       <img class="new-file-icon" src="@/assets/images/newFile.svg" />
       <div class="new-file-text">새 파일</div>
     </div>
@@ -13,8 +13,46 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api'
+import { useVuex } from '../../../modules/vue-hooks'
+import { cssPair, dataType, File } from '@/interfaces/any-editor-file'
+import { SampleType } from '@/interfaces/any-editor-file.ts'
+import FileService from '@/services/file-service.ts'
 
-export default defineComponent({})
+export default defineComponent({
+  setup(props, ctx) {
+    const vuex = useVuex(ctx)
+    function addFile() {
+      // TODO folderSeq, file_path 등 실제 값으로 채워넣기
+      const sampleFile: SampleType = {
+        folder_seq: 50,
+        file_name: '',
+        file_path: 'Project/html/aa.html',
+        file_type: 'html',
+        contents: '',
+      }
+      FileService.createFile(sampleFile).then((res) => {
+        const resData: dataType = res.data.data[0]
+        const newFile: File = {
+          fileId: resData.file_seq,
+          filePath: resData.file_path,
+          fileName: resData.file_name,
+          fileType: resData.file_type,
+          data: resData.contents,
+          htmlCssPair: null,
+        }
+        vuex.fileData.storeFiles(resData)
+        setTimeout(() => {
+          ctx.emit('new-file', resData.file_seq, newFile)
+        }, 0)
+      })
+    }
+
+    return {
+      addFile,
+      vuex,
+    }
+  },
+})
 </script>
 
 <style lang="scss">

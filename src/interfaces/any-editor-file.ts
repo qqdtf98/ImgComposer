@@ -4,7 +4,7 @@ export interface File {
   fileName: string
   fileType: 'html' | 'css' | 'js'
   data: string
-  htmlCssPair: cssPair[]
+  htmlCssPair: cssPair[] | null
 }
 
 export interface dataType {

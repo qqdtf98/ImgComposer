@@ -14,6 +14,7 @@
           v-for="(file, i) in vuex.fileData.fileList"
           :key="i"
           class="project-data-wrapper"
+          :fileId="file.fileId"
           @dblclick="loadFile($event, file)"
           @contextmenu="openFileContext($event, file.fileId, file)"
         >
@@ -27,7 +28,11 @@
         </div>
       </div>
     </vue-custom-scrollbar>
-    <FolderContext v-show="activateContext === 'folder'" ref="folderRef" />
+    <FolderContext
+      v-show="activateContext === 'folder'"
+      ref="folderRef"
+      @new-file="setNewFileTarget"
+    />
     <FileContext
       v-show="activateContext === 'file'"
       ref="fileRef"
@@ -57,6 +62,7 @@ import FileContext from './FileContext.vue'
 import { VueComponent } from '@/types/vue-component'
 import FileService from '../../../services/file-service'
 import { Slider } from 'vue-color'
+import fileService from '../../../services/file-service'
 
 export default defineComponent({
   components: { vueCustomScrollbar, FolderContext, FileContext },
@@ -78,24 +84,7 @@ export default defineComponent({
       disabled: boolean
     }
 
-    const titleValues: string[] = []
-
-    const disabledValues = ref<boolean[]>([])
-
     const index = ref(0)
-
-    watch(
-      () => vuex.fileData.fileList,
-      () => {
-        let i
-        const fileList = vuex.fileData.fileList
-
-        for (i = 0; i < fileList.length; i++) {
-          titleValues.push(`${fileList[i].fileName}.${fileList[i].fileType}`)
-          disabledValues.value.push(true)
-        }
-      }
-    )
 
     const activateContext = ref('')
 
@@ -151,10 +140,26 @@ export default defineComponent({
       selectedFileElem.value = file
     }
 
+    function setNewFileTarget(fileId: number, newFile: File) {
+      const titles: NodeListOf<HTMLInputElement> = document.querySelectorAll(
+        '.project-data-wrapper'
+      )
+      let i
+      for (i = 0; i < titles.length; i++) {
+        if (titles[i].getAttribute('fileId') === fileId.toString()) {
+          clickedTarget = titles[i].children[1] as HTMLInputElement
+          selectedFile.value = titles[i].children[1] as HTMLInputElement
+        }
+      }
+      selectedFileElem.value = newFile
+      selectedFileId.value = fileId
+      index.value = fileId
+      enableWrite()
+    }
+
     let blurEvent: () => void
 
     function enableWrite() {
-      disabledValues.value[index.value] = false
       clickedTarget.disabled = false
       closeFileContext()
       clickedTarget.focus()
@@ -184,9 +189,10 @@ export default defineComponent({
 
     // open FolderContext
     function openFolderContext(e: MouseEvent) {
-      const target = e.target as HTMLElement
+      const target = e.target as HTMLInputElement
       if (target.className === 'project-data-list') {
         activateContext.value = 'folder'
+        clickedTarget = target
         const Folder = folderRef.value?.$el as HTMLElement
         placeContext(Folder, e)
       }
@@ -213,10 +219,9 @@ export default defineComponent({
       selectedFile,
       openFolderContext,
       selectedFileId,
-      titleValues,
-      disabledValues,
       enableWrite,
       setNewFileName,
+      setNewFileTarget,
     }
   },
 })
