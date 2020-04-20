@@ -139,7 +139,11 @@ export default defineComponent({
       clickedTarget = target
       activateContext.value = 'file'
       const File = fileRef.value?.$el as HTMLElement
-      placeContext(File, e)
+
+      // TODO context 위치가 셋팅되기 전에 보여지는 현상해결하기
+      setTimeout(() => {
+        placeContext(File, e)
+      }, 0)
       selectedFileId.value = fileId
       selectedFile.value = target
       index.value = fileId
@@ -200,7 +204,9 @@ export default defineComponent({
         activateContext.value = 'folder'
         clickedTarget = target
         const Folder = folderRef.value?.$el as HTMLElement
-        placeContext(Folder, e)
+        setTimeout(() => {
+          placeContext(Folder, e)
+        }, 0)
       }
     }
 
