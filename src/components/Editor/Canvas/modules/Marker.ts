@@ -65,18 +65,6 @@ export class Marker {
         Vuex.store.editorInfo.SET_MATCHED_CSS_RULES(
           getMatchedCssRules(e.target as Element)
         )
-        const target = e.target as HTMLElement
-
-        // TODO DFS로 선택한 element의 자녀의 cssRules 까지 구한다
-
-        let i
-        const rules = getMatchedCssRules(e.target as Element)
-        let styleCode = ''
-        for (i = 0; i < rules.length; i++) {
-          styleCode += rules[i].cssText
-        }
-        console.log(target.outerHTML)
-        console.log(styleCode)
       }
 
       // Dispatch an event about markers change

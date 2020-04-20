@@ -1,5 +1,9 @@
 <template>
   <div :id="canvasId" ref="canvas">
+    <div
+      ref="sampleRef"
+      style="border: 1px solid black; width: 500px; height: 500px;"
+    ></div>
     <iframe
       ref="iframeRef"
       frameborder="0"
@@ -44,6 +48,8 @@ export default defineComponent({
     const iframeRef = ref() as Ref<HTMLIFrameElement>
     const isContextActivate = ref(false)
 
+    const sampleRef = ref() as Ref<HTMLElement>
+
     onMounted(() => {
       const iframe = iframeRef.value
       Marker.setIframe(iframe)
@@ -57,6 +63,36 @@ export default defineComponent({
 
       let iframeLoadHtml: string = ''
       let iframeUsedCss: string = ''
+
+      // img 위에 selector 표시 샘플
+      window.addEventListener('mousedown', (e: MouseEvent) => {
+        const selector = document.createElement('div')
+        selector.style.border = '2px solid white'
+        selector.style.position = 'fixed'
+        const initX = e.clientX
+        const initY = e.clientY
+        selector.style.left = e.clientX + 'px'
+        selector.style.top = e.clientY + 'px'
+        selector.style.width = '1px'
+        selector.style.height = '1px'
+        sampleRef.value.appendChild(selector)
+        let moveEvent: (e: MouseEvent) => void
+        let upEvent: (e: MouseEvent) => void
+        window.addEventListener(
+          'mousemove',
+          (moveEvent = (evt: MouseEvent) => {
+            selector.style.width = evt.clientX - initX + 'px'
+            selector.style.height = evt.clientY - initY + 'px'
+          })
+        )
+        window.addEventListener(
+          'mouseup',
+          (upEvent = () => {
+            window.removeEventListener('mousemove', moveEvent)
+            window.removeEventListener('mouseup', upEvent)
+          })
+        )
+      })
 
       watch(
         () => vuex.fileData.selectedFile,
@@ -139,6 +175,7 @@ export default defineComponent({
       iframeRef,
       mergeClassNames,
       vuex,
+      sampleRef,
       isContextActivate,
     }
   },

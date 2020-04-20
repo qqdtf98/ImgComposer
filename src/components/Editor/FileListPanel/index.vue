@@ -11,12 +11,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api'
+import { defineComponent, ref, watch } from '@vue/composition-api'
+import { getMatchedCssRules } from '@/modules/get-matched-css-rules'
 import FileList from './FileList.vue'
+import { useVuex } from '../../../modules/vue-hooks'
 
 export default defineComponent({
   components: { FileList },
   setup(props, ctx) {
+    const vuex = useVuex(ctx)
     const isFileListOn = ref(false)
 
     // fileList 열고 닫을 때마다 file-panel과 layout 길이 변경
@@ -40,6 +43,39 @@ export default defineComponent({
         }, 0)
       }
     }
+
+    // TODO component html, css 제대로 추출됐는지 확인하고 위치 옮기기
+    watch(
+      () => vuex.styleData.target,
+      () => {
+        let target = vuex.styleData.target as HTMLElement
+        console.log(target?.outerHTML)
+
+        let i
+        if (!target) return
+        const rules = getMatchedCssRules(target)
+        let styleCode = ''
+        for (i = 0; i < rules.length; i++) {
+          styleCode += rules[i].cssText
+        }
+
+        while (target !== null || target === 'undefined') {
+          if (!target) break
+          const array = Array.from(target.children)
+
+          array.forEach((el) => {
+            const rules = getMatchedCssRules(el)
+            let i
+            for (i = 0; i < rules.length; i++) {
+              styleCode += rules[i].cssText
+            }
+          })
+          target = target.children[0] as HTMLElement
+        }
+
+        console.log(styleCode)
+      }
+    )
 
     return {
       activateFileList,
