@@ -68,6 +68,7 @@ export default defineComponent({
           if (selectedFile?.fileType === 'html') {
             iframeLoadHtml = selectedFile.data
             iframeDoc.documentElement.innerHTML = iframeLoadHtml
+            if (!selectedFile.htmlCssPair) return
 
             let i
             for (i = 0; i < selectedFile.htmlCssPair.length; i++) {

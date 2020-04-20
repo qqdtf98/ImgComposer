@@ -130,12 +130,18 @@ export default defineComponent({
 
     // open fileContext and set props by fileId
     function openFileContext(e: MouseEvent, fileId: number, file: File) {
-      clickedTarget = e.target as HTMLInputElement
+      let target = e.target as HTMLInputElement
+      if (target.className === 'project-data-wrapper') {
+        target = target.children[1] as HTMLInputElement
+      } else {
+        target = e.target as HTMLInputElement
+      }
+      clickedTarget = target
       activateContext.value = 'file'
       const File = fileRef.value?.$el as HTMLElement
       placeContext(File, e)
       selectedFileId.value = fileId
-      selectedFile.value = e.target as HTMLInputElement
+      selectedFile.value = target
       index.value = fileId
       selectedFileElem.value = file
     }
