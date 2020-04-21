@@ -6,12 +6,15 @@
     >
       <img
         id="preview"
-        src=""
+        src
         width="700"
         alt="로컬에 있는 이미지가 보여지는 영역"
       />
       <input id="getfile" type="file" accept="image/*" @change="inputChange" />
     </div>
+    <button @click="exportComponent" v-show="btnState">
+      버튼
+    </button>
     <iframe
       ref="iframeRef"
       frameborder="0"
@@ -41,6 +44,11 @@ import cssom from 'cssom'
 import Context from './Context/index.vue'
 import { Cem } from '../../../modules/custom-events-manager'
 import { File } from '@/interfaces/any-editor-file'
+import { getMatchedCssRules } from '@/modules/get-matched-css-rules'
+import FileSaver, { saveAs } from 'file-saver'
+import prettier from 'prettier/standalone'
+import parserHtml from 'prettier/parser-html'
+import parserPostCss from 'prettier/parser-postcss'
 
 export default defineComponent({
   components: { Context },
@@ -57,6 +65,73 @@ export default defineComponent({
     const isContextActivate = ref(false)
 
     const sampleRef = ref() as Ref<HTMLElement>
+
+    const btnState = ref(false)
+    let cssRule: string
+    let htmlElem: string
+
+    watch(
+      () => vuex.styleData.target,
+      () => {
+        const target = vuex.styleData.target as HTMLElement
+        htmlElem = target?.outerHTML
+
+        function getCss(elm: HTMLElement | Element) {
+          let css: CSSStyleDeclaration[] = []
+
+          if (!elm) {
+            btnState.value = false
+            return css
+          }
+
+          css = getMatchedCssRules(elm)
+
+          const children = Array.from(elm.children)
+
+          if (children && children.length > 0) {
+            for (const child of children) {
+              css = [...css, ...getCss(child)]
+            }
+          }
+          btnState.value = true
+          return css
+        }
+
+        const cssRules = getCss(target)
+        cssRule = ''
+        for (const rule of cssRules) {
+          cssRule += rule.cssText
+        }
+      }
+    )
+
+    function exportComponent() {
+      const formattedHtml = prettier
+        .format(htmlElem, {
+          parser: 'html',
+          plugins: [parserHtml],
+        })
+        .trim()
+      const formattedCss = prettier
+        .format(cssRule, {
+          parser: 'css',
+          plugins: [parserPostCss],
+        })
+        .trim()
+      const blob = new Blob(
+        [
+          `<template>
+${formattedHtml}
+</template>
+
+<style>
+${formattedCss}
+</style>`,
+        ],
+        { type: 'text/plain;charset=utf-8' }
+      )
+      FileSaver.saveAs(blob, 'sample.vue')
+    }
 
     onMounted(() => {
       const iframe = iframeRef.value
@@ -179,7 +254,6 @@ export default defineComponent({
     })
 
     function inputChange(event: Event) {
-      console.log('change')
       const file = document.querySelector('#getfile') as HTMLInputElement
       const fileList = file?.files
       const fileReader: FileReader = new FileReader()
@@ -204,6 +278,8 @@ export default defineComponent({
       sampleRef,
       isContextActivate,
       inputChange,
+      btnState,
+      exportComponent,
     }
   },
 })
