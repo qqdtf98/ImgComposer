@@ -145,34 +145,39 @@ ${formattedCss}
       // Load html
 
       // img 위에 selector 표시 샘플
-      // window.addEventListener('mousedown', (e: MouseEvent) => {
-      //   const selector = document.createElement('div')
-      //   selector.style.border = '2px solid white'
-      //   selector.style.position = 'fixed'
-      //   const initX = e.clientX
-      //   const initY = e.clientY
-      //   selector.style.left = e.clientX + 'px'
-      //   selector.style.top = e.clientY + 'px'
-      //   selector.style.width = '1px'
-      //   selector.style.height = '1px'
-      //   sampleRef.value.appendChild(selector)
-      //   let moveEvent: (e: MouseEvent) => void
-      //   let upEvent: (e: MouseEvent) => void
-      //   window.addEventListener(
-      //     'mousemove',
-      //     (moveEvent = (evt: MouseEvent) => {
-      //       selector.style.width = evt.clientX - initX + 'px'
-      //       selector.style.height = evt.clientY - initY + 'px'
-      //     })
-      //   )
-      //   window.addEventListener(
-      //     'mouseup',
-      //     (upEvent = () => {
-      //       window.removeEventListener('mousemove', moveEvent)
-      //       window.removeEventListener('mouseup', upEvent)
-      //     })
-      //   )
-      // })
+      window.addEventListener('mousedown', (e: MouseEvent) => {
+        const selector = document.createElement('div')
+        selector.style.border = '2px solid white'
+        selector.style.position = 'fixed'
+        const initX = e.clientX
+        const initY = e.clientY
+        selector.style.left = initX + 'px'
+        selector.style.top = initY + 'px'
+        selector.style.width = '1px'
+        selector.style.height = '1px'
+        sampleRef.value.appendChild(selector)
+        let moveEvent: (e: MouseEvent) => void
+        let upEvent: (e: MouseEvent) => void
+        window.addEventListener(
+          'mousemove',
+          (moveEvent = (evt: MouseEvent) => {
+            const deltaX = evt.clientX - initX
+            const deltaY = evt.clientY - initY
+
+            selector.style.left = initX + (deltaX < 0 ? deltaX : 0) + 'px'
+            selector.style.width = Math.abs(deltaX) + 'px'
+            selector.style.top = initY + (deltaY < 0 ? deltaY : 0) + 'px'
+            selector.style.height = Math.abs(deltaY) + 'px'
+          })
+        )
+        window.addEventListener(
+          'mouseup',
+          (upEvent = () => {
+            window.removeEventListener('mousemove', moveEvent)
+            window.removeEventListener('mouseup', upEvent)
+          })
+        )
+      })
 
       watch(
         () => vuex.fileData.selectedFile,
@@ -254,17 +259,17 @@ ${formattedCss}
     })
 
     function inputChange(event: Event) {
-      const file = document.querySelector('#getfile') as HTMLInputElement
-      const fileList = file?.files
-      const fileReader: FileReader = new FileReader()
-      if (!fileList) return
-      fileReader.readAsDataURL(fileList[0])
-      fileReader.onload = function () {
-        const preview = document.querySelector('#preview') as HTMLImageElement
-        preview.style.height = '200px'
-        preview.style.width = '200px'
-        preview.src = fileReader.result as string
-      }
+      //   const file = document.querySelector('#getfile') as HTMLInputElement
+      //   const fileList = file?.files
+      //   const fileReader: FileReader = new FileReader()
+      //   if (!fileList) return
+      //   fileReader.readAsDataURL(fileList[0])
+      //   fileReader.onload = function () {
+      //     const preview = document.querySelector('#preview') as HTMLImageElement
+      //     preview.style.height = '200px'
+      //     preview.style.width = '200px'
+      //     preview.src = fileReader.result as string
+      //   }
     }
 
     return {
