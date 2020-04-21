@@ -69,9 +69,6 @@ export default defineComponent({
       if (!iframeDoc || !iframeWindow) return
       // Load html
 
-      let iframeLoadHtml: string = ''
-      let iframeUsedCss: string = ''
-
       // img 위에 selector 표시 샘플
       // window.addEventListener('mousedown', (e: MouseEvent) => {
       //   const selector = document.createElement('div')
@@ -106,12 +103,16 @@ export default defineComponent({
         () => vuex.fileData.selectedFile,
         () => {
           if (!vuex.fileData.selectedFile) return
+
+          let iframeLoadHtml: string = ''
+          let iframeUsedCss: string = ''
           const selectedFile: File = vuex.fileData.selectedFile
           const fileList: File[] = vuex.fileData.fileList
 
           if (selectedFile?.fileType === 'html') {
             iframeLoadHtml = selectedFile.data
             iframeDoc.documentElement.innerHTML = iframeLoadHtml
+
             if (!selectedFile.htmlCssPair) return
 
             let i
@@ -125,7 +126,9 @@ export default defineComponent({
                 }
               }
             }
+
             const style = document.createElement('style')
+
             style.innerHTML = iframeUsedCss
             iframeDoc.head.appendChild(style)
           }
@@ -177,13 +180,11 @@ export default defineComponent({
 
     function inputChange(event: Event) {
       console.log('change')
-
       const file = document.querySelector('#getfile') as HTMLInputElement
       const fileList = file?.files
       const fileReader: FileReader = new FileReader()
       if (!fileList) return
       fileReader.readAsDataURL(fileList[0])
-
       fileReader.onload = function () {
         const preview = document.querySelector('#preview') as HTMLImageElement
         preview.style.height = '200px'
