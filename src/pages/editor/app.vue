@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api'
-import { useRoute, useRouter } from '../modules/vue-hooks'
+import { useRoute, useRouter } from '@/modules/vue-hooks'
 import Editor from '@/components/Editor/index.vue'
 
 export default defineComponent({

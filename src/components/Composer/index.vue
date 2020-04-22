@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div @click="htmlEditMode">HTML 편집</div>
-    <div @click="componentDesignMode">컴포넌트 설계</div>
+    <div @click="htmlMode">html</div>
+    <div @click="imgMode">img</div>
   </div>
 </template>
 
@@ -11,21 +11,20 @@ import { defineComponent } from '@vue/composition-api'
 export default defineComponent({
   setup(...args) {
     const router = args[1].root.$router
-    function htmlEditMode() {
+    function htmlMode() {
       router.push({
-        path: '/editor/project',
+        path: 'composer/html',
       })
     }
-
-    function componentDesignMode() {
+    function imgMode() {
       router.push({
-        path: '/composer',
+        path: 'composer/img',
       })
     }
 
     return {
-      htmlEditMode,
-      componentDesignMode,
+      htmlMode,
+      imgMode,
     }
   },
 })
