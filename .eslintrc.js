@@ -21,5 +21,6 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': [1],
     'no-console': ['warn', { allow: ['warn', 'error', 'info'] }],
     'import/order': [0],
+    camelcase: [0],
   },
 }

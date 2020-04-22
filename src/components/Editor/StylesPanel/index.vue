@@ -13,6 +13,11 @@
           <i class="icon-arrowhead-right" />
         </button>
       </h1>
+      <div class="wrapper">
+        <div class="wrap1"></div>
+        <div class="wrap2"></div>
+        <div class="wrap3"></div>
+      </div>
       <vue-custom-scrollbar class="layout-scroll-area">
         <StylesList class="layout-options" />
       </vue-custom-scrollbar>

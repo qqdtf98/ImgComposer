@@ -1,7 +1,7 @@
+import { Cem } from '@/modules/custom-events-manager'
 import { getMatchedCssRules } from '@/modules/get-matched-css-rules'
 import { Vuex } from '@/modules/vuex'
 import _ from 'lodash'
-import { Cem } from '@/modules/custom-events-manager'
 
 export class Marker {
   public static iframe: HTMLIFrameElement
@@ -61,6 +61,7 @@ export class Marker {
           getComputedStyle(e.target as HTMLElement)
         )
         Vuex.store.styleData.SET_TARGET(e.target as HTMLElement)
+        // TODO iframe에 html을 로드한 횟수만큼 css selector 갯수가 늘어남
         Vuex.store.editorInfo.SET_MATCHED_CSS_RULES(
           getMatchedCssRules(e.target as Element)
         )

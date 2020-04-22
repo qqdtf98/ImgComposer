@@ -4,20 +4,15 @@ export interface File {
   fileName: string
   fileType: 'html' | 'css' | 'js'
   data: string
-  htmlCssPair: cssPair[]
+  htmlCssPair: cssPair[] | null
 }
 
 export interface dataType {
-  // eslint-disable-next-line camelcase
   file_seq: number
-  // eslint-disable-next-line camelcase
   file_path: string
-  // eslint-disable-next-line camelcase
   file_name: string
-  // eslint-disable-next-line camelcase
   file_type: 'html' | 'css' | 'js'
   contents: string
-  // eslint-disable-next-line camelcase
   html_css_pair: cssType[]
 }
 
@@ -27,8 +22,14 @@ export interface cssPair {
 }
 
 export interface cssType {
-  // eslint-disable-next-line camelcase
   html_file_seq: number
-  // eslint-disable-next-line camelcase
   css_file_seq: number
+}
+
+export interface SampleType {
+  folder_seq: number
+  file_name: string
+  file_path: string
+  file_type: string
+  contents: string
 }

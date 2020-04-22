@@ -13,10 +13,13 @@
   },
   "dependencies": {
     "@types/cssom": "^0.4.0",
+    "@types/file-saver": "^2.0.1",
+    "@types/prettier": "^2.0.0",
     "@vue/composition-api": "^0.5.0",
     "axios": "^0.19.2",
     "cssom": "^0.4.4",
     "dayjs": "^1.8.23",
+    "file-saver": "^2.0.2",
     "lodash": "^4.17.15",
     "nuxt": "^2.12.2",
     "nuxt-typed-vuex": "^0.1.17",
@@ -38,7 +41,7 @@
     "eslint-plugin-nuxt": ">=0.5.2",
     "eslint-plugin-prettier": "^3.1.2",
     "node-sass": "npm:sass@^1.26.3",
-    "prettier": "^2.0.2",
+    "prettier": "^2.0.4",
     "sass-loader": "^8.0.2",
     "stylelint": "^13.2.1",
     "vuex-module-decorators": "^0.16.1"
