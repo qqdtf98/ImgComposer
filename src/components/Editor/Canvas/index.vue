@@ -1,6 +1,6 @@
 <template>
   <div :id="canvasId" ref="canvas">
-    <div
+    <!-- <div
       ref="sampleRef"
       style="border: 1px solid black; width: 500px; height: 500px;"
     >
@@ -11,7 +11,7 @@
         alt="로컬에 있는 이미지가 보여지는 영역"
       />
       <input id="getfile" type="file" accept="image/*" @change="inputChange" />
-    </div>
+    </div> -->
     <button @click="exportComponent" v-show="btnState">
       버튼
     </button>
