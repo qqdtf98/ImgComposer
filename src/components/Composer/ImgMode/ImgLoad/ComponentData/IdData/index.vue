@@ -95,6 +95,25 @@ export default defineComponent({
       ctx.emit('set-color', pickerValue.value)
     }
 
+    const isDataSelect = ref(false)
+
+    const dataSelectRef = ref<HTMLElement>(null)
+    const addBtnRef = ref<HTMLElement>(null)
+
+    function showDataList() {
+      if (!addBtnRef.value) return
+
+      isDataSelect.value = !isDataSelect.value
+      const btnRect = addBtnRef.value.getBoundingClientRect()
+      setTimeout(() => {
+        if (!isShowDataList.value) {
+          isShowDataList.value = !isShowDataList.value
+        }
+        if (!dataSelectRef.value) return
+        dataSelectRef.value.style.left = btnRect.left + 'px'
+        dataSelectRef.value.style.top = btnRect.top + btnRect.height + 'px'
+      }, 0)
+    }
     return {
       picker,
       background,
