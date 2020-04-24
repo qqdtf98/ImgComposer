@@ -13,8 +13,26 @@
           @keyup.enter="setComponentName"
         />
       </div>
-      <img class="component-data-add" src="@/assets/images/add.svg" />
-      <img class="component-data-fold" src="@/assets/images/fold.svg" />
+      <img
+        ref="addBtnRef"
+        class="component-data-add"
+        src="@/assets/images/add.svg"
+        @click="showDataList"
+      />
+      <img
+        class="component-data-fold"
+        src="@/assets/images/fold.svg"
+        @click="hideDataList"
+      />
+    </div>
+    <div v-show="isShowDataList" class="component-added-data-list">
+      <div class="component-added-data">
+        <DataList v-for="(data, i) in componentData" :key="i" :setData="data" />
+      </div>
+    </div>
+
+    <div v-show="isDataSelect" ref="dataSelectRef" class="data-option-wrapper">
+      <DataOptions @add-data="addData" />
     </div>
     <div class="chrome-wrapper" @mouseup="setPickerValue">
       <chrome-color
@@ -33,9 +51,11 @@ import { defineComponent, reactive, ref } from '@vue/composition-api'
 import { Chrome } from 'vue-color'
 import { VueColor } from '@/types/vue-color'
 import { useVuex, useNextTick } from '@/modules/vue-hooks'
+import DataOptions from '@/components/Composer/ImgMode/ImgLoad/ComponentData/IdData/DataOptions.vue'
+import DataList from '@/components/Composer/ImgMode/ImgLoad/ComponentData/IdData/DataList.vue'
 
 export default defineComponent({
-  components: { ChromeColor: Chrome },
+  components: { ChromeColor: Chrome, DataOptions, DataList },
   setup(props, ctx) {
     const nextTick = useNextTick(ctx)
 
@@ -114,6 +134,30 @@ export default defineComponent({
         dataSelectRef.value.style.top = btnRect.top + btnRect.height + 'px'
       }, 0)
     }
+
+    type ComponentDataType = {
+      type: string
+      data: string
+    }
+
+    type ComponentDataList = ComponentDataType[]
+
+    const componentData: ComponentDataList = []
+
+    function addData(data: string) {
+      isDataSelect.value = !isDataSelect.value
+      componentData.push({
+        type: data,
+        data: '',
+      })
+    }
+
+    const isShowDataList = ref(false)
+
+    function hideDataList() {
+      isShowDataList.value = !isShowDataList.value
+    }
+
     return {
       picker,
       background,
@@ -122,8 +166,16 @@ export default defineComponent({
       setComponentName,
       componentName,
       chromePicker,
+      addBtnRef,
       compoName,
       setPickerValue,
+      showDataList,
+      isDataSelect,
+      dataSelectRef,
+      addData,
+      componentData,
+      hideDataList,
+      isShowDataList,
     }
   },
 })
@@ -173,6 +225,11 @@ export default defineComponent({
         background-color: #dfdfdf;
       }
     }
+  }
+  .component-added-data-list {
+  }
+  .data-option-wrapper {
+    position: fixed;
   }
   .chrome-wrapper {
     .picker {
