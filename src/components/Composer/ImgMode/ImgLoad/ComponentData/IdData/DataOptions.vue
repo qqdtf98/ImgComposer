@@ -39,15 +39,17 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+@use '@/assets/styles/component-composer/common-styles.scss' as *;
+
 #data-options {
-  background-color: #fff;
-  box-shadow: 0px 0px 1px 1px #888888;
-  border-radius: 0.3rem;
+  @include tip-style;
   position: absolute;
   margin-top: 0.5rem;
+  padding: 5px 0;
 
   .data-option {
     cursor: pointer;
+
     &:hover {
       background-color: #e7e7e7;
     }
