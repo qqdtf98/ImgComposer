@@ -1,5 +1,153 @@
+<template>
+  <div id="img-load">
+    <div ref="sampleRef" class="img-load-box" @mousedown="drawSelector">
+      <div ref="imgLoadRef" class="preview-wrapper">
+        <img
+          id="preview"
+          src
+          width="700"
+          alt="로컬에 있는 이미지가 보여지는 영역"
+        />
+      </div>
+      <input id="getfile" type="file" accept="image/*" @change="inputChange" />
+      <ComponentData
+        v-for="(id, i) in identifierData"
+        :key="i"
+        :identifier="id"
+        @set-color="setColor($event, i)"
+      />
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent, ref, Ref, reactive } from '@vue/composition-api'
+import ComponentData from '@/components/Composer/ImgMode/ImgLoad/ComponentData/index.vue'
+import { IdentifierType, Identifiers } from '@/interfaces/any-editor-file.ts'
+import { VueColor } from '../../../../types/vue-color'
+
+export default defineComponent({
+  components: { ComponentData },
+  setup() {
+    const imgLoadRef = ref<HTMLElement>(null)
+
+    function inputChange(event: Event) {
+      const file = document.querySelector('#getfile') as HTMLInputElement
+      const fileList = file?.files
+      const fileReader: FileReader = new FileReader()
+      if (!fileList) return
+      fileReader.readAsDataURL(fileList[0])
+      fileReader.onload = function () {
+        const preview = document.querySelector('#preview') as HTMLImageElement
+        preview.style.height = '100%'
+        preview.style.width = '100%'
+        preview.src = fileReader.result as string
+      }
+    }
+
+    const sampleRef = ref() as Ref<HTMLElement>
+
+    const identifierData = reactive<Identifiers>([])
+
+    function drawSelector(e: MouseEvent) {
+      const imgElm = document.querySelector('img')
+      const imgSrc = imgElm?.src as string
+
+      if (imgSrc.startsWith('http')) {
+        return
+      }
+
+      const initX = e.clientX
+      const initY = e.clientY
+
+      identifierData.push({
+        left: initX,
+        top: initY,
+        width: 0,
+        height: 0,
+        color: 'black',
+        calWidth: 0,
+        calHeight: 0,
+        calLeft: 0,
+        calTop: 0,
+        state: false,
+      })
+
+      let moveEvent: (e: MouseEvent) => void
+      let upEvent: (e: MouseEvent) => void
+
+      const index = identifierData.length - 1
+
+      window.addEventListener(
+        'mousemove',
+        (moveEvent = (evt: MouseEvent) => {
+          const deltaX = evt.clientX - initX
+          const deltaY = evt.clientY - initY
+
+          identifierData[index].left = initX + (deltaX < 0 ? deltaX : 0)
+          identifierData[index].top = initY + (deltaY < 0 ? deltaY : 0)
+          identifierData[index].width = Math.abs(deltaX)
+          identifierData[index].height = Math.abs(deltaY)
+        })
+      )
+      window.addEventListener(
+        'mouseup',
+        (upEvent = () => {
+          window.removeEventListener('mousemove', moveEvent)
+          window.removeEventListener('mouseup', upEvent)
+
+          if (!imgLoadRef.value) return
+          const imgRect = imgLoadRef.value.getBoundingClientRect()
+
+          identifierData[index].calLeft =
+            identifierData[index].left / imgRect.left
+          identifierData[index].calTop = identifierData[index].top / imgRect.top
+          identifierData[index].calWidth =
+            identifierData[index].width / imgRect.width
+          identifierData[index].calHeight =
+            identifierData[index].height / imgRect.height
+          identifierData[index].state = true
+        })
+      )
+    }
+
     function setColor(color: string, index: number) {
       if (!identifierData[index]) return
       identifierData[index].color = color
       // TODO 색깔 선택이 한번씩 밀리는 문제 해결하기
     }
+
+    return {
+      inputChange,
+      sampleRef,
+      imgLoadRef,
+      drawSelector,
+      identifierData,
+      setColor,
+    }
+  },
+})
+</script>
+
+<style lang="scss">
+#img-load {
+  width: 100%;
+  height: calc(100vh - 56px);
+  .img-load-box {
+    width: 100%;
+    height: 100%;
+    .preview-wrapper {
+      width: 100%;
+      height: 100%;
+      border: 1px solid black;
+      user-select: none;
+      pointer-events: none;
+    }
+    #getfile {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+    }
+  }
+}
+</style>
