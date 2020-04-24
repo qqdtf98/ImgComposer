@@ -33,3 +33,17 @@ export interface SampleType {
   file_type: string
   contents: string
 }
+
+export interface IdentifierType {
+  left: number
+  top: number
+  width: number
+  height: number
+  color: string
+  calWidth: number
+  calHeight: number
+  calLeft: number
+  calTop: number
+  state: boolean
+}
+export type Identifiers = IdentifierType[]
