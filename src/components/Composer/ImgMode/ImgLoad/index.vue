@@ -136,6 +136,10 @@ export default defineComponent({
           window.removeEventListener('mousemove', moveEvent)
           window.removeEventListener('mouseup', upEvent)
 
+          if (!identifierData[index]) {
+            index -= 1
+          }
+
           const idnf = identifierData[index]
 
           if (!idnf) return
