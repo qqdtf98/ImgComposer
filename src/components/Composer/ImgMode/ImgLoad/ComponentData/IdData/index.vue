@@ -120,9 +120,7 @@ export default defineComponent({
       const target = e.target as HTMLInputElement
       const hide = document.querySelector('#hide') as HTMLElement
       hide.innerHTML = target.value
-      const width = hide.offsetWidth + 'px'
-      console.log(hide.offsetWidth + 'px')
-      target.style.width = width
+      target.style.width = hide.offsetWidth + 'px'
     }
 
     return {
@@ -174,7 +172,7 @@ export default defineComponent({
       #hide {
         width: auto;
         display: inline-block;
-        // visibility: hidden;
+        visibility: hidden;
         position: fixed;
         top: 10px;
         overflow: auto;
