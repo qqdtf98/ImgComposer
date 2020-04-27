@@ -81,6 +81,25 @@ export default defineComponent({
       componentName.value = target.value
     }
 
+    // Get injected index value and removing function
+    // provided by parent components
+    const compNameElm = ref<HTMLInputElement>(null)
+    const index = inject('identifierIndex')
+    const removeIdentifier: any = inject('removeIdentifier')
+
+    onMounted(() => {
+      // Automatically focus component name input after mounted
+      compNameElm.value?.focus()
+      // Add blur event
+      compNameElm.value?.addEventListener('blur', () => {
+        // When the input value is empty
+        // remove the identifier itself
+        if (compNameElm.value?.value.trim().length === 0) {
+          removeIdentifier(index)
+        }
+      })
+    })
+
     const isDataSelect = ref(false)
 
     const dataSelectRef = ref<HTMLElement>(null)
@@ -136,6 +155,7 @@ export default defineComponent({
       activateChromePicker,
       setComponentName,
       componentName,
+      compNameElm,
       addBtnRef,
       showDataList,
       isDataSelect,
