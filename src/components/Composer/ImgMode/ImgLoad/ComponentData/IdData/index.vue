@@ -8,10 +8,12 @@
           @click="activateChromePicker"
         />
         <input
-          ref="compoName"
           class="component-name"
+          type="text"
+          @input="resizeInputField"
           @keyup.enter="setComponentName"
         />
+        <div id="hide"></div>
       </div>
       <img
         ref="addBtnRef"
@@ -158,6 +160,15 @@ export default defineComponent({
       isShowDataList.value = !isShowDataList.value
     }
 
+    function resizeInputField(e: InputEvent) {
+      const target = e.target as HTMLInputElement
+      const hide = document.querySelector('#hide') as HTMLElement
+      hide.innerHTML = target.value
+      const width = hide.offsetWidth + 'px'
+      console.log(hide.offsetWidth + 'px')
+      target.style.width = width
+    }
+
     return {
       picker,
       background,
@@ -176,6 +187,7 @@ export default defineComponent({
       componentData,
       hideDataList,
       isShowDataList,
+      resizeInputField,
     }
   },
 })
@@ -208,10 +220,23 @@ export default defineComponent({
         margin-left: 0.5rem;
       }
 
+      #hide {
+        width: auto;
+        display: inline-block;
+        // visibility: hidden;
+        position: fixed;
+        top: 10px;
+        overflow: auto;
+        font-size: 13px;
+        font-weight: 600;
+        font-family: inherit;
+      }
+
       .component-name {
+        font-family: inherit;
         height: 1.5rem;
         margin-left: 0.5rem;
-        width: 4rem;
+        margin-right: 0.5rem;
         font-weight: 600;
         font-size: 13px;
       }
