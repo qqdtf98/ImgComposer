@@ -8,7 +8,7 @@
           @click="activateChromePicker"
         />
         <input
-          ref="compoName"
+          ref="compNameElm"
           class="component-name"
           @keyup.enter="setComponentName"
         />
@@ -47,16 +47,23 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref } from '@vue/composition-api'
+import {
+  defineComponent,
+  reactive,
+  ref,
+  onMounted,
+  inject,
+} from '@vue/composition-api'
 import { Chrome } from 'vue-color'
 import { VueColor } from '@/types/vue-color'
-import { useVuex, useNextTick } from '@/modules/vue-hooks'
+import { useNextTick } from '@/modules/vue-hooks'
 import DataOptions from '@/components/Composer/ImgMode/ImgLoad/ComponentData/IdData/DataOptions.vue'
 import DataList from '@/components/Composer/ImgMode/ImgLoad/ComponentData/IdData/DataList.vue'
 
 export default defineComponent({
   components: { ChromeColor: Chrome, DataOptions, DataList },
-  setup(props, ctx) {
+  setup(...args) {
+    const ctx = args[1]
     const nextTick = useNextTick(ctx)
 
     const picker = reactive({
@@ -77,6 +84,7 @@ export default defineComponent({
       } else {
         picker.isChromePicker = true
       }
+
       nextTick(() => {
         let target = e.target as HTMLElement
         target = (e.target as HTMLElement).closest(
@@ -84,10 +92,12 @@ export default defineComponent({
         ) as HTMLElement
         let i
         let newHeight = 20
+
         if (target) {
           for (i = 0; i < target.children.length; i++) {
             newHeight += target.children[i].getBoundingClientRect().height
           }
+
           target.style.height = newHeight + 'px'
         }
       })
@@ -98,22 +108,40 @@ export default defineComponent({
     function setComponentName(e: InputEvent) {
       e.preventDefault()
       const target = e.target as HTMLInputElement
-      console.log(target.value)
       componentName.value = target.value
     }
 
     const chromePicker = ref<HTMLElement>(null)
-    const compoName = ref<HTMLElement>(null)
+    const compNameElm = ref<HTMLInputElement>(null)
     const pickerValue = ref('')
 
-    function setPickerValue(e: MouseEvent) {
+    function setPickerValue() {
       if (!chromePicker.value) return
-      if (!compoName.value) return
+      if (!compNameElm.value) return
+
       chromePicker.value.style.backgroundImage = 'none'
       chromePicker.value.style.backgroundColor = pickerValue.value
-      compoName.value.style.color = pickerValue.value
+      compNameElm.value.style.color = pickerValue.value
       ctx.emit('set-color', pickerValue.value)
     }
+
+    // Get injected index value and removing function
+    // provided by parent components
+    const index = inject('identifierIndex')
+    const removeIdentifier: any = inject('removeIdentifier')
+
+    onMounted(() => {
+      // Automatically focus component name input after mounted
+      compNameElm.value?.focus()
+      // Add blur event
+      compNameElm.value?.addEventListener('blur', () => {
+        // When the input value is empty
+        // remove the identifier itself
+        if (compNameElm.value?.value.trim().length === 0) {
+          removeIdentifier(index)
+        }
+      })
+    })
 
     const isDataSelect = ref(false)
 
@@ -167,7 +195,7 @@ export default defineComponent({
       componentName,
       chromePicker,
       addBtnRef,
-      compoName,
+      compNameElm,
       setPickerValue,
       showDataList,
       isDataSelect,
@@ -186,6 +214,7 @@ export default defineComponent({
 @use '@/assets/styles/component-composer/common-styles.scss' as *;
 
 #component-data {
+  user-select: none;
   margin-top: 0.5rem;
 
   .component-basic-data {
