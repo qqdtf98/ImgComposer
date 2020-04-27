@@ -19,7 +19,7 @@
         }"
       />
       <IdData
-        v-show="identifier.state"
+        v-if="identifier.state"
         class="component-data"
         :style="{
           left: identifier.left + 'px',
@@ -32,11 +32,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api'
-import { IdentifierType, Identifiers } from '@/interfaces/any-editor-file.ts'
+import { defineComponent, provide } from '@vue/composition-api'
+import { IdentifierType } from '@/interfaces/any-editor-file.ts'
 import IdData from '@/components/Composer/ImgMode/ImgLoad/ComponentData/IdData/index.vue'
 import Identifier from '@/components/Composer/ImgMode/ImgLoad/ComponentData/Identifier.vue'
-import { VueColor } from '@/types/vue-color'
 
 export default defineComponent({
   components: { Identifier, IdData },
@@ -48,6 +47,8 @@ export default defineComponent({
     const { identifier } = props as {
       identifier: IdentifierType
     }
+
+    provide('identifierIndex', identifier.index)
 
     function setColor(color: string) {
       ctx.emit('set-color', color)

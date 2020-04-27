@@ -35,6 +35,7 @@ export interface SampleType {
 }
 
 export interface IdentifierType {
+  index: number
   left: number
   top: number
   width: number

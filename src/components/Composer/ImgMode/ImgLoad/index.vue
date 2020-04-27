@@ -21,17 +21,22 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, Ref, reactive } from '@vue/composition-api'
+import {
+  defineComponent,
+  ref,
+  Ref,
+  reactive,
+  provide,
+} from '@vue/composition-api'
 import ComponentData from '@/components/Composer/ImgMode/ImgLoad/ComponentData/index.vue'
-import { IdentifierType, Identifiers } from '@/interfaces/any-editor-file.ts'
-import { VueColor } from '@/types/vue-color'
+import { Identifiers } from '@/interfaces/any-editor-file.ts'
 
 export default defineComponent({
   components: { ComponentData },
   setup() {
     const imgLoadRef = ref<HTMLElement>(null)
 
-    function inputChange(event: Event) {
+    function inputChange() {
       const file = document.querySelector('#getfile') as HTMLInputElement
       const fileList = file?.files
       const fileReader: FileReader = new FileReader()
@@ -49,6 +54,14 @@ export default defineComponent({
 
     const identifierData = reactive<Identifiers>([])
 
+    // Create a remove function and provide it to every child component
+    // to make them available to remove identifier
+    function removeIdentifier(index: number) {
+      identifierData.splice(index, 1)
+    }
+
+    provide('removeIdentifier', removeIdentifier)
+
     function drawSelector(e: MouseEvent) {
       const imgElm = document.querySelector('img')
       const imgSrc = imgElm?.src as string
@@ -61,6 +74,7 @@ export default defineComponent({
       const initY = e.clientY
 
       identifierData.push({
+        index: identifierData.length,
         left: initX,
         top: initY,
         width: 0,
@@ -76,13 +90,19 @@ export default defineComponent({
       let moveEvent: (e: MouseEvent) => void
       let upEvent: (e: MouseEvent) => void
 
-      const index = identifierData.length - 1
+      let index = identifierData.length - 1
 
       window.addEventListener(
         'mousemove',
         (moveEvent = (evt: MouseEvent) => {
           const deltaX = evt.clientX - initX
           const deltaY = evt.clientY - initY
+
+          // When the empty component name identifier has been removed
+          // shift index to correctly target the current identifier
+          if (!identifierData[index]) {
+            index -= 1
+          }
 
           identifierData[index].left = initX + (deltaX < 0 ? deltaX : 0)
           identifierData[index].top = initY + (deltaY < 0 ? deltaY : 0)
@@ -96,7 +116,23 @@ export default defineComponent({
           window.removeEventListener('mousemove', moveEvent)
           window.removeEventListener('mouseup', upEvent)
 
+          const idnf = identifierData[index]
+
+          if (!idnf) return
+
+          // If the drawn area is smaller than threshold, remove it
+          const creationSizeThreshold = 15
+
+          if (
+            idnf.width < creationSizeThreshold ||
+            idnf.height < creationSizeThreshold
+          ) {
+            identifierData.splice(index, 1)
+            return
+          }
+
           if (!imgLoadRef.value) return
+
           const imgRect = imgLoadRef.value.getBoundingClientRect()
 
           identifierData[index].calLeft =
