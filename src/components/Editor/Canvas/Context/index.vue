@@ -77,7 +77,7 @@ export default defineComponent({
       padding-right: 0.7rem;
       padding-left: 0.7rem;
       font-size: 0.9rem;
-      border-top: 1.5px solid black;
+      border-top: 1px solid black;
 
       &:hover {
         background-color: #5a5a5e;
