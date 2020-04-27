@@ -3,8 +3,7 @@
     <div class="component-basic-data">
       <div class="color-name-select">
         <button
-          ref="chromePicker"
-          class="chrome-picker"
+          class="chrome-picker compo-picker"
           @click="activateChromePicker"
         />
         <input
@@ -36,15 +35,6 @@
     <div v-show="isDataSelect" ref="dataSelectRef" class="data-option-wrapper">
       <DataOptions @add-data="addData" />
     </div>
-    <div class="chrome-wrapper" @mouseup="setPickerValue">
-      <chrome-color
-        v-show="picker.isChromePicker"
-        v-model="background.backgroundColor"
-        class="picker"
-        :value="background.backgroundColor"
-        @input="getPickerValue"
-      ></chrome-color>
-    </div>
   </div>
 </template>
 
@@ -52,7 +42,7 @@
 import { defineComponent, reactive, ref } from '@vue/composition-api'
 import { Chrome } from 'vue-color'
 import { VueColor } from '@/types/vue-color'
-import { useVuex, useNextTick } from '@/modules/vue-hooks'
+import { useNextTick } from '@/modules/vue-hooks'
 import DataOptions from '@/components/Composer/ImgMode/ImgLoad/ComponentData/IdData/DataOptions.vue'
 import DataList from '@/components/Composer/ImgMode/ImgLoad/ComponentData/IdData/DataList.vue'
 
@@ -65,34 +55,13 @@ export default defineComponent({
       isChromePicker: false,
     })
 
-    const background = reactive({
-      backgroundColor: '#000',
-    })
-
-    function getPickerValue(color: VueColor) {
-      pickerValue.value = color.hex
-    }
-
     function activateChromePicker(e: MouseEvent) {
       if (picker.isChromePicker) {
         picker.isChromePicker = false
       } else {
         picker.isChromePicker = true
       }
-      nextTick(() => {
-        let target = e.target as HTMLElement
-        target = (e.target as HTMLElement).closest(
-          '.layout-list-box'
-        ) as HTMLElement
-        let i
-        let newHeight = 20
-        if (target) {
-          for (i = 0; i < target.children.length; i++) {
-            newHeight += target.children[i].getBoundingClientRect().height
-          }
-          target.style.height = newHeight + 'px'
-        }
-      })
+      ctx.emit('activate-color', picker.isChromePicker)
     }
 
     const componentName = ref('')
@@ -102,19 +71,6 @@ export default defineComponent({
       const target = e.target as HTMLInputElement
       console.log(target.value)
       componentName.value = target.value
-    }
-
-    const chromePicker = ref<HTMLElement>(null)
-    const compoName = ref<HTMLElement>(null)
-    const pickerValue = ref('')
-
-    function setPickerValue(e: MouseEvent) {
-      if (!chromePicker.value) return
-      if (!compoName.value) return
-      chromePicker.value.style.backgroundImage = 'none'
-      chromePicker.value.style.backgroundColor = pickerValue.value
-      compoName.value.style.color = pickerValue.value
-      ctx.emit('set-color', pickerValue.value)
     }
 
     const isDataSelect = ref(false)
@@ -171,15 +127,10 @@ export default defineComponent({
 
     return {
       picker,
-      background,
-      getPickerValue,
       activateChromePicker,
       setComponentName,
       componentName,
-      chromePicker,
       addBtnRef,
-      compoName,
-      setPickerValue,
       showDataList,
       isDataSelect,
       dataSelectRef,
@@ -262,12 +213,6 @@ export default defineComponent({
 
   .data-option-wrapper {
     position: fixed;
-  }
-
-  .chrome-wrapper {
-    .picker {
-      margin-top: 0.5rem;
-    }
   }
 }
 </style>

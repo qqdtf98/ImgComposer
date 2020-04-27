@@ -26,6 +26,7 @@
           top: identifier.top + identifier.height + 'px',
         }"
         @set-color="setColor"
+        @activate-color="activateColor"
       />
     </div>
   </div>
@@ -53,8 +54,13 @@ export default defineComponent({
       ctx.emit('set-color', color)
     }
 
+    function activateColor(state: boolean) {
+      ctx.emit('activate-color', state)
+    }
+
     return {
       setColor,
+      activateColor,
     }
   },
 })
