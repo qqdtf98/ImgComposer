@@ -7,6 +7,7 @@
           @click="activateChromePicker"
         />
         <input
+          ref="compNameElm"
           class="component-name"
           type="text"
           @input="resizeInputField"
@@ -39,7 +40,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref } from '@vue/composition-api'
+import {
+  defineComponent,
+  reactive,
+  ref,
+  onMounted,
+  inject,
+} from '@vue/composition-api'
 import { Chrome } from 'vue-color'
 import { VueColor } from '@/types/vue-color'
 import { useNextTick } from '@/modules/vue-hooks'
@@ -48,7 +55,8 @@ import DataList from '@/components/Composer/ImgMode/ImgLoad/ComponentData/IdData
 
 export default defineComponent({
   components: { ChromeColor: Chrome, DataOptions, DataList },
-  setup(props, ctx) {
+  setup(...args) {
+    const ctx = args[1]
     const nextTick = useNextTick(ctx)
 
     const picker = reactive({
@@ -61,6 +69,7 @@ export default defineComponent({
       } else {
         picker.isChromePicker = true
       }
+
       ctx.emit('activate-color', picker.isChromePicker)
     }
 
@@ -69,7 +78,6 @@ export default defineComponent({
     function setComponentName(e: InputEvent) {
       e.preventDefault()
       const target = e.target as HTMLInputElement
-      console.log(target.value)
       componentName.value = target.value
     }
 
@@ -147,6 +155,7 @@ export default defineComponent({
 @use '@/assets/styles/component-composer/common-styles.scss' as *;
 
 #component-data {
+  user-select: none;
   margin-top: 0.5rem;
 
   .component-basic-data {
