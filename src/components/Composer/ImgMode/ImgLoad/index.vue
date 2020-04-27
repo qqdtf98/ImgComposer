@@ -45,6 +45,9 @@ import {
 } from '@vue/composition-api'
 import ComponentData from '@/components/Composer/ImgMode/ImgLoad/ComponentData/index.vue'
 import { Identifiers } from '@/interfaces/any-editor-file.ts'
+import { VueColor } from '@/types/vue-color'
+import { useNextTick } from '@/modules/vue-hooks'
+import { Chrome } from 'vue-color'
 
 export default defineComponent({
   components: { ComponentData, ChromeColor: Chrome },
