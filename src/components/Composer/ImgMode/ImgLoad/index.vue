@@ -15,7 +15,22 @@
         :key="i"
         :identifier="id"
         @set-color="setColor($event, i)"
+        @activate-color="activateChromePicker($event, i)"
       />
+      <div
+        ref="pickerRef"
+        class="chrome-wrapper"
+        @mouseup="setPickerValue"
+        @mousedown.stop
+      >
+        <chrome-color
+          v-show="picker.isChromePicker"
+          v-model="background.backgroundColor"
+          class="picker compo-colorpicker"
+          :value="background.backgroundColor"
+          @input="getPickerValue"
+        ></chrome-color>
+      </div>
     </div>
   </div>
 </template>
@@ -32,8 +47,10 @@ import ComponentData from '@/components/Composer/ImgMode/ImgLoad/ComponentData/i
 import { Identifiers } from '@/interfaces/any-editor-file.ts'
 
 export default defineComponent({
-  components: { ComponentData },
-  setup() {
+  components: { ComponentData, ChromeColor: Chrome },
+  setup(props, ctx) {
+    const nextTick = useNextTick(ctx)
+
     const imgLoadRef = ref<HTMLElement>(null)
 
     function inputChange() {
@@ -147,10 +164,53 @@ export default defineComponent({
       )
     }
 
-    function setColor(color: string, index: number) {
-      if (!identifierData[index]) return
-      identifierData[index].color = color
-      // TODO 색깔 선택이 한번씩 밀리는 문제 해결하기
+    const picker = reactive({
+      isChromePicker: false,
+    })
+
+    const background = reactive({
+      backgroundColor: '#000',
+    })
+
+    function getPickerValue(color: VueColor) {
+      setPickerValue(color.hex)
+    }
+
+    const pickerRef = ref<HTMLElement>(null)
+
+    const compoIndex = ref(-1)
+
+    function setPickerValue(color: string) {
+      const chromePicker = document.querySelectorAll(
+        '.compo-picker'
+      ) as NodeListOf<HTMLElement>
+      const compoName = document.querySelectorAll(
+        '.component-name'
+      ) as NodeListOf<HTMLInputElement>
+
+      if (!chromePicker) return
+
+      if (!compoName) return
+      chromePicker[compoIndex.value].style.backgroundImage = 'none'
+      chromePicker[compoIndex.value].style.backgroundColor = color
+      compoName[compoIndex.value].style.color = color
+      if (!identifierData[compoIndex.value]) return
+      identifierData[compoIndex.value].color = color
+    }
+
+    function activateChromePicker(state: boolean, index: number) {
+      if (!pickerRef.value) return
+      picker.isChromePicker = state
+      compoIndex.value = index
+      const inputList = document.querySelectorAll(
+        '.component-basic-data'
+      ) as NodeListOf<HTMLElement>
+      pickerRef.value.style.left =
+        inputList[index].getBoundingClientRect().left + 'px'
+      pickerRef.value.style.top =
+        inputList[index].getBoundingClientRect().top +
+        inputList[index].getBoundingClientRect().height +
+        'px'
     }
 
     return {
@@ -159,7 +219,12 @@ export default defineComponent({
       imgLoadRef,
       drawSelector,
       identifierData,
-      setColor,
+      picker,
+      background,
+      getPickerValue,
+      setPickerValue,
+      activateChromePicker,
+      pickerRef,
     }
   },
 })
@@ -179,6 +244,12 @@ export default defineComponent({
       position: fixed;
       top: 50%;
       left: 50%;
+    }
+    .chrome-wrapper {
+      position: fixed;
+      .compo-colorpicker {
+        margin-top: 0.5rem;
+      }
     }
   }
 }

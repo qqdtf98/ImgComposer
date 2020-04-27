@@ -3,15 +3,17 @@
     <div class="component-basic-data">
       <div class="color-name-select">
         <button
-          ref="chromePicker"
-          class="chrome-picker"
+          class="chrome-picker compo-picker"
           @click="activateChromePicker"
         />
         <input
           ref="compNameElm"
           class="component-name"
+          type="text"
+          @input="resizeInputField"
           @keyup.enter="setComponentName"
         />
+        <div id="hide"></div>
       </div>
       <img
         ref="addBtnRef"
@@ -33,15 +35,6 @@
 
     <div v-show="isDataSelect" ref="dataSelectRef" class="data-option-wrapper">
       <DataOptions @add-data="addData" />
-    </div>
-    <div class="chrome-wrapper" @mouseup="setPickerValue">
-      <chrome-color
-        v-show="picker.isChromePicker"
-        v-model="background.backgroundColor"
-        class="picker"
-        :value="background.backgroundColor"
-        @input="getPickerValue"
-      ></chrome-color>
     </div>
   </div>
 </template>
@@ -70,14 +63,6 @@ export default defineComponent({
       isChromePicker: false,
     })
 
-    const background = reactive({
-      backgroundColor: '#000',
-    })
-
-    function getPickerValue(color: VueColor) {
-      pickerValue.value = color.hex
-    }
-
     function activateChromePicker(e: MouseEvent) {
       if (picker.isChromePicker) {
         picker.isChromePicker = false
@@ -85,22 +70,7 @@ export default defineComponent({
         picker.isChromePicker = true
       }
 
-      nextTick(() => {
-        let target = e.target as HTMLElement
-        target = (e.target as HTMLElement).closest(
-          '.layout-list-box'
-        ) as HTMLElement
-        let i
-        let newHeight = 20
-
-        if (target) {
-          for (i = 0; i < target.children.length; i++) {
-            newHeight += target.children[i].getBoundingClientRect().height
-          }
-
-          target.style.height = newHeight + 'px'
-        }
-      })
+      ctx.emit('activate-color', picker.isChromePicker)
     }
 
     const componentName = ref('')
@@ -110,38 +80,6 @@ export default defineComponent({
       const target = e.target as HTMLInputElement
       componentName.value = target.value
     }
-
-    const chromePicker = ref<HTMLElement>(null)
-    const compNameElm = ref<HTMLInputElement>(null)
-    const pickerValue = ref('')
-
-    function setPickerValue() {
-      if (!chromePicker.value) return
-      if (!compNameElm.value) return
-
-      chromePicker.value.style.backgroundImage = 'none'
-      chromePicker.value.style.backgroundColor = pickerValue.value
-      compNameElm.value.style.color = pickerValue.value
-      ctx.emit('set-color', pickerValue.value)
-    }
-
-    // Get injected index value and removing function
-    // provided by parent components
-    const index = inject('identifierIndex')
-    const removeIdentifier: any = inject('removeIdentifier')
-
-    onMounted(() => {
-      // Automatically focus component name input after mounted
-      compNameElm.value?.focus()
-      // Add blur event
-      compNameElm.value?.addEventListener('blur', () => {
-        // When the input value is empty
-        // remove the identifier itself
-        if (compNameElm.value?.value.trim().length === 0) {
-          removeIdentifier(index)
-        }
-      })
-    })
 
     const isDataSelect = ref(false)
 
@@ -186,17 +124,19 @@ export default defineComponent({
       isShowDataList.value = !isShowDataList.value
     }
 
+    function resizeInputField(e: InputEvent) {
+      const target = e.target as HTMLInputElement
+      const hide = document.querySelector('#hide') as HTMLElement
+      hide.innerHTML = target.value
+      target.style.width = hide.offsetWidth + 'px'
+    }
+
     return {
       picker,
-      background,
-      getPickerValue,
       activateChromePicker,
       setComponentName,
       componentName,
-      chromePicker,
       addBtnRef,
-      compNameElm,
-      setPickerValue,
       showDataList,
       isDataSelect,
       dataSelectRef,
@@ -204,6 +144,7 @@ export default defineComponent({
       componentData,
       hideDataList,
       isShowDataList,
+      resizeInputField,
     }
   },
 })
@@ -237,10 +178,23 @@ export default defineComponent({
         margin-left: 0.5rem;
       }
 
+      #hide {
+        width: auto;
+        display: inline-block;
+        visibility: hidden;
+        position: fixed;
+        top: 10px;
+        overflow: auto;
+        font-size: 13px;
+        font-weight: 600;
+        font-family: inherit;
+      }
+
       .component-name {
+        font-family: inherit;
         height: 1.5rem;
         margin-left: 0.5rem;
-        width: 4rem;
+        margin-right: 0.5rem;
         font-weight: 600;
         font-size: 13px;
       }
@@ -266,12 +220,6 @@ export default defineComponent({
 
   .data-option-wrapper {
     position: fixed;
-  }
-
-  .chrome-wrapper {
-    .picker {
-      margin-top: 0.5rem;
-    }
   }
 }
 </style>
