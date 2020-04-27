@@ -183,54 +183,62 @@ export default defineComponent({
 
 <style lang="scss">
 @use '@/assets/styles/package' as *;
+@use '@/assets/styles/component-composer/common-styles.scss' as *;
 
 #component-data {
   margin-top: 0.5rem;
+
   .component-basic-data {
     display: flex;
     flex-direction: row;
     align-items: center;
+
     .color-name-select {
       display: flex;
       flex-direction: row;
-      background-color: #fff;
-      box-shadow: 0px 0px 1px 1px #888888;
-      border-radius: 0.25rem;
+      @include tip-style;
       align-items: center;
-      height: 2rem;
+      height: 32px;
 
       .chrome-picker {
-        width: 1.2rem;
-        height: 1.2rem;
-        border-radius: 0.3rem;
+        $size: 13px;
+        width: $size;
+        height: $size;
+        border-radius: 2px;
         margin-left: 0.5rem;
       }
+
       .component-name {
         height: 1.5rem;
         margin-left: 0.5rem;
         width: 4rem;
+        font-weight: 600;
+        font-size: 13px;
       }
     }
+
     .component-data-add,
     .component-data-fold {
-      background-color: #fff;
-      box-shadow: 0px 0px 1px 1px #888888;
-      border-radius: 0.25rem;
+      @include tip-style;
       height: 2rem;
       width: 2rem;
       padding: 0.65rem;
       margin-left: 0.5rem;
+
       &:hover {
         cursor: pointer;
         background-color: #dfdfdf;
       }
     }
   }
+
   .component-added-data-list {
   }
+
   .data-option-wrapper {
     position: fixed;
   }
+
   .chrome-wrapper {
     .picker {
       margin-top: 0.5rem;

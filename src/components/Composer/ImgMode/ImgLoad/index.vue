@@ -24,7 +24,7 @@
 import { defineComponent, ref, Ref, reactive } from '@vue/composition-api'
 import ComponentData from '@/components/Composer/ImgMode/ImgLoad/ComponentData/index.vue'
 import { IdentifierType, Identifiers } from '@/interfaces/any-editor-file.ts'
-import { VueColor } from '../../../../types/vue-color'
+import { VueColor } from '@/types/vue-color'
 
 export default defineComponent({
   components: { ComponentData },
@@ -131,18 +131,14 @@ export default defineComponent({
 
 <style lang="scss">
 #img-load {
-  width: 100%;
-  height: calc(100vh - 56px);
   .img-load-box {
-    width: 100%;
-    height: 100%;
     .preview-wrapper {
-      width: 100%;
-      height: 100%;
       border: 1px solid black;
       user-select: none;
       pointer-events: none;
+      display: flex;
     }
+
     #getfile {
       position: fixed;
       top: 50%;

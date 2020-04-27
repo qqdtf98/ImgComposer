@@ -32,6 +32,11 @@ input {
   appearance: none;
 }
 
+input,
+textarea {
+  outline: none;
+}
+
 button {
   border: none;
   background: none;
