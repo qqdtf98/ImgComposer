@@ -1,7 +1,9 @@
-import { getAccessorType, mutationTree } from 'nuxt-typed-vuex'
+import * as composer from './composer'
 import * as editorInfo from './editorInfo'
 import * as fileData from './fileData'
 import * as styleData from './styleData'
+
+import { getAccessorType, mutationTree } from 'nuxt-typed-vuex'
 
 export const state = () => ({
   rootState: '',
@@ -20,5 +22,6 @@ export const accessorType = getAccessorType({
     styleData,
     editorInfo,
     fileData,
+    composer,
   },
 })

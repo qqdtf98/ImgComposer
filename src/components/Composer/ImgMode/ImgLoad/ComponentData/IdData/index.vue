@@ -27,7 +27,10 @@
         @click="hideDataList"
       />
     </div>
-    <div v-show="isShowDataList" class="component-added-data-list">
+    <div
+      v-show="isShowDataList && store.composer.optionsViewMode === 'visible'"
+      class="component-added-data-list"
+    >
       <div class="component-added-data">
         <DataList v-for="(data, i) in componentData" :key="i" :setData="data" />
       </div>
@@ -48,8 +51,7 @@ import {
   inject,
 } from '@vue/composition-api'
 import { Chrome } from 'vue-color'
-import { VueColor } from '@/types/vue-color'
-import { useNextTick } from '@/modules/vue-hooks'
+import { useStore } from '@/modules/vue-hooks'
 import DataOptions from '@/components/Composer/ImgMode/ImgLoad/ComponentData/IdData/DataOptions.vue'
 import DataList from '@/components/Composer/ImgMode/ImgLoad/ComponentData/IdData/DataList.vue'
 
@@ -57,13 +59,13 @@ export default defineComponent({
   components: { ChromeColor: Chrome, DataOptions, DataList },
   setup(...args) {
     const ctx = args[1]
-    const nextTick = useNextTick(ctx)
+    const store = useStore(ctx)
 
     const picker = reactive({
       isChromePicker: false,
     })
 
-    function activateChromePicker(e: MouseEvent) {
+    function activateChromePicker() {
       if (picker.isChromePicker) {
         picker.isChromePicker = false
       } else {
@@ -151,6 +153,7 @@ export default defineComponent({
     }
 
     return {
+      store,
       picker,
       activateChromePicker,
       setComponentName,
