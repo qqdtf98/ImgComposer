@@ -135,6 +135,7 @@ export default defineComponent({
       transition: all 300ms ease;
 
       .layout-text {
+        font-weight: 700;
         position: absolute;
         left: 0;
       }
