@@ -46,9 +46,11 @@ export default defineComponent({
   align-items: center;
   justify-content: center;
   margin-top: 7px;
+
   .position-property {
     @include auto-distinct-bg-color;
     @include auto-text-color;
+    font-size: 13px;
     margin-right: 0.2rem;
     margin-left: 0.2rem;
     width: 5rem;
@@ -57,6 +59,7 @@ export default defineComponent({
     padding-top: 0.6rem;
     padding-bottom: 0.6rem;
     border-radius: 0.3rem;
+
     &:hover {
       background-color: #1471ff;
     }

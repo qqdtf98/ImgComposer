@@ -59,7 +59,9 @@ export default defineComponent({
   padding-bottom: 0.2rem;
 
   .rules-title {
-    font-size: 1.1rem;
+    font-size: 1rem;
+    font-weight: 800;
+    line-height: 1;
     width: 100%;
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
@@ -77,10 +79,10 @@ export default defineComponent({
       padding-right: 0.7rem;
       padding-left: 0.7rem;
       font-size: 0.9rem;
-      border-top: 1.5px solid black;
+      border-top: 1px solid black;
 
       &:hover {
-        background-color: #5a5a5e;
+        background-color: #000;
         cursor: pointer;
       }
     }
