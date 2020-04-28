@@ -17,6 +17,7 @@
         @set-color="setColor($event, i)"
         @activate-color="activateChromePicker($event, i)"
       />
+      <CompoLink v-show="isCompoLink" />
       <div
         ref="pickerRef"
         class="chrome-wrapper"

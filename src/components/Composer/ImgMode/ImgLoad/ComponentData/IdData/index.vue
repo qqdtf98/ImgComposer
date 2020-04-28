@@ -22,6 +22,11 @@
         @click="showDataList"
       />
       <img
+        class="component-data-link"
+        src="@/assets/images/Link.svg"
+        @click="addCompoLink"
+      />
+      <img
         class="component-data-fold"
         src="@/assets/images/fold.svg"
         @click="hideDataList"
@@ -52,6 +57,7 @@ import { VueColor } from '@/types/vue-color'
 import { useNextTick } from '@/modules/vue-hooks'
 import DataOptions from '@/components/Composer/ImgMode/ImgLoad/ComponentData/IdData/DataOptions.vue'
 import DataList from '@/components/Composer/ImgMode/ImgLoad/ComponentData/IdData/DataList.vue'
+import { Cem } from '@/modules/custom-events-manager'
 
 export default defineComponent({
   components: { ChromeColor: Chrome, DataOptions, DataList },
@@ -150,6 +156,10 @@ export default defineComponent({
       target.style.width = hide.offsetWidth + 'px'
     }
 
+    function addCompoLink() {
+      Cem.dispatchEvent('activateLink', index)
+    }
+
     return {
       picker,
       activateChromePicker,
@@ -165,6 +175,7 @@ export default defineComponent({
       hideDataList,
       isShowDataList,
       resizeInputField,
+      addCompoLink,
     }
   },
 })
@@ -221,6 +232,7 @@ export default defineComponent({
     }
 
     .component-data-add,
+    .component-data-link,
     .component-data-fold {
       @include tip-style;
       height: 2rem;
