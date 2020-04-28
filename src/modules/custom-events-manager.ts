@@ -2,6 +2,8 @@ type AvailableEventNames =
   | 'onmarkerschange'
   | 'deactivatecontext'
   | 'openstyles'
+  | 'activateLink'
+  | 'deactivateLink'
 
 type CemStorage = Record<
   AvailableEventNames,
@@ -44,7 +46,7 @@ export class Cem {
   static addEventListener(
     eventName: AvailableEventNames,
     target: HTMLElement | Element,
-    listener: EventListenerOrEventListenerObject
+    listener: (e: CustomEvent) => void
   ): void {
     if (!(target instanceof HTMLElement) && !(target instanceof Element)) {
       console.error('Cem - Second argument should be HTMLElement or Element')
