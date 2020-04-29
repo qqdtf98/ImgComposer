@@ -18,6 +18,7 @@
         @set-color="setColor($event, i)"
         @activate-color="activateChromePicker($event, i)"
       />
+      <CompoLink v-show="isCompoLink" />
       <div
         ref="pickerRef"
         class="chrome-wrapper"
@@ -42,6 +43,7 @@ import {
   ref,
   Ref,
   reactive,
+  onMounted,
   provide,
 } from '@vue/composition-api'
 import ComponentData from '@/components/Composer/ImgMode/ImgLoad/ComponentData/index.vue'
@@ -49,10 +51,12 @@ import { Identifiers } from '@/interfaces/any-editor-file.ts'
 import { VueColor } from '@/types/vue-color'
 import { useNextTick } from '@/modules/vue-hooks'
 import { Chrome } from 'vue-color'
+import CompoLink from '@/components/Composer/ImgMode/ImgLoad/CompoLink/index.vue'
+import { Cem } from '@/modules/custom-events-manager'
 import ViewHide from '../ViewHide.vue'
 
 export default defineComponent({
-  components: { ComponentData, ChromeColor: Chrome, ViewHide },
+  components: { ComponentData, ChromeColor: Chrome, CompoLink, ViewHide },
   setup(props, ctx) {
     const nextTick = useNextTick(ctx)
 
@@ -107,6 +111,9 @@ export default defineComponent({
         calLeft: 0,
         calTop: 0,
         state: false,
+        url: null,
+        queries: null,
+        params: null,
       })
 
       let moveEvent: (e: MouseEvent) => void
@@ -222,6 +229,42 @@ export default defineComponent({
         'px'
     }
 
+    const isCompoLink = ref(false)
+
+    type dataType = {
+      key: string
+      value: string
+    }
+
+    type linkType = {
+      url: string
+      queries: dataType[]
+      params: dataType[]
+    }
+
+    onMounted(() => {
+      Cem.addEventListener(
+        'activateLink',
+        sampleRef.value as HTMLElement,
+        (e) => {
+          isCompoLink.value = true
+          compoIndex.value = e.detail
+        }
+      )
+      Cem.addEventListener(
+        'deactivateLink',
+        sampleRef.value as HTMLElement,
+        (e) => {
+          isCompoLink.value = false
+          console.log(e.detail)
+          identifierData[compoIndex.value].url = e.detail.url
+          identifierData[compoIndex.value].queries = e.detail.queries
+          identifierData[compoIndex.value].params = e.detail.params
+          console.log(identifierData[compoIndex.value])
+        }
+      )
+    })
+
     return {
       inputChange,
       sampleRef,
@@ -234,6 +277,7 @@ export default defineComponent({
       setPickerValue,
       activateChromePicker,
       pickerRef,
+      isCompoLink,
     }
   },
 })

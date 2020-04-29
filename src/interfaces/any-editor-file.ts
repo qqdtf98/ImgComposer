@@ -46,5 +46,18 @@ export interface IdentifierType {
   calLeft: number
   calTop: number
   state: boolean
+  url: string | null
+  queries:
+    | {
+        key: string
+        value: string
+      }[]
+    | null
+  params:
+    | {
+        key: string
+        value: string
+      }[]
+    | null
 }
 export type Identifiers = IdentifierType[]
