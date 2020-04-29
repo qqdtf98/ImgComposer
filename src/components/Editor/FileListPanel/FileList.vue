@@ -301,6 +301,10 @@ export default defineComponent({
           outline: none;
           flex: 1;
           user-select: none;
+
+          &[disabled] {
+            pointer-events: none;
+          }
         }
       }
     }
