@@ -63,10 +63,8 @@ export default defineComponent({
     font-weight: 800;
     line-height: 1;
     width: 100%;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-    padding-left: 0.7rem;
-    padding-right: 0.7rem;
+    padding: 1rem 0.7rem;
+    user-select: none;
   }
 
   .selector-list-wrapper {
