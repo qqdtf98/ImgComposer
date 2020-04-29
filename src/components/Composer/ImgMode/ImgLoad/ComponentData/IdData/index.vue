@@ -95,7 +95,7 @@ export default defineComponent({
     // Get injected index value and removing function
     // provided by parent components
     const compNameElm = ref<HTMLInputElement>(null)
-    const index: number = inject('identifierIndex')
+    const index: number = inject('identifierIndex') as number
     const removeIdentifier: any = inject('removeIdentifier')
 
     onMounted(() => {
