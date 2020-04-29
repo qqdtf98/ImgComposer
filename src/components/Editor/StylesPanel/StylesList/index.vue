@@ -133,27 +133,34 @@ export default defineComponent({
       font-weight: 450;
       user-select: none; /* Prevent text selection */
       transition: all 300ms ease;
+
       .layout-text {
+        font-weight: 700;
         position: absolute;
         left: 0;
       }
+
       .layout-icon {
-        width: 1rem;
+        height: 7px;
         position: absolute;
         right: 0;
       }
     }
+
     .layout-list::before {
       @include auto-text-color;
       display: inline-block;
       margin-right: 6px;
     }
+
     .layout-list-down::before {
       transform: rotate(90deg);
     }
+
     .nested {
       display: none;
     }
+
     .active {
       display: flex;
       margin-top: 0.3rem;
@@ -162,12 +169,15 @@ export default defineComponent({
       flex-direction: column;
       align-items: center;
     }
+
     .icon-rotate {
       transform: rotate(180deg);
     }
+
     .template {
       @include auto-text-color;
     }
+
     .template::before {
       margin-right: 0.2rem;
     }

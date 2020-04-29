@@ -1,5 +1,6 @@
 <template>
   <div id="img-load">
+    <ViewHide />
     <div ref="sampleRef" class="img-load-box" @mousedown="drawSelector">
       <div ref="imgLoadRef" class="preview-wrapper">
         <img
@@ -52,9 +53,10 @@ import { useNextTick } from '@/modules/vue-hooks'
 import { Chrome } from 'vue-color'
 import CompoLink from '@/components/Composer/ImgMode/ImgLoad/CompoLink/index.vue'
 import { Cem } from '@/modules/custom-events-manager'
+import ViewHide from '../ViewHide.vue'
 
 export default defineComponent({
-  components: { ComponentData, ChromeColor: Chrome, CompoLink },
+  components: { ComponentData, ChromeColor: Chrome, CompoLink, ViewHide },
   setup(props, ctx) {
     const nextTick = useNextTick(ctx)
 
@@ -283,6 +285,8 @@ export default defineComponent({
 
 <style lang="scss">
 #img-load {
+  position: relative;
+
   .img-load-box {
     .preview-wrapper {
       border: 1px solid black;

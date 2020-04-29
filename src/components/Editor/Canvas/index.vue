@@ -12,9 +12,12 @@
       />
       <input id="getfile" type="file" accept="image/*" @change="inputChange" />
     </div> -->
-    <button @click="exportComponent" v-show="btnState">
-      버튼
+
+    <!-- TODO: Remove -->
+    <button @click="exportComponent" v-show="btnState" class="export-btn">
+      Export as .vue
     </button>
+
     <iframe
       ref="iframeRef"
       frameborder="0"
@@ -155,7 +158,7 @@ ${formattedCss}
         selector.style.top = initY + 'px'
         selector.style.width = '1px'
         selector.style.height = '1px'
-        sampleRef.value.appendChild(selector)
+        // sampleRef.value.appendChild(selector)
         let moveEvent: (e: MouseEvent) => void
         let upEvent: (e: MouseEvent) => void
         window.addEventListener(
@@ -315,5 +318,11 @@ ${formattedCss}
       pointer-events: all;
     }
   }
+}
+
+.export-btn {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
 }
 </style>

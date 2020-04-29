@@ -44,7 +44,9 @@ export default defineComponent({
   grid-gap: 7px;
   margin-top: 13px;
   margin-bottom: 6px;
+
   .display-property {
+    font-size: 13px;
     @include auto-distinct-bg-color;
     @include auto-text-color;
     margin-right: 0.2rem;
@@ -55,6 +57,7 @@ export default defineComponent({
     padding-top: 0.6rem;
     padding-bottom: 0.6rem;
     border-radius: 0.3rem;
+
     &:hover {
       background-color: #1471ff;
     }

@@ -5,9 +5,11 @@
       :class="mergeClassNames(state.collapsed && 'collapsed')"
     >
       <h1 class="header">
-        <span>Styles</span>
-        <div v-show="selectorSelected" class="selector-value">
-          {{ selectorValue }}
+        <div class="styles-and-selector">
+          <span>Styles</span>
+          <div v-show="selectorSelected" class="selector-value">
+            {{ selectorValue }}
+          </div>
         </div>
         <button class="collapse-btn" @click="togglePanel">
           <i class="icon-arrowhead-right" />
@@ -132,16 +134,22 @@ export default defineComponent({
     transform: translateX(100%);
   }
 
+  .styles-and-selector {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
   .header {
     font-size: 20px;
     text-align: center;
     border-bottom: 1px solid;
     @include auto-border-color;
-    height: 70px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 10px;
+    padding: 10px;
+    min-height: 70px;
 
     .collapse-btn {
       font-size: 20px;
@@ -156,7 +164,11 @@ export default defineComponent({
         @include auto-distinct-bg-color;
       }
     }
+
     .selector-value {
+      font-size: 0.8rem;
+      margin-top: 0.5rem;
+      text-align: left;
     }
   }
   .layout-scroll-area {

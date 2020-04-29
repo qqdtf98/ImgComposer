@@ -10,11 +10,18 @@ $ae-border: $ae-black;
 
 // dark mode
 @mixin dark-mode {
-  @media (prefers-color-scheme: dark) {
+  @media (prefers-color-scheme: light) {
     & {
       @content;
     }
   }
+  // @at-root {
+  //   html.dark-mode {
+  //     & {
+  //       @content;
+  //     }
+  //   }
+  // }
 }
 
 @mixin light-mode {
