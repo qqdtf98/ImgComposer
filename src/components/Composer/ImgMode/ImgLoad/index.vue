@@ -3,14 +3,14 @@
     <ViewHide />
     <div ref="sampleRef" class="img-load-box" @mousedown="drawSelector">
       <div ref="imgLoadRef" class="preview-wrapper">
-        <img
-          id="preview"
-          src
-          width="700"
-          alt="로컬에 있는 이미지가 보여지는 영역"
-        />
+        <img id="preview" src width="700" />
       </div>
+      <label v-show="isImgUnLoad" class="img-wrapper" for="getfile">
+        <img class="img-load-icon" src="@/assets/images/img.svg" />
+        <div class="img-load-text">Select an image</div>
+      </label>
       <input id="getfile" type="file" accept="image/*" @change="inputChange" />
+
       <ComponentData
         v-for="(id, i) in identifierData"
         :key="i"
@@ -289,16 +289,40 @@ export default defineComponent({
 
   .img-load-box {
     .preview-wrapper {
-      border: 1px solid black;
       user-select: none;
       pointer-events: none;
       display: flex;
     }
 
-    #getfile {
+    .img-wrapper {
       position: fixed;
       top: 50%;
       left: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 13rem;
+      height: 9rem;
+      transform: translateX(-50%) translateY(-50%);
+      cursor: pointer;
+
+      .img-load-icon {
+        height: 4rem;
+        width: 6rem;
+      }
+
+      .img-load-text {
+        font-size: 18px;
+        margin: 0.4rem;
+      }
+    }
+
+    #getfile {
+      position: fixed;
+      left: -9999px;
+      transform: translateX(-50%) translateY(-50%);
+      visibility: hidden;
     }
     .chrome-wrapper {
       position: fixed;

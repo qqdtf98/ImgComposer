@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <MenuBar />
-    <Tabs />
+  <div id="image-mode">
     <ImgLoad />
   </div>
 </template>
@@ -16,3 +14,14 @@ export default defineComponent({
   components: { MenuBar, Tabs, ImgLoad },
 })
 </script>
+
+<style lang="scss">
+#image-mode {
+  color: black;
+}
+@at-root {
+  body {
+    background-color: white !important;
+  }
+}
+</style>
