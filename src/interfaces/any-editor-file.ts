@@ -61,3 +61,8 @@ export interface IdentifierType {
     | null
 }
 export type Identifiers = IdentifierType[]
+
+export interface NewIden {
+  index: number
+  identifier: IdentifierType
+}
