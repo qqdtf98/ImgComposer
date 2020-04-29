@@ -65,10 +65,13 @@ export class Cem {
       }
     }
 
-    document.addEventListener(eventName, listener)
+    document.addEventListener(
+      eventName,
+      listener as EventListenerOrEventListenerObject
+    )
     this.storage[eventName].push({
       target,
-      listener,
+      listener: listener as EventListenerOrEventListenerObject,
     })
   }
 
