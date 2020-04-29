@@ -56,7 +56,12 @@ import {
   inject,
 } from '@vue/composition-api'
 import { Chrome } from 'vue-color'
-import { useStore } from '@/modules/vue-hooks'
+import {
+  Identifiers,
+  IdentifierType,
+  NewIden,
+} from '@/interfaces/any-editor-file.ts'
+import { useStore, useVuex } from '@/modules/vue-hooks'
 import DataOptions from '@/components/Composer/ImgMode/ImgLoad/ComponentData/IdData/DataOptions.vue'
 import DataList from '@/components/Composer/ImgMode/ImgLoad/ComponentData/IdData/DataList.vue'
 import { Cem } from '@/modules/custom-events-manager'
@@ -65,6 +70,7 @@ export default defineComponent({
   components: { ChromeColor: Chrome, DataOptions, DataList },
   setup(...args) {
     const ctx = args[1]
+    const vuex = useVuex(ctx)
     const store = useStore(ctx)
 
     const picker = reactive({
@@ -81,18 +87,15 @@ export default defineComponent({
       ctx.emit('activate-color', picker.isChromePicker)
     }
 
-    const componentName = ref('')
-
     function setComponentName(e: InputEvent) {
       e.preventDefault()
       const target = e.target as HTMLInputElement
-      componentName.value = target.value
     }
 
     // Get injected index value and removing function
     // provided by parent components
     const compNameElm = ref<HTMLInputElement>(null)
-    const index = inject('identifierIndex')
+    const index: number = inject('identifierIndex')
     const removeIdentifier: any = inject('removeIdentifier')
 
     onMounted(() => {
@@ -151,11 +154,26 @@ export default defineComponent({
       isShowDataList.value = !isShowDataList.value
     }
 
+    let timeValue: number
+
     function resizeInputField(e: InputEvent) {
       const target = e.target as HTMLInputElement
       const hide = document.querySelector('#hide') as HTMLElement
       hide.innerHTML = target.value
       target.style.width = hide.offsetWidth + 'px'
+
+      if (timeValue) clearTimeout(timeValue)
+      timeValue = window.setTimeout(() => {
+        // vuex의 identifierData를 복사하여 새로운 값으로 셋팅
+        const newIdentifiers: Identifiers = [...vuex.identifier.identifierData]
+        const newIden: IdentifierType = { ...newIdentifiers[index] }
+        const newData: NewIden = {
+          index,
+          identifier: newIden,
+        }
+
+        vuex.identifier.updateIden(newData)
+      }, 400)
     }
 
     function addCompoLink() {
@@ -167,7 +185,6 @@ export default defineComponent({
       picker,
       activateChromePicker,
       setComponentName,
-      componentName,
       compNameElm,
       addBtnRef,
       showDataList,
@@ -179,6 +196,7 @@ export default defineComponent({
       isShowDataList,
       resizeInputField,
       addCompoLink,
+      vuex,
     }
   },
 })
@@ -251,6 +269,7 @@ export default defineComponent({
   }
 
   .component-added-data-list {
+    color: black;
   }
 
   .data-option-wrapper {
