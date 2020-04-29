@@ -12,7 +12,7 @@
       <input id="getfile" type="file" accept="image/*" @change="inputChange" />
 
       <ComponentData
-        v-for="(id, i) in identifierData"
+        v-for="(id, i) in vuex.identifier.identifierData"
         :key="i"
         :identifier="id"
         @set-color="setColor($event, i)"
@@ -47,9 +47,13 @@ import {
   provide,
 } from '@vue/composition-api'
 import ComponentData from '@/components/Composer/ImgMode/ImgLoad/ComponentData/index.vue'
-import { Identifiers } from '@/interfaces/any-editor-file.ts'
+import {
+  Identifiers,
+  IdentifierType,
+  NewIden,
+} from '@/interfaces/any-editor-file.ts'
 import { VueColor } from '@/types/vue-color'
-import { useNextTick } from '@/modules/vue-hooks'
+import { useNextTick, useVuex } from '@/modules/vue-hooks'
 import { Chrome } from 'vue-color'
 import CompoLink from '@/components/Composer/ImgMode/ImgLoad/CompoLink/index.vue'
 import { Cem } from '@/modules/custom-events-manager'
@@ -58,9 +62,11 @@ import ViewHide from '../ViewHide.vue'
 export default defineComponent({
   components: { ComponentData, ChromeColor: Chrome, CompoLink, ViewHide },
   setup(props, ctx) {
+    const vuex = useVuex(ctx)
     const nextTick = useNextTick(ctx)
-
     const imgLoadRef = ref<HTMLElement>(null)
+
+    const isImgUnLoad = ref(true)
 
     function inputChange() {
       const file = document.querySelector('#getfile') as HTMLInputElement
@@ -73,17 +79,16 @@ export default defineComponent({
         preview.style.height = '100%'
         preview.style.width = '100%'
         preview.src = fileReader.result as string
+        isImgUnLoad.value = false
       }
     }
 
     const sampleRef = ref() as Ref<HTMLElement>
 
-    const identifierData = reactive<Identifiers>([])
-
     // Create a remove function and provide it to every child component
     // to make them available to remove identifier
     function removeIdentifier(index: number) {
-      identifierData.splice(index, 1)
+      vuex.identifier.spliceIden(index)
     }
 
     provide('removeIdentifier', removeIdentifier)
@@ -99,27 +104,22 @@ export default defineComponent({
       const initX = e.clientX
       const initY = e.clientY
 
-      identifierData.push({
-        index: identifierData.length,
-        left: initX,
-        top: initY,
-        width: 0,
-        height: 0,
-        color: 'black',
-        calWidth: 0,
-        calHeight: 0,
-        calLeft: 0,
-        calTop: 0,
-        state: false,
-        url: null,
-        queries: null,
-        params: null,
-      })
+      type Pos = {
+        initX: number
+        initY: number
+      }
+
+      const pos: Pos = {
+        initX,
+        initY,
+      }
+
+      vuex.identifier.storeIden(pos)
 
       let moveEvent: (e: MouseEvent) => void
       let upEvent: (e: MouseEvent) => void
 
-      let index = identifierData.length - 1
+      let index = vuex.identifier.identifierData.length - 1
 
       window.addEventListener(
         'mousemove',
@@ -129,14 +129,28 @@ export default defineComponent({
 
           // When the empty component name identifier has been removed
           // shift index to correctly target the current identifier
-          if (!identifierData[index]) {
+          if (!vuex.identifier.identifierData[index]) {
             index -= 1
           }
 
-          identifierData[index].left = initX + (deltaX < 0 ? deltaX : 0)
-          identifierData[index].top = initY + (deltaY < 0 ? deltaY : 0)
-          identifierData[index].width = Math.abs(deltaX)
-          identifierData[index].height = Math.abs(deltaY)
+          // vuex의 identifierData를 복사하여 새로운 값으로 셋팅
+          const newIdentifiers: Identifiers = [
+            ...vuex.identifier.identifierData,
+          ]
+
+          const newIden: IdentifierType = { ...newIdentifiers[index] }
+
+          newIden.left = initX + (deltaX < 0 ? deltaX : 0)
+          newIden.top = initY + (deltaY < 0 ? deltaY : 0)
+          newIden.width = Math.abs(deltaX)
+          newIden.height = Math.abs(deltaY)
+
+          const newData: NewIden = {
+            index,
+            identifier: newIden,
+          }
+
+          vuex.identifier.updateIden(newData)
         })
       )
       window.addEventListener(
@@ -145,11 +159,11 @@ export default defineComponent({
           window.removeEventListener('mousemove', moveEvent)
           window.removeEventListener('mouseup', upEvent)
 
-          if (!identifierData[index]) {
+          if (!vuex.identifier.identifierData[index]) {
             index -= 1
           }
 
-          const idnf = identifierData[index]
+          const idnf = vuex.identifier.identifierData[index]
 
           if (!idnf) return
 
@@ -160,7 +174,7 @@ export default defineComponent({
             idnf.width < creationSizeThreshold ||
             idnf.height < creationSizeThreshold
           ) {
-            identifierData.splice(index, 1)
+            vuex.identifier.spliceIden(index)
             return
           }
 
@@ -168,14 +182,25 @@ export default defineComponent({
 
           const imgRect = imgLoadRef.value.getBoundingClientRect()
 
-          identifierData[index].calLeft =
-            identifierData[index].left / imgRect.left
-          identifierData[index].calTop = identifierData[index].top / imgRect.top
-          identifierData[index].calWidth =
-            identifierData[index].width / imgRect.width
-          identifierData[index].calHeight =
-            identifierData[index].height / imgRect.height
-          identifierData[index].state = true
+          // vuex의 identifierData를 복사하여 새로운 값으로 셋팅
+          const newIdentifiers: Identifiers = [
+            ...vuex.identifier.identifierData,
+          ]
+
+          const newIden: IdentifierType = { ...newIdentifiers[index] }
+
+          newIden.calLeft = newIden.left / imgRect.left
+          newIden.calTop = newIden.top / imgRect.top
+          newIden.calWidth = newIden.width / imgRect.width
+          newIden.calHeight = newIden.height / imgRect.height
+          newIden.state = true
+
+          const newData: NewIden = {
+            index,
+            identifier: newIden,
+          }
+
+          vuex.identifier.updateIden(newData)
         })
       )
     }
@@ -210,8 +235,21 @@ export default defineComponent({
       chromePicker[compoIndex.value].style.backgroundImage = 'none'
       chromePicker[compoIndex.value].style.backgroundColor = color
       compoName[compoIndex.value].style.color = color
-      if (!identifierData[compoIndex.value]) return
-      identifierData[compoIndex.value].color = color
+      if (!vuex.identifier.identifierData[compoIndex.value]) return
+
+      // vuex의 identifierData를 복사하여 새로운 값으로 셋팅
+      const newIdentifiers: Identifiers = [...vuex.identifier.identifierData]
+
+      const newIden: IdentifierType = { ...newIdentifiers[compoIndex.value] }
+
+      newIden.color = color
+
+      const newData: NewIden = {
+        index: compoIndex.value,
+        identifier: newIden,
+      }
+
+      vuex.identifier.updateIden(newData)
     }
 
     function activateChromePicker(state: boolean, index: number) {
@@ -256,11 +294,26 @@ export default defineComponent({
         sampleRef.value as HTMLElement,
         (e) => {
           isCompoLink.value = false
-          console.log(e.detail)
-          identifierData[compoIndex.value].url = e.detail.url
-          identifierData[compoIndex.value].queries = e.detail.queries
-          identifierData[compoIndex.value].params = e.detail.params
-          console.log(identifierData[compoIndex.value])
+
+          // vuex의 identifierData를 복사하여 새로운 값으로 셋팅
+          const newIdentifiers: Identifiers = [
+            ...vuex.identifier.identifierData,
+          ]
+
+          const newIden: IdentifierType = {
+            ...newIdentifiers[compoIndex.value],
+          }
+
+          newIden.url = e.detail.url
+          newIden.queries = e.detail.queries
+          newIden.params = e.detail.params
+
+          const newData: NewIden = {
+            index: compoIndex.value,
+            identifier: newIden,
+          }
+
+          vuex.identifier.updateIden(newData)
         }
       )
     })
@@ -270,7 +323,6 @@ export default defineComponent({
       sampleRef,
       imgLoadRef,
       drawSelector,
-      identifierData,
       picker,
       background,
       getPickerValue,
@@ -278,6 +330,8 @@ export default defineComponent({
       activateChromePicker,
       pickerRef,
       isCompoLink,
+      isImgUnLoad,
+      vuex,
     }
   },
 })
