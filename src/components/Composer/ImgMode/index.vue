@@ -20,8 +20,8 @@ export default defineComponent({
 <style lang="scss">
 @at-root {
   body {
-    background-color: white !important;
-    color: black !important;
+    background-color: white;
+    color: black;
   }
 }
 </style>
