@@ -40,6 +40,8 @@ export const actions = actionTree(
         url: null,
         queries: null,
         params: null,
+        compoName: '',
+        compoData: [],
       }
       newIdentifiers.push(newIden)
       commit('SET_IDEN_DATA', newIdentifiers)

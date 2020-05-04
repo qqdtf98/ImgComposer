@@ -1,6 +1,6 @@
 <template>
   <div id="data-list">
-    <div class="data-option-value">{{ setData.type }}:</div>
+    <div ref="compoDataRef" class="data-option-value">{{ setData.key }}:</div>
     <textarea
       spellcheck="false"
       class="data-textarea"
@@ -13,24 +13,41 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api'
+import { defineComponent, ref, inject } from '@vue/composition-api'
+import {
+  Identifiers,
+  IdentifierType,
+  NewIden,
+  CompoData,
+  CompoDataType,
+} from '@/interfaces/any-editor-file.ts'
+import { useVuex } from '../../../../../../modules/vue-hooks'
 
 export default defineComponent({
   props: {
     setData: Object,
+    index: Number,
   },
-  setup(props) {
+  setup(props, ctx) {
+    const vuex = useVuex(ctx)
+
     type ComponentDataType = {
       type: string
       data: string
     }
     const { setData } = props as {
-      setData: ComponentDataType
+      setData: CompoDataType
     }
 
     const hideText = ref<HTMLElement>(null)
     const lineValue = ref('')
     const maxWidth = ref(0)
+
+    let timeValue: number
+
+    const index: number = inject('identifierIndex') as number
+
+    const compoDataRef = ref<HTMLElement>(null)
 
     function resizeTextArea(e: InputEvent) {
       if (!hideText.value) return
@@ -39,6 +56,25 @@ export default defineComponent({
         .replace(/ /g, '&nbsp;')
         .replace(/\n/g, '<br>')
       target.style.width = hideText.value.offsetWidth + 5 + 'px'
+
+      if (timeValue) clearTimeout(timeValue)
+      timeValue = window.setTimeout(() => {
+        // vuex의 identifierData를 복사하여 새로운 값으로 셋팅
+        const newIdentifiers: Identifiers = [...vuex.identifier.identifierData]
+        const newIden: IdentifierType = { ...newIdentifiers[index] }
+        const newCompoDataList: CompoData = [...newIden.compoData]
+        const newCompoData: CompoDataType = { ...newCompoDataList[index] }
+        newCompoData.value = target.value
+        newCompoDataList[index] = newCompoData
+        newIden.compoData = newCompoDataList
+
+        const newData: NewIden = {
+          index,
+          identifier: newIden,
+        }
+
+        vuex.identifier.updateIden(newData)
+      }, 400)
     }
 
     function textareaNextLine(e: InputEvent) {
@@ -55,6 +91,7 @@ export default defineComponent({
       resizeTextArea,
       hideText,
       textareaNextLine,
+      vuex,
     }
   },
 })
@@ -86,7 +123,7 @@ export default defineComponent({
   #hide-textarea {
     width: auto;
     display: inline-block;
-    // visibility: hidden;
+    visibility: hidden;
     position: fixed;
     top: 10px;
     overflow: auto;

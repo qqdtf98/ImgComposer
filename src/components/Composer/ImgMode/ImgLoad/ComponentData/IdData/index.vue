@@ -37,7 +37,12 @@
       class="component-added-data-list"
     >
       <div class="component-added-data">
-        <DataList v-for="(data, i) in componentData" :key="i" :setData="data" />
+        <DataList
+          v-for="(data, i) in componentData"
+          :key="i"
+          :setData="data"
+          :index="i"
+        />
       </div>
     </div>
 
@@ -60,6 +65,8 @@ import {
   Identifiers,
   IdentifierType,
   NewIden,
+  CompoDataType,
+  CompoData,
 } from '@/interfaces/any-editor-file.ts'
 import { useStore, useVuex } from '@/modules/vue-hooks'
 import DataOptions from '@/components/Composer/ImgMode/ImgLoad/ComponentData/IdData/DataOptions.vue'
@@ -131,21 +138,29 @@ export default defineComponent({
       }, 0)
     }
 
-    type ComponentDataType = {
-      type: string
-      data: string
-    }
-
-    type ComponentDataList = ComponentDataType[]
-
-    const componentData: ComponentDataList = []
+    const componentData: CompoData = []
 
     function addData(data: string) {
+      console.log(data)
       isDataSelect.value = !isDataSelect.value
       componentData.push({
-        type: data,
-        data: '',
+        key: data,
+        value: '',
       })
+
+      // vuex의 identifierData를 복사하여 새로운 값으로 셋팅
+      const newIdentifiers: Identifiers = [...vuex.identifier.identifierData]
+
+      const newIden: IdentifierType = { ...newIdentifiers[index] }
+
+      newIden.compoData = componentData
+
+      const newData: NewIden = {
+        index,
+        identifier: newIden,
+      }
+
+      vuex.identifier.updateIden(newData)
     }
 
     const isShowDataList = ref(false)
@@ -167,6 +182,9 @@ export default defineComponent({
         // vuex의 identifierData를 복사하여 새로운 값으로 셋팅
         const newIdentifiers: Identifiers = [...vuex.identifier.identifierData]
         const newIden: IdentifierType = { ...newIdentifiers[index] }
+
+        newIden.compoName = target.value
+
         const newData: NewIden = {
           index,
           identifier: newIden,
