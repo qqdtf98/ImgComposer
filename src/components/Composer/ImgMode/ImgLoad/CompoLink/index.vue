@@ -147,6 +147,7 @@ export default defineComponent({
   height: 30rem;
 
   #compo-link {
+    color: black;
     background-color: #fff;
     width: 100%;
     border-radius: 5px;

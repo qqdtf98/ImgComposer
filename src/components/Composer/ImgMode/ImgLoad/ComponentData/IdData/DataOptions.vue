@@ -55,6 +55,7 @@ export default defineComponent({
     }
 
     .option {
+      color: black;
       font-size: 0.9rem;
       padding: 0.3rem 0.6rem 0.3rem 0.6rem;
     }

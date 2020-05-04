@@ -18,10 +18,12 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+#image-mode {
+  color: black;
+}
 @at-root {
   body {
-    background-color: white;
-    color: black;
+    background-color: white !important;
   }
 }
 </style>

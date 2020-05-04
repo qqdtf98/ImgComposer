@@ -34,6 +34,13 @@ export interface SampleType {
   contents: string
 }
 
+export interface CompoDataType {
+  key: string
+  value: string
+}
+
+export type CompoData = CompoDataType[]
+
 export interface IdentifierType {
   index: number
   left: number
@@ -59,5 +66,12 @@ export interface IdentifierType {
         value: string
       }[]
     | null
+  compoName: string
+  compoData: CompoData
 }
 export type Identifiers = IdentifierType[]
+
+export interface NewIden {
+  index: number
+  identifier: IdentifierType
+}
