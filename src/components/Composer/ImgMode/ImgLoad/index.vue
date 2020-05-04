@@ -225,14 +225,15 @@ export default defineComponent({
       const chromePicker = document.querySelectorAll(
         '.compo-picker'
       ) as NodeListOf<HTMLElement>
-      const compoName = document.querySelectorAll(
-        '.component-name'
-      ) as NodeListOf<HTMLInputElement>
+      const compoName = document.querySelectorAll('.compo-name') as NodeListOf<
+        HTMLInputElement
+      >
 
       if (!chromePicker) return
 
       if (!compoName) return
       chromePicker[compoIndex.value].style.backgroundImage = 'none'
+      console.log(color)
       chromePicker[compoIndex.value].style.backgroundColor = color
       compoName[compoIndex.value].style.color = color
       if (!vuex.identifier.identifierData[compoIndex.value]) return
@@ -340,6 +341,8 @@ export default defineComponent({
 <style lang="scss">
 #img-load {
   position: relative;
+  left: 300px;
+  width: calc(100% - 300px);
 
   .img-load-box {
     .preview-wrapper {
