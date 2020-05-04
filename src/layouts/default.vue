@@ -3,9 +3,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from '@vue/composition-api'
+import { defineComponent } from '@vue/composition-api'
 import { useVuex } from '../modules/vue-hooks'
 import { Vuex } from '@/modules/vuex'
+import 'codemirror/lib/codemirror.css'
 
 export default defineComponent({
   setup(...args) {
