@@ -27,11 +27,18 @@
         @click="addCompoLink"
       />
       <img
+        ref="dbBtnRef"
+        class="component-data-db"
+        src="@/assets/images/dbicon.svg"
+        @click="showOpList"
+      />
+      <img
         class="component-data-fold"
         src="@/assets/images/fold.svg"
         @click="hideDataList"
       />
     </div>
+
     <div
       v-show="isShowDataList && store.composer.optionsViewMode === 'visible'"
       class="component-added-data-list"
@@ -46,8 +53,28 @@
       </div>
     </div>
 
+    <div
+      v-show="isShowTableList && store.composer.optionsViewMode === 'visible'"
+      ref="dbTableRef"
+      class="data-option-wrapper"
+    >
+      <DbTableList :operation="selectedOp" @table-select="insertQuery" />
+    </div>
+
+    <div
+      v-if="isShowDbList && store.composer.optionsViewMode === 'visible'"
+      ref="dbQueryRef"
+      class="data-option-wrapper"
+    >
+      <DbQuery :tableData="tableData" />
+    </div>
+
     <div v-show="isDataSelect" ref="dataSelectRef" class="data-option-wrapper">
       <DataOptions @add-data="addData" />
+    </div>
+
+    <div v-show="isDbSelect" ref="dbSelectRef" class="data-option-wrapper">
+      <DbOptions @show-table="showDbTable" />
     </div>
   </div>
 </template>
@@ -72,9 +99,19 @@ import { useStore, useVuex } from '@/modules/vue-hooks'
 import DataOptions from '@/components/Composer/ImgMode/ImgLoad/ComponentData/IdData/DataOptions.vue'
 import DataList from '@/components/Composer/ImgMode/ImgLoad/ComponentData/IdData/DataList.vue'
 import { Cem } from '@/modules/custom-events-manager'
+import DbOptions from '@/components/Composer/ImgMode/ImgLoad/ComponentData/IdData/DbOptions.vue'
+import DbTableList from '@/components/Composer/ImgMode/ImgLoad/ComponentData/IdData/DbTableList.vue'
+import DbQuery from '@/components/Composer/ImgMode/ImgLoad/ComponentData/IdData/DbQuery.vue'
 
 export default defineComponent({
-  components: { ChromeColor: Chrome, DataOptions, DataList },
+  components: {
+    ChromeColor: Chrome,
+    DataOptions,
+    DataList,
+    DbOptions,
+    DbTableList,
+    DbQuery,
+  },
   setup(...args) {
     const ctx = args[1]
     const vuex = useVuex(ctx)
@@ -129,12 +166,13 @@ export default defineComponent({
       isDataSelect.value = !isDataSelect.value
       const btnRect = addBtnRef.value.getBoundingClientRect()
       setTimeout(() => {
-        if (!isShowDataList.value) {
-          isShowDataList.value = !isShowDataList.value
-        }
         if (!dataSelectRef.value) return
         dataSelectRef.value.style.left = btnRect.left + 'px'
         dataSelectRef.value.style.top = btnRect.top + btnRect.height + 'px'
+
+        if (!isShowDataList.value) {
+          isShowDataList.value = !isShowDataList.value
+        }
       }, 0)
     }
 
@@ -199,6 +237,67 @@ export default defineComponent({
       Cem.dispatchEvent('activateLink', index)
     }
 
+    const isShowDbList = ref(false)
+
+    const isDbSelect = ref(false)
+
+    const dbBtnRef = ref<HTMLElement>(null)
+    const dbSelectRef = ref<HTMLElement>(null)
+
+    function showOpList() {
+      if (!dbBtnRef.value) return
+      isDbSelect.value = !isDbSelect.value
+      const btnRect = dbBtnRef.value.getBoundingClientRect()
+      setTimeout(() => {
+        isShowTableList.value = false
+        if (!dbSelectRef.value) return
+        dbSelectRef.value.style.left = btnRect.left + 'px'
+        dbSelectRef.value.style.top = btnRect.top + btnRect.height + 'px'
+      }, 0)
+    }
+
+    const isShowTableList = ref(false)
+    const selectedOp = ref('')
+
+    const dbTableRef = ref<HTMLElement>(null)
+
+    function showDbTable(op: string) {
+      if (!dbBtnRef.value) return
+      selectedOp.value = op
+      isDbSelect.value = !isDbSelect.value
+      const btnRect = dbBtnRef.value.getBoundingClientRect()
+      setTimeout(() => {
+        if (!dbTableRef.value) return
+        dbTableRef.value.style.left = btnRect.left + 'px'
+        dbTableRef.value.style.top = btnRect.top + btnRect.height + 'px'
+        isShowTableList.value = !isShowTableList.value
+      }, 0)
+    }
+
+    const dbQueryRef = ref<HTMLElement>(null)
+
+    type tableType = {
+      type: string
+      text: string
+      table: string
+    }
+
+    const tableData = ref<tableType>(null)
+
+    function insertQuery(data: tableType) {
+      console.log(data)
+      if (!dbBtnRef.value) return
+      isShowDbList.value = true
+      tableData.value = data
+      const btnRect = dbBtnRef.value.getBoundingClientRect()
+      setTimeout(() => {
+        if (!dbQueryRef.value) return
+        dbQueryRef.value.style.left = btnRect.left + 'px'
+        dbQueryRef.value.style.top = btnRect.top + btnRect.height + 'px'
+        isShowTableList.value = !isShowTableList.value
+      }, 0)
+    }
+
     return {
       store,
       picker,
@@ -216,6 +315,18 @@ export default defineComponent({
       resizeInputField,
       addCompoLink,
       vuex,
+      showOpList,
+      isDbSelect,
+      isShowDbList,
+      dbBtnRef,
+      dbSelectRef,
+      showDbTable,
+      isShowTableList,
+      selectedOp,
+      dbTableRef,
+      insertQuery,
+      dbQueryRef,
+      tableData,
     }
   },
 })
@@ -273,7 +384,8 @@ export default defineComponent({
 
     .component-data-add,
     .component-data-link,
-    .component-data-fold {
+    .component-data-fold,
+    .component-data-db {
       @include tip-style;
       height: 2rem;
       width: 2rem;
@@ -287,7 +399,8 @@ export default defineComponent({
     }
   }
 
-  .component-added-data-list {
+  .component-added-data-list,
+  component-db-data-list {
     color: black;
   }
 
