@@ -17,7 +17,7 @@ export default defineComponent({
     const store = useStore(args[1])
 
     function changeViewMode() {
-      store.composer.SET_IS_HIDDEN(
+      store.composer.SET_OPTIONS_VIEW_MODE(
         store.composer.optionsViewMode === 'visible' ? 'hidden' : 'visible'
       )
     }

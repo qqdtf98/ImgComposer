@@ -7,6 +7,6 @@ export const state: () => {
 })
 
 export const mutations = mutationTree(state, {
-  SET_IS_HIDDEN: (state, mode: 'visible' | 'hidden') =>
+  SET_OPTIONS_VIEW_MODE: (state, mode: 'visible' | 'hidden') =>
     (state.optionsViewMode = mode),
 })
