@@ -2,6 +2,7 @@
   <div class="side-panel">
     <VuexStore />
     <Components />
+    <Pages />
   </div>
 </template>
 
@@ -9,9 +10,10 @@
 import { defineComponent } from '@vue/composition-api'
 import VuexStore from './VuexStore.vue'
 import Components from './Components.vue'
+import Pages from './Pages/index.vue'
 
 export default defineComponent({
-  components: { VuexStore, Components },
+  components: { VuexStore, Components, Pages },
 })
 </script>
 
