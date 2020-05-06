@@ -68,6 +68,7 @@ export interface IdentifierType {
     | null
   compoName: string
   compoData: CompoData
+  nameWidth: number
 }
 export type Identifiers = IdentifierType[]
 
