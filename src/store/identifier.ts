@@ -42,6 +42,7 @@ export const actions = actionTree(
         params: null,
         compoName: '',
         compoData: [],
+        nameWidth: 0,
       }
       newIdentifiers.push(newIden)
       commit('SET_IDEN_DATA', newIdentifiers)
@@ -50,7 +51,6 @@ export const actions = actionTree(
       const newIdentifiers: Identifiers = [...state.identifierData]
       newIdentifiers[newData.index] = newData.identifier
       commit('SET_IDEN_DATA', newIdentifiers)
-      console.log(newIdentifiers)
     },
     spliceIden({ commit, state }, index: number) {
       const newIdentifiers: Identifiers = [...state.identifierData]

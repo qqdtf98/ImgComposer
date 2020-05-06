@@ -8,7 +8,7 @@
         />
         <input
           ref="compNameElm"
-          class="component-name"
+          class="component-name compo-name"
           type="text"
           @input="resizeInputField"
           @keyup.enter="setComponentName"
@@ -184,6 +184,7 @@ export default defineComponent({
         const newIden: IdentifierType = { ...newIdentifiers[index] }
 
         newIden.compoName = target.value
+        newIden.nameWidth = hide.offsetWidth
 
         const newData: NewIden = {
           index,

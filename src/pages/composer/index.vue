@@ -1,12 +1,12 @@
 <template>
-  <Composer />
+  <ImgMode />
 </template>
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api'
-import Composer from '@/components/Composer/index.vue'
+import ImgMode from '@/components/Composer/ImgMode/index.vue'
 
 export default defineComponent({
-  components: { Composer },
+  components: { ImgMode },
 })
 </script>

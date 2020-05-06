@@ -1,15 +1,17 @@
 <template>
   <div class="side-panel">
     <VuexStore />
+    <Components />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api'
 import VuexStore from './VuexStore.vue'
+import Components from './Components.vue'
 
 export default defineComponent({
-  components: { VuexStore },
+  components: { VuexStore, Components },
 })
 </script>
 
