@@ -70,6 +70,7 @@ export const actions = actionTree(
         compoName: '',
         compoData: [],
         nameWidth: 0,
+        compoView: true,
       }
       newIdentifiers.push(newIden)
       commit('SET_IDEN_DATA', newIdentifiers)

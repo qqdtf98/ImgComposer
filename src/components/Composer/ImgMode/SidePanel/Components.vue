@@ -1,6 +1,7 @@
 <template>
   <div id="components-panel">
     <h1>Components</h1>
+    <h3 @click="viewEveryCompo">view all</h3>
     <div class="component-list">
       <div
         v-for="(iden, i) in vuex.identifier.identifierData"
@@ -9,6 +10,7 @@
         :style="{
           width: iden.nameWidth + 40 + 'px',
         }"
+        @click="viewSelectedCompo(iden)"
       >
         <button
           class="chrome-picker"
@@ -37,6 +39,11 @@
 <script lang="ts">
 import { defineComponent, ref, watch } from '@vue/composition-api'
 import { useVuex } from '../../../../modules/vue-hooks'
+import {
+  IdentifierType,
+  Identifiers,
+  NewIden,
+} from '@/interfaces/any-editor-file.ts'
 
 export default defineComponent({
   setup(props, ctx) {
@@ -45,25 +52,40 @@ export default defineComponent({
     const nameRef = ref<HTMLElement>(null)
     const hideRef = ref<HTMLElement>(null)
 
-    // watch(
-    //   () => vuex.identifier.identifierData,
-    //   () => {
-    //     if (!hideRef.value) return
-    //     if (!nameRef.value) return
-    //     console.log(nameRef.value.textContent)
-    //     if (vuex.identifier.identifierData.) {
-    //       console.log(nameRef.value.textContent)
-    //       hideRef.value.innerHTML = nameRef.value.textContent as string
-    //       console.log(hideRef.value)
-    //       nameRef.value.style.width = hideRef.value.offsetWidth + 'px'
-    //     }
-    //   }
-    // )
+    function viewSelectedCompo(iden: IdentifierType) {
+      for (let i = 0; i < vuex.identifier.identifierData.length; i++) {
+        const copyIden = { ...vuex.identifier.identifierData[i] }
+        if (iden === vuex.identifier.identifierData[i]) {
+          copyIden.compoView = true
+        } else {
+          copyIden.compoView = false
+        }
+        const newIden: NewIden = {
+          index: i,
+          identifier: copyIden,
+        }
+        vuex.identifier.updateIden(newIden)
+      }
+    }
+
+    function viewEveryCompo() {
+      for (let i = 0; i < vuex.identifier.identifierData.length; i++) {
+        const copyIden = { ...vuex.identifier.identifierData[i] }
+        copyIden.compoView = true
+        const newIden: NewIden = {
+          index: i,
+          identifier: copyIden,
+        }
+        vuex.identifier.updateIden(newIden)
+      }
+    }
 
     return {
       vuex,
       nameRef,
       hideRef,
+      viewSelectedCompo,
+      viewEveryCompo,
     }
   },
 })

@@ -1,6 +1,7 @@
 <template>
   <div class="component-data-box">
     <div
+      v-show="identifier.compoView"
       class="identifier-wrapper"
       :style="{
         left: identifier.left + 'px',
