@@ -6,11 +6,12 @@
       <div
         v-for="(iden, i) in vuex.identifier.identifierData"
         :key="i"
-        class="color-name-select"
+        class="color-name-select compo-list"
         :style="{
           width: iden.nameWidth + 40 + 'px',
         }"
         @click="viewSelectedCompo(iden)"
+        @mousedown="createParentCompo($event, i)"
       >
         <button
           class="chrome-picker"
@@ -80,12 +81,46 @@ export default defineComponent({
       }
     }
 
+    function createParentCompo(evt: MouseEvent, index: number) {
+      const downTarget = evt.target as HTMLElement
+      const compoList = document.querySelectorAll('.compo-list') as NodeListOf<
+        HTMLElement
+      >
+      const compoArray: HTMLElement[] = Array.prototype.slice.call(compoList)
+      let upEvent: (e: MouseEvent) => void
+      window.addEventListener(
+        'mouseup',
+        (upEvent = (e: MouseEvent) => {
+          let target: HTMLElement | null = e.target as HTMLElement
+          target = target.closest('.compo-list')
+          if (target && target !== downTarget) {
+            console.log('parent')
+            const parentIndex = compoArray.findIndex((elem) => elem === target)
+            const copyIden = { ...vuex.identifier.identifierData[index] }
+            copyIden.parentIndex = parentIndex
+            const newIden = {
+              index,
+              identifier: copyIden,
+            }
+            vuex.identifier.updateIden(newIden)
+            setTimeout(() => {
+              console.log(vuex.identifier.identifierData)
+            }, 0)
+          } else if (!target) {
+            console.log('wrong')
+          }
+          window.removeEventListener('mouseup', upEvent)
+        })
+      )
+    }
+
     return {
       vuex,
       nameRef,
       hideRef,
       viewSelectedCompo,
       viewEveryCompo,
+      createParentCompo,
     }
   },
 })
@@ -110,6 +145,7 @@ export default defineComponent({
       align-items: center;
       height: 32px;
       margin-top: 10px;
+      cursor: pointer;
 
       .chrome-picker {
         $size: 13px;
@@ -121,11 +157,11 @@ export default defineComponent({
 
       .component-name {
         font-family: inherit;
-        height: 1.5rem;
         margin-left: 0.5rem;
         margin-right: 0.5rem;
         font-weight: 600;
         font-size: 13px;
+        user-select: none;
       }
 
       #hide-compo {

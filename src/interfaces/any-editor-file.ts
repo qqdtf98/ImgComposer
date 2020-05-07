@@ -70,6 +70,7 @@ export interface IdentifierType {
   compoData: CompoData
   nameWidth: number
   compoView: boolean
+  parentIndex: number | null
 }
 export type Identifiers = IdentifierType[]
 
