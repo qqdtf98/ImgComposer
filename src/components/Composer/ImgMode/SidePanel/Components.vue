@@ -6,9 +6,11 @@
       <div
         v-for="(iden, i) in vuex.identifier.identifierData"
         :key="i"
+        :id="iden.index"
         class="color-name-select compo-list"
         :style="{
           width: iden.nameWidth + 40 + 'px',
+          marginLeft: iden.level * 20 + 'px',
         }"
         @click="viewSelectedCompo(iden)"
         @mousedown="createParentCompo($event, i)"
@@ -45,6 +47,8 @@ import {
   Identifiers,
   NewIden,
 } from '@/interfaces/any-editor-file.ts'
+import { version } from 'vue-color'
+import { NumericDictionary } from 'lodash'
 
 export default defineComponent({
   setup(props, ctx) {
@@ -82,7 +86,10 @@ export default defineComponent({
     }
 
     function createParentCompo(evt: MouseEvent, index: number) {
-      const downTarget = evt.target as HTMLElement
+      let downTarget = evt.target as HTMLElement
+      downTarget = downTarget.closest('.compo-list') as HTMLElement
+      const childId = parseInt(downTarget.getAttribute('id') as string)
+      const child = { ...vuex.identifier.identifierData[index] }
       const compoList = document.querySelectorAll('.compo-list') as NodeListOf<
         HTMLElement
       >
@@ -94,20 +101,61 @@ export default defineComponent({
           let target: HTMLElement | null = e.target as HTMLElement
           target = target.closest('.compo-list')
           if (target && target !== downTarget) {
-            console.log('parent')
+            const parent = compoArray.find(
+              (elem) => elem === target
+            ) as HTMLElement
             const parentIndex = compoArray.findIndex((elem) => elem === target)
+            const parentId = parseInt(parent.getAttribute('id') as string)
+            const newIdentifier = [...vuex.identifier.identifierData]
+            let count = 0
+            for (
+              let i = parentIndex + 1;
+              i < vuex.identifier.identifierData.length;
+              i++
+            ) {
+              count++
+              if (
+                vuex.identifier.identifierData[i].level === child.level ||
+                i === vuex.identifier.identifierData.length - 1
+              ) {
+                break
+              }
+            }
+            const splicedIden = [...newIdentifier.splice(index, count + 1)]
+            const pushIden = []
+            for (let i = 0; i < splicedIden.length; i++) {
+              const spliced = { ...splicedIden[i] }
+              if (i === 0) {
+                spliced.parentIndex = parentId
+                spliced.level =
+                  vuex.identifier.identifierData[parentIndex].level + 1
+              } else {
+                spliced.level +=
+                  vuex.identifier.identifierData[parentIndex].level + 1
+              }
+
+              pushIden.push(spliced)
+            }
+            let newParentIndex = newIdentifier.findIndex(
+              (elem) => elem.index === parentId
+            )
+            for (let i = 0; i < pushIden.length; i++) {
+              newIdentifier.splice(newParentIndex + 1, 0, pushIden[i])
+              newParentIndex++
+            }
+            vuex.identifier.SET_IDEN_DATA(newIdentifier)
+          } else if (target && target === downTarget) {
+            e.preventDefault()
+          } else if (!target) {
+            // TODO 밖으로 뺄 때 구현하기
             const copyIden = { ...vuex.identifier.identifierData[index] }
-            copyIden.parentIndex = parentIndex
+            copyIden.parentIndex = null
+            copyIden.level = 0
             const newIden = {
               index,
               identifier: copyIden,
             }
             vuex.identifier.updateIden(newIden)
-            setTimeout(() => {
-              console.log(vuex.identifier.identifierData)
-            }, 0)
-          } else if (!target) {
-            console.log('wrong')
           }
           window.removeEventListener('mouseup', upEvent)
         })

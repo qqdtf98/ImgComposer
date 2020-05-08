@@ -72,6 +72,7 @@ export const actions = actionTree(
         nameWidth: 0,
         compoView: true,
         parentIndex: null,
+        level: 0,
       }
       newIdentifiers.push(newIden)
       commit('SET_IDEN_DATA', newIdentifiers)

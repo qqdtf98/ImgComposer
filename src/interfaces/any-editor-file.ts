@@ -71,6 +71,7 @@ export interface IdentifierType {
   nameWidth: number
   compoView: boolean
   parentIndex: number | null
+  level: number
 }
 export type Identifiers = IdentifierType[]
 
