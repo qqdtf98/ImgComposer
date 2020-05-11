@@ -83,6 +83,12 @@ export interface NewIden {
 export interface ArrowType {
   startCompo: IdentifierType | null
   endCompo: IdentifierType | null
+  index: number
+  startX: number
+  startY: number
+  endX: number
+  endY: number
+  degree: number
 }
 
 export type Arrows = ArrowType[]

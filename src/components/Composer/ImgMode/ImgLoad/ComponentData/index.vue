@@ -46,7 +46,6 @@ export default defineComponent({
     identifier: Object,
   },
   setup(props, ctx) {
-    // TODO 컴포넌트 이름을 입력하지 않거나 size에 따라 생성한 identifier 삭제하기
     const { identifier } = props as {
       identifier: IdentifierType
     }
