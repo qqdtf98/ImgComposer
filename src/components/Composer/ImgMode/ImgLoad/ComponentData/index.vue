@@ -18,6 +18,7 @@
           border: `2px solid ${identifier.color}`,
           backgroundColor: identifier.color + '38',
         }"
+        :identifier="identifier"
       />
       <IdData
         v-if="identifier.state"
@@ -79,8 +80,41 @@ export default defineComponent({
       background-color: #00000066;
       border-radius: 0.4rem;
     }
+
     .component-data {
       position: fixed;
+    }
+
+    .left-top,
+    .right-top,
+    .left-bottom,
+    .right-bottom {
+      position: absolute;
+      width: 0.7rem;
+      height: 0.7rem;
+      background-color: black;
+      border-radius: 2px;
+      transform: translateX(-50%) translateY(-50%);
+    }
+    .left-top {
+      left: 0;
+      top: 0;
+      transform: translateX(-50%) translateY(-50%);
+    }
+    .right-top {
+      right: 0;
+      top: 0;
+      transform: translateX(50%) translateY(-50%);
+    }
+    .left-bottom {
+      left: 0;
+      bottom: 0;
+      transform: translateX(-50%) translateY(50%);
+    }
+    .right-bottom {
+      right: 0;
+      bottom: 0;
+      transform: translateX(50%) translateY(50%);
     }
   }
 }
