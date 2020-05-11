@@ -17,26 +17,37 @@ export const mutations = mutationTree(state, {
 
 type UpdateArrow = {
   index: number
+  arrow: ArrowType
+}
+
+type CreateArrow = {
+  index: number
   compo: IdentifierType
+  startX: number
+  startY: number
 }
 
 export const actions = actionTree(
   { state, mutations },
   {
-    createArrow({ commit, state }, startCompo: IdentifierType) {
+    createArrow({ commit, state }, createArrow: CreateArrow) {
       const newArrows: Arrows = [...state.arrowData]
       const newArrow: ArrowType = {
-        startCompo,
+        startCompo: createArrow.compo,
         endCompo: null,
+        index: createArrow.index,
+        startX: createArrow.startX,
+        startY: createArrow.startY,
+        endX: -1,
+        endY: -1,
+        degree: 0,
       }
       newArrows.push(newArrow)
       commit('SET_ARROW_DATA', newArrows)
     },
     updateArrow({ commit, state }, updateArrow: UpdateArrow) {
       const newArrows: Arrows = [...state.arrowData]
-      const newArrow: ArrowType = { ...newArrows[updateArrow.index] }
-      newArrow.endCompo = updateArrow.compo
-      newArrows.splice(updateArrow.index, 1, newArrow)
+      newArrows[updateArrow.index] = updateArrow.arrow
       commit('SET_ARROW_DATA', newArrows)
     },
   }
