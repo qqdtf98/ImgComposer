@@ -20,13 +20,16 @@
       />
       <DataArrow
         v-for="(arrow, i) in vuex.dataArrow.arrowData"
+        v-show="arrow.arrowState"
         :key="'arrow' + i"
         :style="{
           left: arrow.startX + 'px',
           top: arrow.startY + 'px',
           width:
-            parseInt((arrow.endY - arrow.startY) / Math.cos(arrow.degree)) +
-            'px',
+            Math.sqrt(
+              Math.pow(arrow.startX - arrow.endX, 2) +
+                Math.pow(arrow.startY - arrow.endY, 2)
+            ) + 'px',
           transform: `rotate(${arrow.degree}deg)`,
           transformOrigin: 'top left',
         }"

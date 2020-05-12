@@ -1,5 +1,9 @@
 <template>
-  <div @mousedown.stop @mousedown="createArrow($event, identifier)">
+  <div
+    @mousedown.stop
+    @mousedown="createArrow($event, identifier)"
+    @mouseup="createEvent($event, identifier)"
+  >
     <div
       v-if="identifier.state"
       :identifier="JSON.stringify(identifier)"
@@ -52,68 +56,63 @@ export default defineComponent({
       startY: number
     }
 
+    const initX = ref(-1)
+    const initY = ref(-1)
+
     function createArrow(e: MouseEvent, startCompo: IdentifierType) {
-      const initX = e.clientX
-      const initY = e.clientY
+      initX.value = e.clientX
+      initY.value = e.clientY
+      console.log(`initX: ${initX.value}, initY: ${initY.value}`)
       const newArrow: CreateArrow = {
         index: arrowIndex.value,
         compo: startCompo,
-        startX: initX,
-        startY: initY,
+        startX: initX.value,
+        startY: initY.value,
       }
       const edges: NodeListOf<HTMLElement> = document.querySelectorAll('.edge')
       e.preventDefault()
       vuex.dataArrow.createArrow(newArrow)
+    }
 
-      let moveEvent: (e: MouseEvent) => void
-      let upEvent: (e: MouseEvent) => void
-
-      window.addEventListener(
-        'mousemove',
-        (moveEvent = (evt: MouseEvent) => {
-          const newArrows: Arrows = [...vuex.dataArrow.arrowData]
-          const newArrow: ArrowType = { ...newArrows[arrowIndex.value] }
-          newArrow.endX = evt.clientX
-          newArrow.endY = evt.clientY
-          newArrow.degree = parseInt(
-            (Math.atan2(evt.clientY - initY, evt.clientX - initX) * 180) /
-              Math.PI +
+    function createEvent(e: MouseEvent, endCompo: IdentifierType) {
+      if (vuex.dataArrow.arrowData[arrowIndex.value].startCompo !== endCompo) {
+        console.log('not same')
+        const newArrows: Arrows = [...vuex.dataArrow.arrowData]
+        const newArrow: ArrowType = { ...newArrows[arrowIndex.value] }
+        newArrow.endCompo = props.identifier as IdentifierType
+        newArrow.endX = e.clientX
+        newArrow.endY = e.clientY
+        newArrow.arrowState = true
+        console.log(`nextX: ${e.clientX}, nextY: ${e.clientY}`)
+        console.log(`initX: ${newArrow.startX}, initY: ${newArrow.startY}`)
+        console.log(
+          `dX: ${e.clientX - newArrow.startX}, dY: ${
+            e.clientY - newArrow.startY
+          }`
+        )
+        newArrow.degree =
+          (Math.atan2(
+            e.clientY - newArrow.startY,
+            e.clientX - newArrow.startX
+          ) *
+            180) /
+          Math.PI
+        console.log(newArrow.degree)
+        const updateArrow: UpdateArrow = {
+          index: arrowIndex.value,
+          arrow: newArrow,
+        }
+        vuex.dataArrow.updateArrow(updateArrow)
+        console.log(
+          parseInt(
+            Math.abs(newArrow.endY - newArrow.startY) /
+              Math.cos(newArrow.degree) +
               ''
           )
-          console.log(newArrow.degree)
-          const updateArrow: UpdateArrow = {
-            index: arrowIndex.value,
-            arrow: newArrow,
-          }
-          vuex.dataArrow.updateArrow(updateArrow)
-
-          window.addEventListener(
-            'mouseup',
-            (upEvent = (event: MouseEvent) => {
-              if (
-                vuex.dataArrow.arrowData[arrowIndex.value].startCompo !==
-                props.identifier
-              ) {
-                const newArrows: Arrows = [...vuex.dataArrow.arrowData]
-                const newArrow: ArrowType = { ...newArrows[arrowIndex.value] }
-                newArrow.endCompo = props.identifier as IdentifierType
-                newArrow.endX = event.clientX
-                newArrow.endY = event.clientY
-                // TODO end position도 셋팅하기
-                const updateArrow: UpdateArrow = {
-                  index: arrowIndex.value,
-                  arrow: newArrow,
-                }
-                vuex.dataArrow.updateArrow(updateArrow)
-                arrowIndex.value++
-                console.log(vuex.dataArrow.arrowData)
-              }
-              window.removeEventListener('mousemove', moveEvent)
-              window.removeEventListener('mouseup', upEvent)
-            })
-          )
-        })
-      )
+        )
+        console.log(newArrow.degree)
+        arrowIndex.value++
+      }
     }
 
     type UpdateArrow = {
@@ -123,6 +122,7 @@ export default defineComponent({
 
     return {
       createArrow,
+      createEvent,
     }
   },
 })

@@ -41,6 +41,7 @@ export const actions = actionTree(
         endX: -1,
         endY: -1,
         degree: 0,
+        arrowState: false,
       }
       newArrows.push(newArrow)
       commit('SET_ARROW_DATA', newArrows)

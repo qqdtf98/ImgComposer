@@ -89,6 +89,7 @@ export interface ArrowType {
   endX: number
   endY: number
   degree: number
+  arrowState: boolean
 }
 
 export type Arrows = ArrowType[]
