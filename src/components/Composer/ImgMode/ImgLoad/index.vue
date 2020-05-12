@@ -60,7 +60,12 @@ import { Cem } from '@/modules/custom-events-manager'
 import ViewHide from '../ViewHide.vue'
 
 export default defineComponent({
-  components: { ComponentData, ChromeColor: Chrome, CompoLink, ViewHide },
+  components: {
+    ComponentData,
+    ChromeColor: Chrome,
+    CompoLink,
+    ViewHide,
+  },
   setup(props, ctx) {
     const vuex = useVuex(ctx)
     const nextTick = useNextTick(ctx)
@@ -353,6 +358,7 @@ export default defineComponent({
 
     .img-wrapper {
       position: fixed;
+      z-index: 500;
       top: 50%;
       left: 50%;
       display: flex;

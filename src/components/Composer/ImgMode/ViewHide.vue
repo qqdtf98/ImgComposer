@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api'
+import { defineComponent, onMounted, ref } from '@vue/composition-api'
 import { useStore } from '../../../modules/vue-hooks'
 
 export default defineComponent({
@@ -21,6 +21,36 @@ export default defineComponent({
         store.composer.optionsViewMode === 'visible' ? 'hidden' : 'visible'
       )
     }
+
+    const isCtrl = ref(false)
+
+    function addMouseUpEvent() {
+      let upEvent: (e: KeyboardEvent) => void
+      window.addEventListener(
+        'keyup',
+        (upEvent = (e: KeyboardEvent) => {
+          if (e.which === 17) {
+            isCtrl.value = false
+          }
+          window.removeEventListener('keyup', upEvent)
+        })
+      )
+    }
+
+    onMounted(() => {
+      window.addEventListener('keydown', (e: KeyboardEvent) => {
+        if (e.which === 17) {
+          isCtrl.value = true
+          addMouseUpEvent()
+        }
+        if (e.which === 72 && isCtrl.value) {
+          // ctrl+h => 숨김/보임 단축키
+          e.preventDefault()
+          changeViewMode()
+          addMouseUpEvent()
+        }
+      })
+    })
 
     return {
       store,
