@@ -1,5 +1,4 @@
 import * as composer from './composer'
-import * as dataArrow from './dataArrow'
 import * as editorInfo from './editorInfo'
 import * as fileData from './fileData'
 import * as identifier from './identifier'
@@ -26,6 +25,5 @@ export const accessorType = getAccessorType({
     fileData,
     composer,
     identifier,
-    dataArrow,
   },
 })

@@ -45,6 +45,7 @@
     </div>
   </vue-custom-scrollbar>
 </template>
+
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api'
 import CompoValue from './CompoValue.vue'

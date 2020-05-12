@@ -18,22 +18,6 @@
         @set-color="setColor($event, i)"
         @activate-color="activateChromePicker($event, i)"
       />
-      <DataArrow
-        v-for="(arrow, i) in vuex.dataArrow.arrowData"
-        v-show="arrow.arrowState"
-        :key="'arrow' + i"
-        :style="{
-          left: arrow.startX + 'px',
-          top: arrow.startY + 'px',
-          width:
-            Math.sqrt(
-              Math.pow(arrow.startX - arrow.endX, 2) +
-                Math.pow(arrow.startY - arrow.endY, 2)
-            ) + 'px',
-          transform: `rotate(${arrow.degree}deg)`,
-          transformOrigin: 'top left',
-        }"
-      />
       <CompoLink v-show="isCompoLink" />
       <div
         ref="pickerRef"
@@ -74,7 +58,6 @@ import { Chrome } from 'vue-color'
 import CompoLink from '@/components/Composer/ImgMode/ImgLoad/CompoLink/index.vue'
 import { Cem } from '@/modules/custom-events-manager'
 import ViewHide from '../ViewHide.vue'
-import DataArrow from '@/components/Composer/ImgMode/ImgLoad/DataArrow.vue'
 
 export default defineComponent({
   components: {
@@ -82,7 +65,6 @@ export default defineComponent({
     ChromeColor: Chrome,
     CompoLink,
     ViewHide,
-    DataArrow,
   },
   setup(props, ctx) {
     const vuex = useVuex(ctx)
@@ -376,6 +358,7 @@ export default defineComponent({
 
     .img-wrapper {
       position: fixed;
+      z-index: 500;
       top: 50%;
       left: 50%;
       display: flex;
