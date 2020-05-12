@@ -1,28 +1,36 @@
 <template>
-  <div
-    @mousedown.stop
-    @mousedown="createArrow($event, identifier)"
-    @mouseup="createEvent($event, identifier)"
-  >
+  <div>
     <div
       v-if="identifier.state"
       :identifier="JSON.stringify(identifier)"
       class="left-top edge"
+      @mousedown.stop
+      @mousedown="createArrow($event, identifier)"
+      @mouseup="createEvent($event, identifier)"
     ></div>
     <div
       v-if="identifier.state"
       :identifier="identifier"
       class="right-top edge"
+      @mousedown.stop
+      @mousedown="createArrow($event, identifier)"
+      @mouseup="createEvent($event, identifier)"
     ></div>
     <div
       v-if="identifier.state"
       :identifier="identifier"
       class="left-bottom edge"
+      @mousedown.stop
+      @mousedown="createArrow($event, identifier)"
+      @mouseup="createEvent($event, identifier)"
     ></div>
     <div
       v-if="identifier.state"
       :identifier="identifier"
       class="right-bottom edge"
+      @mousedown.stop
+      @mousedown="createArrow($event, identifier)"
+      @mouseup="createEvent($event, identifier)"
     ></div>
   </div>
 </template>
@@ -59,10 +67,12 @@ export default defineComponent({
     const initX = ref(-1)
     const initY = ref(-1)
 
+    const createState = ref(false)
+
     function createArrow(e: MouseEvent, startCompo: IdentifierType) {
+      createState.value = true
       initX.value = e.clientX
       initY.value = e.clientY
-      console.log(`initX: ${initX.value}, initY: ${initY.value}`)
       const newArrow: CreateArrow = {
         index: arrowIndex.value,
         compo: startCompo,
@@ -75,8 +85,10 @@ export default defineComponent({
     }
 
     function createEvent(e: MouseEvent, endCompo: IdentifierType) {
-      if (vuex.dataArrow.arrowData[arrowIndex.value].startCompo !== endCompo) {
-        console.log('not same')
+      if (
+        vuex.dataArrow.arrowData[arrowIndex.value].startCompo !== endCompo &&
+        createState.value
+      ) {
         const newArrows: Arrows = [...vuex.dataArrow.arrowData]
         const newArrow: ArrowType = { ...newArrows[arrowIndex.value] }
         newArrow.endCompo = props.identifier as IdentifierType
@@ -89,6 +101,15 @@ export default defineComponent({
           `dX: ${e.clientX - newArrow.startX}, dY: ${
             e.clientY - newArrow.startY
           }`
+        )
+        console.log(
+          'degree' +
+            (Math.atan2(
+              e.clientY - newArrow.startY,
+              e.clientX - newArrow.startX
+            ) *
+              180) /
+              Math.PI
         )
         newArrow.degree =
           (Math.atan2(
@@ -113,6 +134,7 @@ export default defineComponent({
         console.log(newArrow.degree)
         arrowIndex.value++
       }
+      createState.value = false
     }
 
     type UpdateArrow = {
