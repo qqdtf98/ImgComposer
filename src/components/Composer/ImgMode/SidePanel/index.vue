@@ -1,5 +1,6 @@
 <template>
   <div class="side-panel">
+    <DataTransfer />
     <VuexStore />
     <Components />
     <Pages />
@@ -11,15 +12,17 @@ import { defineComponent } from '@vue/composition-api'
 import VuexStore from './VuexStore.vue'
 import Components from './Components.vue'
 import Pages from './Pages/index.vue'
+import DataTransfer from './DataTransfer/index.vue'
 
 export default defineComponent({
-  components: { VuexStore, Components, Pages },
+  components: { VuexStore, Components, Pages, DataTransfer },
 })
 </script>
 
 <style lang="scss">
 .side-panel {
   position: fixed;
+  z-index: 1;
   top: 0;
   left: 0;
   bottom: 0;

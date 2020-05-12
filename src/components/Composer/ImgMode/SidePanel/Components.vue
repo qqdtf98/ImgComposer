@@ -5,8 +5,8 @@
     <div class="component-list">
       <div
         v-for="(iden, i) in vuex.identifier.identifierData"
-        :key="i"
         :id="iden.index"
+        :key="i"
         class="color-name-select compo-list"
         :style="{
           width: iden.nameWidth + 40 + 'px',
