@@ -6,23 +6,25 @@
         <img
           src="@/assets/images/plusblue.svg"
           class="plus-blue"
-          @click="showComponentSelector"
+          @click="showEventSelector"
         />
       </div>
-      <div v-show="showSelector" class="select-component">
-        <select>
+      <div v-show="isEventSelector" class="select-component">
+        <select ref="eventRef" class="left-select">
+          <option value="none">선택</option>
           <option
             v-for="iden in vuex.identifier.identifierData"
             :key="iden.index"
-            :value="iden.compoName"
+            :value="JSON.stringify(iden)"
             >{{ iden.compoName }}
           </option>
         </select>
-        <select @change="addEventTransfer">
+        <select class="right-select" @change="addEventTransfer">
+          <option value="none">선택</option>
           <option
             v-for="iden in vuex.identifier.identifierData"
             :key="iden.index"
-            :value="iden.compoName"
+            :value="JSON.stringify(iden)"
             >{{ iden.compoName }}
           </option>
         </select>
@@ -32,22 +34,28 @@
       </div>
       <div class="data-text-box">
         <div>Props</div>
-        <img src="@/assets/images/plusblue.svg" class="plus-blue" />
+        <img
+          src="@/assets/images/plusblue.svg"
+          class="plus-blue"
+          @click="showPropsSelector"
+        />
       </div>
-      <div v-show="showSelector" class="select-component">
-        <select>
+      <div v-show="isPropsSelector" class="select-component">
+        <select ref="propsRef" class="left-select">
+          <option value="none">선택</option>
           <option
             v-for="iden in vuex.identifier.identifierData"
             :key="iden.index"
-            :value="iden.compoName"
+            :value="JSON.stringify(iden)"
             >{{ iden.compoName }}
           </option>
         </select>
-        <select @change="addPropsTransfer">
+        <select class="right-select" @change="addPropsTransfer">
+          <option value="none">선택</option>
           <option
             v-for="iden in vuex.identifier.identifierData"
             :key="iden.index"
-            :value="iden.compoName"
+            :value="JSON.stringify(iden)"
             >{{ iden.compoName }}
           </option>
         </select>
@@ -56,7 +64,7 @@
         <!-- <div>add eventlist</div> -->
       </div>
       <div class="data-store">
-        <button class="data-store-btn">Done</button>
+        <button class="data-store-btn" @click="closeDataTransfer">Done</button>
       </div>
     </div>
   </vue-custom-scrollbar>
@@ -73,26 +81,65 @@ export default defineComponent({
   setup(props, ctx) {
     const vuex = useVuex(ctx)
 
-    const showSelector = ref(false)
+    const isEventSelector = ref(false)
 
-    function showComponentSelector() {
-      showSelector.value = true
+    function showEventSelector() {
+      isEventSelector.value = true
     }
 
-    function addEventTransfer() {
-      // TODO store DataTransferData
+    const isPropsSelector = ref(false)
+
+    function showPropsSelector() {
+      isPropsSelector.value = true
     }
 
-    function addPropsTransfer() {
-      // TODO store DataTransferData
+    const eventRef = ref<HTMLSelectElement>(null)
+
+    function addEventTransfer(e: MouseEvent) {
+      console.log('event')
+      const target = e.target as HTMLSelectElement
+      if (!eventRef.value) return
+      if (!e.target) return
+      if (eventRef.value.value === 'none') return
+      if (target.value === 'none ') return
+      const newData: DataTransfer = {
+        startCompo: JSON.parse(eventRef.value.value),
+        endCompo: JSON.parse(target.value),
+      }
+      vuex.dataTransfer.addEventData(newData)
+    }
+
+    const propsRef = ref<HTMLSelectElement>(null)
+
+    function addPropsTransfer(e: MouseEvent) {
+      console.log('props')
+      if (!propsRef.value) return
+      if (!e.target) return
+      const target = e.target as HTMLSelectElement
+      const newData: DataTransfer = {
+        startCompo: JSON.parse(propsRef.value.value),
+        endCompo: JSON.parse(target.value),
+      }
+      vuex.dataTransfer.addPropsData(newData)
+    }
+
+    function closeDataTransfer() {
+      isPropsSelector.value = false
+      isEventSelector.value = false
+      ctx.emit('close-data')
     }
 
     return {
-      showComponentSelector,
+      showEventSelector,
       vuex,
-      showSelector,
+      isEventSelector,
       addEventTransfer,
       addPropsTransfer,
+      showPropsSelector,
+      isPropsSelector,
+      eventRef,
+      propsRef,
+      closeDataTransfer,
     }
   },
 })
@@ -101,7 +148,7 @@ export default defineComponent({
 <style lang="scss">
 .transfer-area {
   position: fixed;
-  width: 45rem;
+  width: 35rem;
   left: 50%;
   top: 50%;
   transform: translateX(-50%) translateY(-50%);

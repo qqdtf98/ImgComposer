@@ -79,3 +79,8 @@ export interface NewIden {
   index: number
   identifier: IdentifierType
 }
+
+export interface DataTransfer {
+  startCompo: IdentifierType | null
+  endCompo: IdentifierType | null
+}
