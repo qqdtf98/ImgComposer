@@ -1,5 +1,6 @@
 <template>
-  <div class="data-transfer-wrapper">
+  <div class="data-transfer-wrapper" @click="viewSelectedPair">
+    <input class="data-transfer-input" placeholder="write data" />
     <div class="left-data">
       <div
         class="component-name"
@@ -27,17 +28,52 @@
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api'
 import { DataTransfer } from '@/interfaces/any-editor-file.ts'
+import { useVuex } from '../../../../../../modules/vue-hooks'
+import { NewIden } from '@/interfaces/any-editor-file.ts'
 
 export default defineComponent({
   props: {
     transferData: Object,
   },
-  setup(props) {
+  setup(props, ctx) {
+    const vuex = useVuex(ctx)
+
     const { transferData } = props as {
       transferData: DataTransfer
     }
-    if (!transferData.startCompo) return
-    console.log(transferData.startCompo)
+
+    function viewSelectedPair() {
+      console.log('//???')
+      for (let i = 0; i < vuex.identifier.identifierData.length; i++) {
+        const copyIden = { ...vuex.identifier.identifierData[i] }
+        if (!transferData.startCompo) return
+        if (!transferData.endCompo) return
+        console.log(transferData.startCompo)
+        console.log(transferData.endCompo)
+        if (
+          transferData.startCompo.index ===
+            vuex.identifier.identifierData[i].index ||
+          transferData.endCompo.index ===
+            vuex.identifier.identifierData[i].index
+        ) {
+          console.log('same')
+          copyIden.compoView = true
+        } else {
+          copyIden.compoView = false
+        }
+        const newIden: NewIden = {
+          index: i,
+          identifier: copyIden,
+        }
+        vuex.identifier.updateIden(newIden)
+      }
+    }
+
+    // TODO input 받아서 저장하기
+
+    return {
+      viewSelectedPair,
+    }
   },
 })
 </script>
@@ -52,7 +88,27 @@ export default defineComponent({
   align-items: center;
   justify-content: left;
   margin-top: 10px;
-  width: 100%;
+  // width: 100%;
+  cursor: pointer;
+  position: relative;
+  height: 65px;
+
+  .data-transfer-input {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    text-align: center;
+    background-color: #2d2d2d;
+    color: #dadada;
+    height: 28px;
+    border-radius: 5px;
+  }
+
+  .data-transfer-input::placeholder {
+    color: #dadada;
+  }
 
   .left-data,
   .right-data {
@@ -61,7 +117,6 @@ export default defineComponent({
     @include tip-style;
     align-items: center;
     height: 32px;
-    cursor: pointer;
 
     .component-name {
       font-family: inherit;
@@ -76,6 +131,7 @@ export default defineComponent({
   .center-arrow {
     margin-right: 12px;
     margin-left: 12px;
+    width: 140px;
   }
 }
 </style>

@@ -224,8 +224,8 @@ export default defineComponent({
       width: 100%;
       display: flex;
       flex-direction: column;
-      justify-content: left;
-      align-items: center;
+      justify-content: center;
+      align-items: flex-start;
       padding-left: 10px;
 
       .link-list-box {

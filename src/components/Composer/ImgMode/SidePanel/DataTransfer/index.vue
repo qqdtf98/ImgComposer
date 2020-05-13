@@ -5,6 +5,7 @@
       <p class="add" @click="showDataTransfer">+</p>
     </div>
     <div class="data-value-list">
+      <h4 @click="viewEveryCompo">view all</h4>
       <DataValue
         v-for="(event, i) in vuex.dataTransfer.eventTransfer"
         :key="i"
@@ -25,6 +26,7 @@ import { defineComponent, ref } from '@vue/composition-api'
 import DataTransferAdd from './DataTransferAdd/index.vue'
 import { useVuex } from '../../../../../modules/vue-hooks'
 import DataValue from './DataTransferAdd/DataValue.vue'
+import { NewIden, DataTransfer } from '@/interfaces/any-editor-file.ts'
 
 export default defineComponent({
   components: { DataTransferAdd, DataValue },
@@ -41,10 +43,23 @@ export default defineComponent({
       }
     }
 
+    function viewEveryCompo() {
+      for (let i = 0; i < vuex.identifier.identifierData.length; i++) {
+        const copyIden = { ...vuex.identifier.identifierData[i] }
+        copyIden.compoView = true
+        const newIden: NewIden = {
+          index: i,
+          identifier: copyIden,
+        }
+        vuex.identifier.updateIden(newIden)
+      }
+    }
+
     return {
       dataState,
       showDataTransfer,
       vuex,
+      viewEveryCompo,
     }
   },
 })
