@@ -30,7 +30,11 @@
         </select>
       </div>
       <div class="data-value-list">
-        <!-- <DataValue /> -->
+        <DataValue
+          v-for="(event, i) in vuex.dataTransfer.eventTransfer"
+          :key="i"
+          :transferData="event"
+        />
       </div>
       <div class="data-text-box">
         <div>Props</div>
@@ -61,7 +65,11 @@
         </select>
       </div>
       <div class="data-value-list">
-        <!-- <div>add eventlist</div> -->
+        <DataValue
+          v-for="(props, i) in vuex.dataTransfer.propsTransfer"
+          :key="i"
+          :transferData="props"
+        />
       </div>
       <div class="data-store">
         <button class="data-store-btn" @click="closeDataTransfer">Done</button>
@@ -75,6 +83,7 @@ import { defineComponent, ref } from '@vue/composition-api'
 import vueCustomScrollbar from 'vue-custom-scrollbar'
 import DataValue from './DataValue.vue'
 import { useVuex } from '../../../../../../modules/vue-hooks'
+import { DataTransfer } from '@/interfaces/any-editor-file.ts'
 
 export default defineComponent({
   components: { vueCustomScrollbar, DataValue },
@@ -196,11 +205,29 @@ export default defineComponent({
       }
     }
     .select-component {
+      width: 100%;
+      margin-top: 10px;
+      margin-bottom: 10px;
       display: flex;
       flex-direction: row;
+      align-items: center;
+      justify-content: left;
+
+      .left-select,
+      .right-select {
+        margin-right: 10px;
+        margin-left: 10px;
+        height: 25px;
+      }
     }
     .data-value-list {
       width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: left;
+      align-items: center;
+      padding-left: 10px;
+
       .link-list-box {
         border: 1px solid #ababab;
         border-radius: 5px;
@@ -230,13 +257,14 @@ export default defineComponent({
       display: flex;
       align-items: center;
       justify-content: right;
-      margin: 0px 15px;
+      margin: 20px 15px 5px 15px;
       width: 100%;
       .data-store-btn {
         background-color: #1f1f1f;
         border-radius: 5px;
         color: #fff;
         padding: 8px 15px;
+        cursor: pointer;
       }
     }
   }
