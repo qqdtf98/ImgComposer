@@ -1,16 +1,5 @@
 <template>
   <div class="side-panel-pages">
-    <div class="header-container">
-      <h1 class="header">Pages</h1>
-      <input
-        id="side-panel-input-file"
-        type="file"
-        accept="image/*"
-        @change="handleInputFileChange"
-      />
-      <label class="add" for="side-panel-input-file"><p>＋</p></label>
-    </div>
-
     <div class="previews">
       <div
         v-for="(page, i) in store.identifier.pages"
@@ -20,6 +9,13 @@
         <img :src="page.imageData" />
       </div>
     </div>
+    <input
+      id="side-panel-input-file"
+      type="file"
+      accept="image/*"
+      @change="handleInputFileChange"
+    />
+    <label class="add" for="side-panel-input-file"><p>＋</p></label>
   </div>
 </template>
 
@@ -62,10 +58,6 @@ export default defineComponent({
       }
 
       reader.readAsDataURL(file)
-
-      // store.identifier.addPage({
-      //   imageData:
-      // })
     }
 
     return {
@@ -78,53 +70,55 @@ export default defineComponent({
 
 <style lang="scss">
 .side-panel-pages {
-  margin-top: 20px;
+  width: 256px;
+  background-color: #fff;
+  border: 1px solid #ababab;
+  box-sizing: border-box;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
 
-  .header-container {
+  #side-panel-input-file {
+    position: fixed;
+    left: -9999px;
+    visibility: hidden;
+  }
+
+  .add {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
+    line-height: 1;
+    font-size: 20px;
+    width: 100%;
+    height: 50px;
+    border-radius: 10px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background-color: #f0f0f3;
+    cursor: pointer;
 
-    .header {
-      font-size: 17px;
-      font-weight: 500;
+    &:hover {
+      background-color: #f0f0f0;
     }
 
-    #side-panel-input-file {
-      position: fixed;
-      left: -9999px;
-      visibility: hidden;
-    }
-
-    .add {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      line-height: 1;
-      font-size: 20px;
-      width: 30px;
-      height: 30px;
-      border-radius: 5px;
-      cursor: pointer;
-
-      &:hover {
-        background-color: #f0f0f0;
-      }
-
-      &:active {
-        background-color: #e0e0e0;
-      }
+    &:active {
+      background-color: #e0e0e0;
     }
   }
 
   .previews {
+    max-height: 400px;
+    overflow: auto;
+    margin: 30px 0 60px 0;
+
     .image-wrapper {
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 100%;
-      height: 150px;
+      width: 98%;
+      height: 130px;
       box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.25);
       border-radius: 10px;
       overflow: hidden;
