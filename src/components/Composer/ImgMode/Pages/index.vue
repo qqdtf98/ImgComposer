@@ -1,12 +1,18 @@
 <template>
-  <div class="side-panel-pages">
-    <div class="previews">
+  <div ref="pagesRef" class="side-panel-pages">
+    <img
+      class="expand-icon"
+      src="@/assets/images/expand.svg"
+      @click="expandPages"
+    />
+    <div ref="gridRef" class="previews">
       <div
         v-for="(page, i) in store.identifier.pages"
+        ref="imgRef"
         :key="i"
         class="image-wrapper"
       >
-        <img :src="page.imageData" />
+        <img :src="page.imageData" @click="openPage" />
       </div>
     </div>
     <input
@@ -15,12 +21,14 @@
       accept="image/*"
       @change="handleInputFileChange"
     />
-    <label class="add" for="side-panel-input-file"><p>＋</p></label>
+    <label v-show="!expandState" class="add" for="side-panel-input-file"
+      ><p>＋</p></label
+    >
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api'
+import { defineComponent, ref } from '@vue/composition-api'
 import { useStore } from '@/modules/vue-hooks'
 
 export default defineComponent({
@@ -60,9 +68,61 @@ export default defineComponent({
       reader.readAsDataURL(file)
     }
 
+    const pagesRef = ref<HTMLElement>(null)
+    const expandState = ref(false)
+    const pagesHeight = ref('')
+    const gridRef = ref<HTMLElement>(null)
+    const imgRef = ref<HTMLElement[]>([])
+
+    function expandPages() {
+      if (!pagesRef.value) return
+      if (!gridRef.value) return
+      if (!imgRef.value) return
+      if (expandState.value) {
+        pagesRef.value.style.right = '30px'
+        pagesRef.value.style.bottom = '100px'
+        pagesRef.value.style.width = '256px'
+        pagesRef.value.style.height = pagesHeight.value
+        gridRef.value.style.display = 'block'
+        gridRef.value.style.maxHeight = '400px'
+        for (const img of imgRef.value) {
+          img.style.height = '130px'
+        }
+        expandState.value = false
+      } else {
+        pagesHeight.value = getComputedStyle(pagesRef.value).height
+        pagesRef.value.style.width = '100%'
+        pagesRef.value.style.height = '100vh'
+        pagesRef.value.style.right = '0'
+        pagesRef.value.style.bottom = '0'
+        gridRef.value.style.display = 'grid'
+        gridRef.value.style.height = '100%'
+        gridRef.value.style.maxHeight = 'none'
+        const gridRepeat = window.innerWidth / 400
+        gridRef.value.style.gridTemplateColumns = `repeat(${parseInt(
+          gridRepeat + ''
+        )},400px)`
+        gridRef.value.style.gridTemplateRows = '250px'
+        for (const img of imgRef.value) {
+          img.style.height = '250px'
+        }
+        expandState.value = true
+      }
+    }
+
+    function openPage() {
+      // TODO open page
+    }
+
     return {
       store,
       handleInputFileChange,
+      expandPages,
+      openPage,
+      pagesRef,
+      gridRef,
+      imgRef,
+      expandState,
     }
   },
 })
@@ -76,6 +136,20 @@ export default defineComponent({
   box-sizing: border-box;
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
   border-radius: 10px;
+  z-index: 5000;
+
+  .expand-icon {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    cursor: pointer;
+    padding: 5px;
+
+    &:hover {
+      background-color: #ebebeb;
+      border-radius: 7px;
+    }
+  }
 
   #side-panel-input-file {
     position: fixed;
@@ -111,6 +185,10 @@ export default defineComponent({
     max-height: 400px;
     overflow: auto;
     margin: 30px 0 60px 0;
+    padding: 0 20px;
+    justify-content: center;
+    grid-row-gap: 20px;
+    grid-column-gap: 20px;
 
     .image-wrapper {
       cursor: pointer;
@@ -120,7 +198,7 @@ export default defineComponent({
       width: 98%;
       height: 130px;
       box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.25);
-      border-radius: 10px;
+      border-radius: 5px;
       overflow: hidden;
       margin: 20px 0;
 
