@@ -1,6 +1,6 @@
 import {
-  IdentifierType,
   Identifiers,
+  IdentifierType,
   NewIden,
 } from '@/interfaces/any-editor-file.ts'
 import { actionTree, mutationTree } from 'nuxt-typed-vuex'

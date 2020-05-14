@@ -1,6 +1,5 @@
+import { DataTransfer, NewData } from '@/interfaces/any-editor-file.ts'
 import { actionTree, mutationTree } from 'nuxt-typed-vuex'
-
-import { DataTransfer } from '@/interfaces/any-editor-file.ts'
 
 export const state: () => {
   eventTransfer: DataTransfer[]
@@ -21,17 +20,24 @@ export const actions = actionTree(
   { state, mutations },
   {
     addEventData({ commit, state }, newData: DataTransfer) {
-      console.log('ee')
       const eventTransfer = [...state.eventTransfer]
       eventTransfer.push(newData)
       commit('SET_EVENT_TRANSFER', eventTransfer)
     },
     addPropsData({ commit, state }, newData: DataTransfer) {
-      console.log('pp')
       const propsTransfer = [...state.propsTransfer]
       propsTransfer.push(newData)
       commit('SET_PROPS_TRANSFER', propsTransfer)
-      console.log(state.propsTransfer)
+    },
+    updateEventData({ commit, state }, newData: NewData) {
+      const newEvent: DataTransfer[] = [...state.eventTransfer]
+      newEvent[newData.index] = newData.transfer
+      commit('SET_EVENT_TRANSFER', newEvent)
+    },
+    updatePropsData({ commit, state }, newData: NewData) {
+      const newProps: DataTransfer[] = [...state.eventTransfer]
+      newProps[newData.index] = newData.transfer
+      commit('SET_PROPS_TRANSFER', newProps)
     },
   }
 )

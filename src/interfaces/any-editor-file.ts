@@ -83,4 +83,12 @@ export interface NewIden {
 export interface DataTransfer {
   startCompo: IdentifierType | null
   endCompo: IdentifierType | null
+  data: string | null
+  index: number
+  type: 'event' | 'props'
+}
+
+export interface NewData {
+  index: number
+  transfer: DataTransfer
 }

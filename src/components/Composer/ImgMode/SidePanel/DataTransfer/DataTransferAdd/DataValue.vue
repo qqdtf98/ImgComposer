@@ -1,24 +1,19 @@
 <template>
   <div class="data-transfer-wrapper" @click="viewSelectedPair">
-    <input class="data-transfer-input" placeholder="write data" />
+    <input
+      ref="inputRef"
+      class="data-transfer-input"
+      placeholder="write data"
+      @input="storeInputValue"
+    />
     <div class="left-data">
-      <div
-        class="component-name"
-        :style="{
-          color: transferData.startCompo.color,
-        }"
-      >
+      <div class="component-name">
         {{ transferData.startCompo.compoName }}
       </div>
     </div>
     <img class="center-arrow" src="@/assets/images/arrow.svg" />
     <div class="right-data">
-      <div
-        class="component-name"
-        :style="{
-          color: transferData.endCompo.color,
-        }"
-      >
+      <div class="component-name">
         {{ transferData.endCompo.compoName }}
       </div>
     </div>
@@ -26,8 +21,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api'
-import { DataTransfer } from '@/interfaces/any-editor-file.ts'
+import { defineComponent, ref } from '@vue/composition-api'
+import { DataTransfer, NewData } from '@/interfaces/any-editor-file.ts'
 import { useVuex } from '../../../../../../modules/vue-hooks'
 import { NewIden } from '@/interfaces/any-editor-file.ts'
 
@@ -43,20 +38,16 @@ export default defineComponent({
     }
 
     function viewSelectedPair() {
-      console.log('//???')
       for (let i = 0; i < vuex.identifier.identifierData.length; i++) {
         const copyIden = { ...vuex.identifier.identifierData[i] }
         if (!transferData.startCompo) return
         if (!transferData.endCompo) return
-        console.log(transferData.startCompo)
-        console.log(transferData.endCompo)
         if (
           transferData.startCompo.index ===
             vuex.identifier.identifierData[i].index ||
           transferData.endCompo.index ===
             vuex.identifier.identifierData[i].index
         ) {
-          console.log('same')
           copyIden.compoView = true
         } else {
           copyIden.compoView = false
@@ -69,10 +60,51 @@ export default defineComponent({
       }
     }
 
+    let timeValue: number
+
+    function storeInputValue(e: InputEvent) {
+      const target = e.target as HTMLInputElement
+
+      if (timeValue) clearTimeout(timeValue)
+      timeValue = window.setTimeout(() => {
+        if (transferData.type === 'event') {
+          const newTransfer = {
+            ...vuex.dataTransfer.eventTransfer[transferData.index],
+          }
+          newTransfer.data = target.value
+
+          const newData: NewData = {
+            index: transferData.index,
+            transfer: newTransfer,
+          }
+
+          vuex.dataTransfer.updateEventData(newData)
+        } else if (transferData.type === 'props') {
+          const newTransfer = {
+            ...vuex.dataTransfer.propsTransfer[transferData.index],
+          }
+          newTransfer.data = target.value
+
+          const newData: NewData = {
+            index: transferData.index,
+            transfer: newTransfer,
+          }
+
+          vuex.dataTransfer.updatePropsData(newData)
+        }
+        console.log(vuex.dataTransfer.eventTransfer)
+        console.log(vuex.dataTransfer.propsTransfer)
+      }, 400)
+    }
+
+    const inputRef = ref<HTMLElement>(null)
+
     // TODO input 받아서 저장하기
 
     return {
       viewSelectedPair,
+      inputRef,
+      storeInputValue,
     }
   },
 })

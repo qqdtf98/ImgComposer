@@ -104,8 +104,9 @@ export default defineComponent({
 
     const eventRef = ref<HTMLSelectElement>(null)
 
+    const index = ref(0)
+
     function addEventTransfer(e: MouseEvent) {
-      console.log('event')
       const target = e.target as HTMLSelectElement
       if (!eventRef.value) return
       if (!e.target) return
@@ -114,21 +115,28 @@ export default defineComponent({
       const newData: DataTransfer = {
         startCompo: JSON.parse(eventRef.value.value),
         endCompo: JSON.parse(target.value),
+        data: null,
+        index: index.value,
+        type: 'event',
       }
+      index.value++
       vuex.dataTransfer.addEventData(newData)
     }
 
     const propsRef = ref<HTMLSelectElement>(null)
 
     function addPropsTransfer(e: MouseEvent) {
-      console.log('props')
       if (!propsRef.value) return
       if (!e.target) return
       const target = e.target as HTMLSelectElement
       const newData: DataTransfer = {
         startCompo: JSON.parse(propsRef.value.value),
         endCompo: JSON.parse(target.value),
+        data: null,
+        index: index.value,
+        type: 'props',
       }
+      index.value++
       vuex.dataTransfer.addPropsData(newData)
     }
 
