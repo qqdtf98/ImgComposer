@@ -1,4 +1,5 @@
 import * as composer from './composer'
+import * as dataTransfer from './dataTransfer'
 import * as editorInfo from './editorInfo'
 import * as fileData from './fileData'
 import * as identifier from './identifier'
@@ -24,6 +25,7 @@ export const accessorType = getAccessorType({
     editorInfo,
     fileData,
     composer,
+    dataTransfer,
     identifier,
   },
 })

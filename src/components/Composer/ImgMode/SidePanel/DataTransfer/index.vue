@@ -4,7 +4,20 @@
       <h1 class="header">Data Transfer</h1>
       <p class="add" @click="showDataTransfer">+</p>
     </div>
-    <DataTransferAdd v-show="dataState" />
+    <div class="data-value-list">
+      <h4 @click="viewEveryCompo">view all</h4>
+      <DataValue
+        v-for="(event, i) in vuex.dataTransfer.eventTransfer"
+        :key="i"
+        :transferData="event"
+      />
+      <DataValue
+        v-for="(props, i) in vuex.dataTransfer.propsTransfer"
+        :key="`p+${i}`"
+        :transferData="props"
+      />
+    </div>
+    <DataTransferAdd v-show="dataState" @close-data="showDataTransfer" />
   </div>
 </template>
 
@@ -12,23 +25,41 @@
 import { defineComponent, ref } from '@vue/composition-api'
 import DataTransferAdd from './DataTransferAdd/index.vue'
 import { useVuex } from '../../../../../modules/vue-hooks'
+import DataValue from './DataTransferAdd/DataValue.vue'
+import { NewIden, DataTransfer } from '@/interfaces/any-editor-file.ts'
 
 export default defineComponent({
-  components: { DataTransferAdd },
+  components: { DataTransferAdd, DataValue },
   setup(props, ctx) {
     const vuex = useVuex(ctx)
 
     const dataState = ref(false)
 
     function showDataTransfer() {
-      if (vuex.identifier.identifierData.length > 1) {
+      if (vuex.identifier.identifierData.length > 1 && !dataState.value) {
         dataState.value = true
+      } else if (dataState.value) {
+        dataState.value = false
+      }
+    }
+
+    function viewEveryCompo() {
+      for (let i = 0; i < vuex.identifier.identifierData.length; i++) {
+        const copyIden = { ...vuex.identifier.identifierData[i] }
+        copyIden.compoView = true
+        const newIden: NewIden = {
+          index: i,
+          identifier: copyIden,
+        }
+        vuex.identifier.updateIden(newIden)
       }
     }
 
     return {
       dataState,
       showDataTransfer,
+      vuex,
+      viewEveryCompo,
     }
   },
 })
@@ -36,6 +67,7 @@ export default defineComponent({
 
 <style lang="scss">
 .side-panel-data {
+  margin-bottom: 15px;
   .header-container {
     display: flex;
     align-items: center;
@@ -63,6 +95,38 @@ export default defineComponent({
 
       &:active {
         background-color: #e0e0e0;
+      }
+    }
+  }
+
+  .data-value-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    align-items: center;
+    .link-list-box {
+      border: 1px solid #ababab;
+      border-radius: 5px;
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      padding: 0px 10px;
+      height: 2.5rem;
+      margin: 5px 0px;
+
+      .link-key,
+      .link-value {
+        width: 50%;
+        font-size: 17px;
+      }
+
+      .link-key {
+        border-right: 1px solid #ababab;
+      }
+
+      .link-value {
+        padding-left: 10px;
       }
     }
   }
