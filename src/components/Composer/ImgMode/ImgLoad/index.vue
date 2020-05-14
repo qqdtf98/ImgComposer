@@ -85,6 +85,11 @@ export default defineComponent({
         preview.style.width = '100%'
         preview.src = fileReader.result as string
         isImgUnLoad.value = false
+        vuex.identifier.addPage({
+          imageData: fileReader.result as string,
+          identifiers: [],
+        })
+        ctx.emit('img-load')
       }
     }
 
