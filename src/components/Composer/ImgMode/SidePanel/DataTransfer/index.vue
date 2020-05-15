@@ -36,7 +36,11 @@ export default defineComponent({
     const dataState = ref(false)
 
     function showDataTransfer() {
-      if (vuex.identifier.identifierData.length > 1 && !dataState.value) {
+      if (
+        vuex.identifier.pages[vuex.identifier.selectedPageIndex as number]
+          .identifiers.length > 1 &&
+        !dataState.value
+      ) {
         dataState.value = true
       } else if (dataState.value) {
         dataState.value = false
@@ -44,8 +48,17 @@ export default defineComponent({
     }
 
     function viewEveryCompo() {
-      for (let i = 0; i < vuex.identifier.identifierData.length; i++) {
-        const copyIden = { ...vuex.identifier.identifierData[i] }
+      for (
+        let i = 0;
+        i <
+        vuex.identifier.pages[vuex.identifier.selectedPageIndex as number]
+          .identifiers.length;
+        i++
+      ) {
+        const copyIden = {
+          ...vuex.identifier.pages[vuex.identifier.selectedPageIndex as number]
+            .identifiers[i],
+        }
         copyIden.compoView = true
         const newIden: NewIden = {
           index: i,

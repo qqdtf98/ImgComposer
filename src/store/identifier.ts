@@ -13,11 +13,13 @@ type Page = {
 export const state: () => {
   pages: Page[]
   selectedPageIndex: number | null
+  fileState: boolean
   /** @deprecated */
   identifierData: Identifiers
 } = () => ({
   pages: [],
   selectedPageIndex: null,
+  fileState: false,
   /** @deprecated */
   identifierData: [],
 })
@@ -27,7 +29,9 @@ export const mutations = mutationTree(state, {
   SET_SELECTED_PAGE_INDEX: (state, index: number) =>
     (state.selectedPageIndex = index),
   /** @deprecated */
-  SET_IDEN_DATA: (state, iden: Identifiers) => (state.identifierData = iden),
+  SET_IDEN_DATA: (state, iden: Identifiers) =>
+    (state.pages[state.selectedPageIndex as number].identifiers = iden),
+  SET_FILE_STATE: (state, current: boolean) => (state.fileState = current),
 })
 
 type Pos = {
@@ -56,9 +60,12 @@ export const actions = actionTree(
       commit('SET_SELECTED_PAGE_INDEX', lastIndex)
     },
     storeIden({ commit, state }, pos: Pos) {
-      const newIdentifiers: Identifiers = [...state.identifierData]
+      const newIdentifiers: Identifiers = [
+        ...state.pages[state.selectedPageIndex as number].identifiers,
+      ]
       const newIden: IdentifierType = {
-        index: state.identifierData.length,
+        index:
+          state.pages[state.selectedPageIndex as number].identifiers.length,
         left: pos.initX,
         top: pos.initY,
         width: 0,
@@ -83,12 +90,16 @@ export const actions = actionTree(
       commit('SET_IDEN_DATA', newIdentifiers)
     },
     updateIden({ commit, state }, newData: NewIden) {
-      const newIdentifiers: Identifiers = [...state.identifierData]
+      const newIdentifiers: Identifiers = [
+        ...state.pages[state.selectedPageIndex as number].identifiers,
+      ]
       newIdentifiers[newData.index] = newData.identifier
       commit('SET_IDEN_DATA', newIdentifiers)
     },
     spliceIden({ commit, state }, index: number) {
-      const newIdentifiers: Identifiers = [...state.identifierData]
+      const newIdentifiers: Identifiers = [
+        ...state.pages[state.selectedPageIndex as number].identifiers,
+      ]
       newIdentifiers.splice(index, 1)
       commit('SET_IDEN_DATA', newIdentifiers)
     },

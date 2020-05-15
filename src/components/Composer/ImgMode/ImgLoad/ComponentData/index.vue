@@ -29,6 +29,7 @@
         }"
         @set-color="setColor"
         @activate-color="activateColor"
+        :identifier="identifier"
       />
     </div>
   </div>
@@ -49,7 +50,6 @@ export default defineComponent({
     const { identifier } = props as {
       identifier: IdentifierType
     }
-
     provide('identifierIndex', identifier.index)
 
     function setColor(color: string) {

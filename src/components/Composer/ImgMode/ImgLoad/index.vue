@@ -10,28 +10,31 @@
         <div class="img-load-text">Select an image</div>
       </label>
       <input id="getfile" type="file" accept="image/*" @change="inputChange" />
-
-      <ComponentData
-        v-for="(id, i) in vuex.identifier.identifierData"
-        :key="i"
-        :identifier="id"
-        @set-color="setColor($event, i)"
-        @activate-color="activateChromePicker($event, i)"
-      />
-      <CompoLink v-show="isCompoLink" />
-      <div
-        ref="pickerRef"
-        class="chrome-wrapper"
-        @mouseup="setPickerValue"
-        @mousedown.stop
-      >
-        <chrome-color
-          v-show="picker.isChromePicker"
-          v-model="background.backgroundColor"
-          class="picker compo-colorpicker"
-          :value="background.backgroundColor"
-          @input="getPickerValue"
-        ></chrome-color>
+      <div v-if="vuex.identifier.fileState">
+        <ComponentData
+          v-for="(id, i) in vuex.identifier.pages[
+            vuex.identifier.selectedPageIndex
+          ].identifiers"
+          :key="i"
+          :identifier="id"
+          @set-color="setColor($event, i)"
+          @activate-color="activateChromePicker($event, i)"
+        />
+        <CompoLink v-show="isCompoLink" />
+        <div
+          ref="pickerRef"
+          class="chrome-wrapper"
+          @mouseup="setPickerValue"
+          @mousedown.stop
+        >
+          <chrome-color
+            v-show="picker.isChromePicker"
+            v-model="background.backgroundColor"
+            class="picker compo-colorpicker"
+            :value="background.backgroundColor"
+            @input="getPickerValue"
+          ></chrome-color>
+        </div>
       </div>
     </div>
   </div>
@@ -91,6 +94,7 @@ export default defineComponent({
         })
         vuex.identifier.SET_SELECTED_PAGE_INDEX(0)
         ctx.emit('img-load')
+        vuex.identifier.SET_FILE_STATE(true)
       }
     }
 
@@ -105,6 +109,7 @@ export default defineComponent({
     provide('removeIdentifier', removeIdentifier)
 
     function drawSelector(e: MouseEvent) {
+      if (!vuex.identifier.fileState) return
       const imgElm = document.querySelector('img')
       const imgSrc = imgElm?.src as string
 
@@ -130,7 +135,9 @@ export default defineComponent({
       let moveEvent: (e: MouseEvent) => void
       let upEvent: (e: MouseEvent) => void
 
-      let index = vuex.identifier.identifierData.length - 1
+      let index =
+        vuex.identifier.pages[vuex.identifier.selectedPageIndex as number]
+          .identifiers.length - 1
 
       window.addEventListener(
         'mousemove',
@@ -140,13 +147,19 @@ export default defineComponent({
 
           // When the empty component name identifier has been removed
           // shift index to correctly target the current identifier
-          if (!vuex.identifier.identifierData[index]) {
+          const page =
+            vuex.identifier.pages[
+              (vuex.identifier.selectedPageIndex as number) as number
+            ].identifiers
+          if (!page[index]) {
             index -= 1
           }
 
-          // vuex의 identifierData를 복사하여 새로운 값으로 셋팅
+          // vuex의 pages[vuex.identifier.selectedPageIndex as number].identifiers를 복사하여 새로운 값으로 셋팅
           const newIdentifiers: Identifiers = [
-            ...vuex.identifier.identifierData,
+            ...vuex.identifier.pages[
+              (vuex.identifier.selectedPageIndex as number) as number
+            ].identifiers,
           ]
 
           const newIden: IdentifierType = { ...newIdentifiers[index] }
@@ -170,11 +183,16 @@ export default defineComponent({
           window.removeEventListener('mousemove', moveEvent)
           window.removeEventListener('mouseup', upEvent)
 
-          if (!vuex.identifier.identifierData[index]) {
+          if (
+            !vuex.identifier.pages[vuex.identifier.selectedPageIndex as number]
+              .identifiers[index]
+          ) {
             index -= 1
           }
 
-          const idnf = vuex.identifier.identifierData[index]
+          const idnf =
+            vuex.identifier.pages[vuex.identifier.selectedPageIndex as number]
+              .identifiers[index]
 
           if (!idnf) return
 
@@ -193,9 +211,11 @@ export default defineComponent({
 
           const imgRect = imgLoadRef.value.getBoundingClientRect()
 
-          // vuex의 identifierData를 복사하여 새로운 값으로 셋팅
+          // vuex의 pages[vuex.identifier.selectedPageIndex as number].identifiers를 복사하여 새로운 값으로 셋팅
           const newIdentifiers: Identifiers = [
-            ...vuex.identifier.identifierData,
+            ...vuex.identifier.pages[
+              vuex.identifier.selectedPageIndex as number
+            ].identifiers,
           ]
 
           const newIden: IdentifierType = { ...newIdentifiers[index] }
@@ -212,6 +232,12 @@ export default defineComponent({
           }
 
           vuex.identifier.updateIden(newData)
+          setTimeout(() => {
+            console.log(
+              vuex.identifier.pages[vuex.identifier.selectedPageIndex as number]
+                .identifiers
+            )
+          }, 0)
         })
       )
     }
@@ -247,10 +273,17 @@ export default defineComponent({
       console.log(color)
       chromePicker[compoIndex.value].style.backgroundColor = color
       compoName[compoIndex.value].style.color = color
-      if (!vuex.identifier.identifierData[compoIndex.value]) return
+      if (
+        !vuex.identifier.pages[vuex.identifier.selectedPageIndex as number]
+          .identifiers[compoIndex.value]
+      )
+        return
 
-      // vuex의 identifierData를 복사하여 새로운 값으로 셋팅
-      const newIdentifiers: Identifiers = [...vuex.identifier.identifierData]
+      // vuex의 pages[vuex.identifier.selectedPageIndex as number].identifiers를 복사하여 새로운 값으로 셋팅
+      const newIdentifiers: Identifiers = [
+        ...vuex.identifier.pages[vuex.identifier.selectedPageIndex as number]
+          .identifiers,
+      ]
 
       const newIden: IdentifierType = { ...newIdentifiers[compoIndex.value] }
 
@@ -307,9 +340,11 @@ export default defineComponent({
         (e) => {
           isCompoLink.value = false
 
-          // vuex의 identifierData를 복사하여 새로운 값으로 셋팅
+          // vuex의 pages[vuex.identifier.selectedPageIndex as number].identifiers를 복사하여 새로운 값으로 셋팅
           const newIdentifiers: Identifiers = [
-            ...vuex.identifier.identifierData,
+            ...vuex.identifier.pages[
+              vuex.identifier.selectedPageIndex as number
+            ].identifiers,
           ]
 
           const newIden: IdentifierType = {

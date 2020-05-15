@@ -38,15 +38,26 @@ export default defineComponent({
     }
 
     function viewSelectedPair() {
-      for (let i = 0; i < vuex.identifier.identifierData.length; i++) {
-        const copyIden = { ...vuex.identifier.identifierData[i] }
+      for (
+        let i = 0;
+        i <
+        vuex.identifier.pages[vuex.identifier.selectedPageIndex as number]
+          .identifiers.length;
+        i++
+      ) {
+        const copyIden = {
+          ...vuex.identifier.pages[vuex.identifier.selectedPageIndex as number]
+            .identifiers[i],
+        }
         if (!transferData.startCompo) return
         if (!transferData.endCompo) return
         if (
           transferData.startCompo.index ===
-            vuex.identifier.identifierData[i].index ||
+            vuex.identifier.pages[vuex.identifier.selectedPageIndex as number]
+              .identifiers[i].index ||
           transferData.endCompo.index ===
-            vuex.identifier.identifierData[i].index
+            vuex.identifier.pages[vuex.identifier.selectedPageIndex as number]
+              .identifiers[i].index
         ) {
           copyIden.compoView = true
         } else {
