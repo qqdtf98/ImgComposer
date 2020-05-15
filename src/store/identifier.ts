@@ -35,6 +35,11 @@ type Pos = {
   initY: number
 }
 
+type spliceData = {
+  spliceIndex: number
+  targetIndex: number
+}
+
 export const actions = actionTree(
   { state, mutations },
   {
@@ -86,6 +91,17 @@ export const actions = actionTree(
       const newIdentifiers: Identifiers = [...state.identifierData]
       newIdentifiers.splice(index, 1)
       commit('SET_IDEN_DATA', newIdentifiers)
+    },
+    movePage({ commit, state }, data: spliceData) {
+      const newPages: Page[] = [...state.pages]
+      newPages.splice(data.targetIndex + 1, 0, newPages[data.spliceIndex])
+      newPages.shift()
+      commit('SET_PAGES', newPages)
+    },
+    deletePage({ commit, state }, index: number) {
+      const newPages: Page[] = [...state.pages]
+      newPages.splice(index, 0)
+      commit('SET_PAGES', newPages)
     },
   }
 )

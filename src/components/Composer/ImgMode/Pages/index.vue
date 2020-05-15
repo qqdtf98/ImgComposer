@@ -12,7 +12,7 @@
         :key="i"
         class="image-wrapper"
       >
-        <img :src="page.imageData" @click="openPage" />
+        <img id="page-img" :src="page.imageData" @mousedown="openPage" />
       </div>
     </div>
     <input
@@ -110,9 +110,38 @@ export default defineComponent({
       }
     }
 
-    function openPage() {
-      // TODO open page
+    function openPage(e: MouseEvent, index: number) {
+      e.preventDefault()
+      const target = e.target as HTMLElement
+      const previews = document.querySelector('.previews') as HTMLElement
+      const image: NodeListOf<HTMLElement> = document.querySelectorAll(
+        '#page-img'
+      )
+      const imageArr = Array.prototype.slice.call(image)
+      let upEvent: (e: MouseEvent) => void
+      previews.addEventListener(
+        'mouseup',
+        (upEvent = (evt) => {
+          const evtTarget = evt.target as HTMLElement
+          if (evtTarget.id === 'page-img' && evtTarget !== target) {
+            const spliceIndex = imageArr.findIndex((elem) => elem === target)
+            const targetIndex = imageArr.findIndex((elem) => elem === evtTarget)
+            type spliceData = {
+              spliceIndex: number
+              targetIndex: number
+            }
+            const newData: spliceData = {
+              spliceIndex,
+              targetIndex,
+            }
+            store.identifier.movePage(newData)
+          }
+          previews.removeEventListener('mouseup', upEvent)
+        })
+      )
     }
+
+    // TODO 페이지 삭제 구현하기
 
     return {
       store,
@@ -205,6 +234,7 @@ export default defineComponent({
       img {
         width: 100%;
         height: 100%;
+        user-select: none;
         object-fit: cover;
       }
     }
