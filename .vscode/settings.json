@@ -2,5 +2,5 @@
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": ["source.organizeImports"],
   "typescript.tsdk": "node_modules/typescript/lib",
-  "vetur.completion.tagCasing": "initial"
+  "vetur.completion.tagCasing": "initial",
 }

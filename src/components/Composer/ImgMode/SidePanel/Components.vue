@@ -1,39 +1,43 @@
 <template>
   <div id="components-panel">
     <h1>Components</h1>
-    <h3 @click="viewEveryCompo">view all</h3>
-    <div class="component-list">
-      <div
-        v-for="(iden, i) in vuex.identifier.identifierData"
-        :id="iden.index"
-        :key="i"
-        class="color-name-select compo-list"
-        :style="{
-          width: iden.nameWidth + 40 + 'px',
-          marginLeft: iden.level * 20 + 'px',
-        }"
-        @click="viewSelectedCompo(iden)"
-        @mousedown="createParentCompo($event, i)"
-      >
-        <button
-          class="chrome-picker"
-          :style="{
-            backgroundImage: 'none',
-            backgroundColor: iden.color,
-          }"
-        />
+    <div v-if="vuex.identifier.fileState">
+      <h3 @click="viewEveryCompo">view all</h3>
+      <div class="component-list">
         <div
-          ref="nameRef"
-          class="component-name"
-          type="text"
+          v-for="(iden, i) in vuex.identifier.pages[
+            vuex.identifier.selectedPageIndex
+          ].identifiers"
+          :id="iden.index"
+          :key="i"
+          class="color-name-select compo-list"
           :style="{
-            width: iden.nameWidth + 'px',
-            color: iden.color,
+            width: iden.nameWidth + 40 + 'px',
+            marginLeft: iden.level * 20 + 'px',
           }"
+          @click="viewSelectedCompo(iden)"
+          @mousedown="createParentCompo($event, i)"
         >
-          {{ iden.compoName }}
+          <button
+            class="chrome-picker"
+            :style="{
+              backgroundImage: 'none',
+              backgroundColor: iden.color,
+            }"
+          />
+          <div
+            ref="nameRef"
+            class="component-name"
+            type="text"
+            :style="{
+              width: iden.nameWidth + 'px',
+              color: iden.color,
+            }"
+          >
+            {{ iden.compoName }}
+          </div>
+          <div id="hide-compo" ref="hideRef"></div>
         </div>
-        <div id="hide-compo" ref="hideRef"></div>
       </div>
     </div>
   </div>
@@ -58,9 +62,22 @@ export default defineComponent({
     const hideRef = ref<HTMLElement>(null)
 
     function viewSelectedCompo(iden: IdentifierType) {
-      for (let i = 0; i < vuex.identifier.identifierData.length; i++) {
-        const copyIden = { ...vuex.identifier.identifierData[i] }
-        if (iden === vuex.identifier.identifierData[i]) {
+      for (
+        let i = 0;
+        i <
+        vuex.identifier.pages[vuex.identifier.selectedPageIndex as number]
+          .identifiers.length;
+        i++
+      ) {
+        const copyIden = {
+          ...vuex.identifier.pages[vuex.identifier.selectedPageIndex as number]
+            .identifiers[i],
+        }
+        if (
+          iden ===
+          vuex.identifier.pages[vuex.identifier.selectedPageIndex as number]
+            .identifiers[i]
+        ) {
           copyIden.compoView = true
         } else {
           copyIden.compoView = false
@@ -74,8 +91,17 @@ export default defineComponent({
     }
 
     function viewEveryCompo() {
-      for (let i = 0; i < vuex.identifier.identifierData.length; i++) {
-        const copyIden = { ...vuex.identifier.identifierData[i] }
+      for (
+        let i = 0;
+        i <
+        vuex.identifier.pages[vuex.identifier.selectedPageIndex as number]
+          .identifiers.length;
+        i++
+      ) {
+        const copyIden = {
+          ...vuex.identifier.pages[vuex.identifier.selectedPageIndex as number]
+            .identifiers[i],
+        }
         copyIden.compoView = true
         const newIden: NewIden = {
           index: i,
@@ -89,7 +115,10 @@ export default defineComponent({
       let downTarget = evt.target as HTMLElement
       downTarget = downTarget.closest('.compo-list') as HTMLElement
       const childId = parseInt(downTarget.getAttribute('id') as string)
-      const child = { ...vuex.identifier.identifierData[index] }
+      const child = {
+        ...vuex.identifier.pages[vuex.identifier.selectedPageIndex as number]
+          .identifiers[index],
+      }
       const compoList = document.querySelectorAll('.compo-list') as NodeListOf<
         HTMLElement
       >
@@ -106,17 +135,29 @@ export default defineComponent({
             ) as HTMLElement
             const parentIndex = compoArray.findIndex((elem) => elem === target)
             const parentId = parseInt(parent.getAttribute('id') as string)
-            const newIdentifier = [...vuex.identifier.identifierData]
+            const newIdentifier = [
+              ...vuex.identifier.pages[
+                vuex.identifier.selectedPageIndex as number
+              ].identifiers,
+            ]
             let count = 0
             for (
               let i = parentIndex + 1;
-              i < vuex.identifier.identifierData.length;
+              i <
+              vuex.identifier.pages[vuex.identifier.selectedPageIndex as number]
+                .identifiers.length;
               i++
             ) {
               count++
               if (
-                vuex.identifier.identifierData[i].level === child.level ||
-                i === vuex.identifier.identifierData.length - 1
+                vuex.identifier.pages[
+                  vuex.identifier.selectedPageIndex as number
+                ].identifiers[i].level === child.level ||
+                i ===
+                  vuex.identifier.pages[
+                    vuex.identifier.selectedPageIndex as number
+                  ].identifiers.length -
+                    1
               ) {
                 break
               }
@@ -128,10 +169,14 @@ export default defineComponent({
               if (i === 0) {
                 spliced.parentIndex = parentId
                 spliced.level =
-                  vuex.identifier.identifierData[parentIndex].level + 1
+                  vuex.identifier.pages[
+                    vuex.identifier.selectedPageIndex as number
+                  ].identifiers[parentIndex].level + 1
               } else {
                 spliced.level +=
-                  vuex.identifier.identifierData[parentIndex].level + 1
+                  vuex.identifier.pages[
+                    vuex.identifier.selectedPageIndex as number
+                  ].identifiers[parentIndex].level + 1
               }
 
               pushIden.push(spliced)
@@ -148,7 +193,11 @@ export default defineComponent({
             e.preventDefault()
           } else if (!target) {
             // TODO 밖으로 뺄 때 구현하기
-            const copyIden = { ...vuex.identifier.identifierData[index] }
+            const copyIden = {
+              ...vuex.identifier.pages[
+                vuex.identifier.selectedPageIndex as number
+              ].identifiers[index],
+            }
             copyIden.parentIndex = null
             copyIden.level = 0
             const newIden = {

@@ -3,7 +3,6 @@
     <DataTransfer />
     <VuexStore />
     <Components />
-    <Pages />
   </div>
 </template>
 
@@ -11,11 +10,10 @@
 import { defineComponent } from '@vue/composition-api'
 import VuexStore from './VuexStore.vue'
 import Components from './Components.vue'
-import Pages from './Pages/index.vue'
 import DataTransfer from './DataTransfer/index.vue'
 
 export default defineComponent({
-  components: { VuexStore, Components, Pages, DataTransfer },
+  components: { VuexStore, Components, DataTransfer },
 })
 </script>
 

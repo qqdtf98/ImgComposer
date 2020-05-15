@@ -1,6 +1,6 @@
 <template>
   <vue-custom-scrollbar class="transfer-area">
-    <div id="compo-data">
+    <div v-if="vuex.identifier.fileState" id="compo-data">
       <div class="data-text-box">
         <div>Event</div>
         <img
@@ -13,7 +13,9 @@
         <select ref="eventRef" class="left-select">
           <option value="none">선택</option>
           <option
-            v-for="iden in vuex.identifier.identifierData"
+            v-for="iden in vuex.identifier.pages[
+              vuex.identifier.selectedPageIndex
+            ].identifiers"
             :key="iden.index"
             :value="JSON.stringify(iden)"
             >{{ iden.compoName }}
@@ -22,7 +24,9 @@
         <select class="right-select" @change="addEventTransfer">
           <option value="none">선택</option>
           <option
-            v-for="iden in vuex.identifier.identifierData"
+            v-for="iden in vuex.identifier.pages[
+              vuex.identifier.selectedPageIndex
+            ].identifiers"
             :key="iden.index"
             :value="JSON.stringify(iden)"
             >{{ iden.compoName }}
@@ -48,7 +52,9 @@
         <select ref="propsRef" class="left-select">
           <option value="none">선택</option>
           <option
-            v-for="iden in vuex.identifier.identifierData"
+            v-for="iden in vuex.identifier.pages[
+              vuex.identifier.selectedPageIndex
+            ].identifiers"
             :key="iden.index"
             :value="JSON.stringify(iden)"
             >{{ iden.compoName }}
@@ -57,7 +63,9 @@
         <select class="right-select" @change="addPropsTransfer">
           <option value="none">선택</option>
           <option
-            v-for="iden in vuex.identifier.identifierData"
+            v-for="iden in vuex.identifier.pages[
+              vuex.identifier.selectedPageIndex
+            ].identifiers"
             :key="iden.index"
             :value="JSON.stringify(iden)"
             >{{ iden.compoName }}

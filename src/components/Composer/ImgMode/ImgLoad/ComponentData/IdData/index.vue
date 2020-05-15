@@ -10,6 +10,7 @@
           ref="compNameElm"
           class="component-name compo-name"
           type="text"
+          :value="identifier.compoName"
           @input="resizeInputField"
           @keyup.enter="setComponentName"
         />
@@ -112,10 +113,15 @@ export default defineComponent({
     DbTableList,
     DbQuery,
   },
+  props: {
+    identifier: Object,
+  },
   setup(...args) {
     const ctx = args[1]
     const vuex = useVuex(ctx)
     const store = useStore(ctx)
+
+    const { identifier } = args[0] as { identifier: IdentifierType }
 
     const picker = reactive({
       isChromePicker: false,
@@ -187,7 +193,10 @@ export default defineComponent({
       })
 
       // vuex의 identifierData를 복사하여 새로운 값으로 셋팅
-      const newIdentifiers: Identifiers = [...vuex.identifier.identifierData]
+      const newIdentifiers: Identifiers = [
+        ...vuex.identifier.pages[vuex.identifier.selectedPageIndex as number]
+          .identifiers,
+      ]
 
       const newIden: IdentifierType = { ...newIdentifiers[index] }
 
@@ -210,6 +219,7 @@ export default defineComponent({
     let timeValue: number
 
     function resizeInputField(e: InputEvent) {
+      console.log(index)
       const target = e.target as HTMLInputElement
       const hide = document.querySelector('#hide') as HTMLElement
       hide.innerHTML = target.value
@@ -218,7 +228,10 @@ export default defineComponent({
       if (timeValue) clearTimeout(timeValue)
       timeValue = window.setTimeout(() => {
         // vuex의 identifierData를 복사하여 새로운 값으로 셋팅
-        const newIdentifiers: Identifiers = [...vuex.identifier.identifierData]
+        const newIdentifiers: Identifiers = [
+          ...vuex.identifier.pages[vuex.identifier.selectedPageIndex as number]
+            .identifiers,
+        ]
         const newIden: IdentifierType = { ...newIdentifiers[index] }
 
         newIden.compoName = target.value
@@ -230,6 +243,12 @@ export default defineComponent({
         }
 
         vuex.identifier.updateIden(newData)
+        setTimeout(() => {
+          console.log(
+            vuex.identifier.pages[vuex.identifier.selectedPageIndex as number]
+              .identifiers
+          )
+        }, 0)
       }, 400)
     }
 

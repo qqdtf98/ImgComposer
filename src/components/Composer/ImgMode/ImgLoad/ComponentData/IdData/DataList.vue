@@ -60,7 +60,10 @@ export default defineComponent({
       if (timeValue) clearTimeout(timeValue)
       timeValue = window.setTimeout(() => {
         // vuex의 identifierData를 복사하여 새로운 값으로 셋팅
-        const newIdentifiers: Identifiers = [...vuex.identifier.identifierData]
+        const newIdentifiers: Identifiers = [
+          ...vuex.identifier.pages[vuex.identifier.selectedPageIndex as number]
+            .identifiers,
+        ]
         const newIden: IdentifierType = { ...newIdentifiers[index] }
         const newCompoDataList: CompoData = [...newIden.compoData]
         const newCompoData: CompoDataType = { ...newCompoDataList[index] }

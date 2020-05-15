@@ -13,11 +13,13 @@ type Page = {
 export const state: () => {
   pages: Page[]
   selectedPageIndex: number | null
+  fileState: boolean
   /** @deprecated */
   identifierData: Identifiers
 } = () => ({
   pages: [],
   selectedPageIndex: null,
+  fileState: false,
   /** @deprecated */
   identifierData: [],
 })
@@ -27,12 +29,19 @@ export const mutations = mutationTree(state, {
   SET_SELECTED_PAGE_INDEX: (state, index: number) =>
     (state.selectedPageIndex = index),
   /** @deprecated */
-  SET_IDEN_DATA: (state, iden: Identifiers) => (state.identifierData = iden),
+  SET_IDEN_DATA: (state, iden: Identifiers) =>
+    (state.pages[state.selectedPageIndex as number].identifiers = iden),
+  SET_FILE_STATE: (state, current: boolean) => (state.fileState = current),
 })
 
 type Pos = {
   initX: number
   initY: number
+}
+
+type spliceData = {
+  spliceIndex: number
+  targetIndex: number
 }
 
 export const actions = actionTree(
@@ -51,9 +60,12 @@ export const actions = actionTree(
       commit('SET_SELECTED_PAGE_INDEX', lastIndex)
     },
     storeIden({ commit, state }, pos: Pos) {
-      const newIdentifiers: Identifiers = [...state.identifierData]
+      const newIdentifiers: Identifiers = [
+        ...state.pages[state.selectedPageIndex as number].identifiers,
+      ]
       const newIden: IdentifierType = {
-        index: state.identifierData.length,
+        index:
+          state.pages[state.selectedPageIndex as number].identifiers.length,
         left: pos.initX,
         top: pos.initY,
         width: 0,
@@ -78,14 +90,29 @@ export const actions = actionTree(
       commit('SET_IDEN_DATA', newIdentifiers)
     },
     updateIden({ commit, state }, newData: NewIden) {
-      const newIdentifiers: Identifiers = [...state.identifierData]
+      const newIdentifiers: Identifiers = [
+        ...state.pages[state.selectedPageIndex as number].identifiers,
+      ]
       newIdentifiers[newData.index] = newData.identifier
       commit('SET_IDEN_DATA', newIdentifiers)
     },
     spliceIden({ commit, state }, index: number) {
-      const newIdentifiers: Identifiers = [...state.identifierData]
+      const newIdentifiers: Identifiers = [
+        ...state.pages[state.selectedPageIndex as number].identifiers,
+      ]
       newIdentifiers.splice(index, 1)
       commit('SET_IDEN_DATA', newIdentifiers)
+    },
+    movePage({ commit, state }, data: spliceData) {
+      const newPages: Page[] = [...state.pages]
+      newPages.splice(data.targetIndex + 1, 0, newPages[data.spliceIndex])
+      newPages.shift()
+      commit('SET_PAGES', newPages)
+    },
+    deletePage({ commit, state }, index: number) {
+      const newPages: Page[] = [...state.pages]
+      newPages.splice(index, 1)
+      commit('SET_PAGES', newPages)
     },
   }
 )
