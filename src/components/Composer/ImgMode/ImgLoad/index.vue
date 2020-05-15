@@ -89,6 +89,7 @@ export default defineComponent({
           imageData: fileReader.result as string,
           identifiers: [],
         })
+        vuex.identifier.SET_SELECTED_PAGE_INDEX(0)
         ctx.emit('img-load')
       }
     }

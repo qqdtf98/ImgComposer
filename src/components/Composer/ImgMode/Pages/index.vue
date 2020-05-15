@@ -12,7 +12,12 @@
         :key="i"
         class="image-wrapper"
       >
-        <img id="page-img" :src="page.imageData" @mousedown="openPage" />
+        <img
+          id="page-img"
+          :src="page.imageData"
+          @click="openPage($event, page.imageData)"
+          @mousedown="movePage"
+        />
       </div>
     </div>
     <input
@@ -110,7 +115,7 @@ export default defineComponent({
       }
     }
 
-    function openPage(e: MouseEvent, index: number) {
+    function movePage(e: MouseEvent, index: number) {
       e.preventDefault()
       const target = e.target as HTMLElement
       const previews = document.querySelector('.previews') as HTMLElement
@@ -141,17 +146,30 @@ export default defineComponent({
       )
     }
 
+    function openPage(e: MouseEvent, img: string) {
+      const target = e.target as HTMLElement
+      const preview = document.querySelector('#preview') as HTMLImageElement
+      const image: NodeListOf<HTMLElement> = document.querySelectorAll(
+        '#page-img'
+      )
+      const imageArr = Array.prototype.slice.call(image)
+      const selectedPageIndex = imageArr.findIndex((elem) => elem === target)
+      store.identifier.SET_SELECTED_PAGE_INDEX(selectedPageIndex)
+      preview.src = img
+    }
+
     // TODO 페이지 삭제 구현하기
 
     return {
       store,
       handleInputFileChange,
       expandPages,
-      openPage,
+      movePage,
       pagesRef,
       gridRef,
       imgRef,
       expandState,
+      openPage,
     }
   },
 })
