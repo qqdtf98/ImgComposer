@@ -18,6 +18,11 @@
           @click="openPage($event, page.imageData)"
           @mousedown="movePage"
         />
+        <img
+          src="@/assets/images/delete.svg"
+          class="img-delete-icon"
+          @click="deletePage(page)"
+        />
       </div>
     </div>
     <input
@@ -35,6 +40,7 @@
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api'
 import { useStore } from '@/modules/vue-hooks'
+import { Identifiers } from '@/interfaces/any-editor-file.ts'
 
 export default defineComponent({
   setup(...args) {
@@ -158,7 +164,16 @@ export default defineComponent({
       preview.src = img
     }
 
-    // TODO 페이지 삭제 구현하기
+    type Page = {
+      imageData: string
+      identifiers: Identifiers
+    }
+
+    function deletePage(page: Page) {
+      const pages: Page[] = [...store.identifier.pages]
+      const deleteIndex = pages.findIndex((elem) => elem === page)
+      store.identifier.deletePage(deleteIndex)
+    }
 
     return {
       store,
@@ -170,6 +185,7 @@ export default defineComponent({
       imgRef,
       expandState,
       openPage,
+      deletePage,
     }
   },
 })
@@ -248,12 +264,21 @@ export default defineComponent({
       border-radius: 5px;
       overflow: hidden;
       margin: 20px 0;
+      position: relative;
 
       img {
         width: 100%;
         height: 100%;
         user-select: none;
         object-fit: cover;
+      }
+
+      .img-delete-icon {
+        position: absolute;
+        right: 2px;
+        top: 2px;
+        width: 16px;
+        height: 16px;
       }
     }
   }

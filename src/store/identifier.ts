@@ -100,7 +100,7 @@ export const actions = actionTree(
     },
     deletePage({ commit, state }, index: number) {
       const newPages: Page[] = [...state.pages]
-      newPages.splice(index, 0)
+      newPages.splice(index, 1)
       commit('SET_PAGES', newPages)
     },
   }
