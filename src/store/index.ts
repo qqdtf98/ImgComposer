@@ -2,6 +2,7 @@ import * as composer from './composer'
 import * as dataTransfer from './dataTransfer'
 import * as editorInfo from './editorInfo'
 import * as fileData from './fileData'
+import * as folderDirectory from './folderDirectory'
 import * as identifier from './identifier'
 import * as styleData from './styleData'
 
@@ -27,5 +28,6 @@ export const accessorType = getAccessorType({
     composer,
     dataTransfer,
     identifier,
+    folderDirectory,
   },
 })
