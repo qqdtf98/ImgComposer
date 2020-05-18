@@ -1,12 +1,13 @@
 import {
-  Identifiers,
   IdentifierType,
+  Identifiers,
   NewIden,
 } from '@/interfaces/any-editor-file.ts'
 import { actionTree, mutationTree } from 'nuxt-typed-vuex'
 
 type Page = {
   imageData: string
+  imagePath: string
   identifiers: Identifiers
 }
 
