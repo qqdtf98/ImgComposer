@@ -1,11 +1,23 @@
 <template>
   <div ref="pagesRef" class="side-panel-pages">
     <img
+      v-show="showImgList"
       class="expand-icon"
       src="@/assets/images/expand.svg"
       @click="expandPages"
     />
-    <div ref="gridRef" class="previews">
+    <img
+      v-show="!showImgList"
+      class="expand-icon"
+      src="@/assets/images/imggray.svg"
+      @click="changeMode"
+    />
+    <img
+      class="folder-icon"
+      src="@/assets/images/foldergray.svg"
+      @click="changeMode"
+    />
+    <div v-show="showImgList" ref="gridRef" class="previews">
       <div
         v-for="(page, i) in store.identifier.pages"
         ref="imgRef"
@@ -25,6 +37,7 @@
         />
       </div>
     </div>
+    <Directory v-show="!showImgList" />
     <input
       id="side-panel-input-file"
       type="file"
@@ -41,8 +54,10 @@
 import { defineComponent, ref } from '@vue/composition-api'
 import { useStore } from '@/modules/vue-hooks'
 import { Identifiers } from '@/interfaces/any-editor-file.ts'
+import Directory from './Directory/index.vue'
 
 export default defineComponent({
+  components: { Directory },
   setup(...args) {
     const ctx = args[1]
     const store = useStore(ctx)
@@ -72,6 +87,7 @@ export default defineComponent({
 
         store.identifier.addPage({
           imageData,
+          imagePath: file.webkitRelativePath,
           identifiers: [],
         })
       }
@@ -175,6 +191,16 @@ export default defineComponent({
       store.identifier.deletePage(deleteIndex)
     }
 
+    const showImgList = ref(true)
+
+    function changeMode() {
+      if (showImgList.value) {
+        showImgList.value = false
+      } else {
+        showImgList.value = true
+      }
+    }
+
     return {
       store,
       handleInputFileChange,
@@ -186,6 +212,8 @@ export default defineComponent({
       expandState,
       openPage,
       deletePage,
+      showImgList,
+      changeMode,
     }
   },
 })
@@ -207,6 +235,21 @@ export default defineComponent({
     left: 10px;
     cursor: pointer;
     padding: 5px;
+    width: 27px;
+
+    &:hover {
+      background-color: #ebebeb;
+      border-radius: 7px;
+    }
+  }
+
+  .folder-icon {
+    position: absolute;
+    top: 10px;
+    left: 40px;
+    cursor: pointer;
+    padding: 5px;
+    width: 30px;
 
     &:hover {
       background-color: #ebebeb;
