@@ -80,8 +80,12 @@ export default defineComponent({
 .directory-item {
   display: flex;
   flex-direction: row;
-  margin: 3px 0;
+  padding: 4px 0;
   cursor: pointer;
+  &:hover {
+    background-color: #cacaca;
+    border-radius: 3px;
+  }
 
   .directory-icon {
     width: 16px;
