@@ -49,6 +49,11 @@ export default defineComponent({
 #image-mode {
   color: black;
 
+  .panel-expand {
+    width: 300px;
+    margin: 5px 10px;
+  }
+
   #page {
     position: fixed;
     right: 30px;

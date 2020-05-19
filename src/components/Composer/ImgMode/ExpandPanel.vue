@@ -1,5 +1,6 @@
 <template>
   <img
+    ref="pageFoldRef"
     v-show="vuex.identifier.fileState"
     class="fold-img"
     src="@/assets/images/rightarrow.svg"
@@ -8,18 +9,48 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api'
+import { defineComponent, ref } from '@vue/composition-api'
 import { useVuex } from '../../../modules/vue-hooks'
 
 export default defineComponent({
   setup(props, ctx) {
     const vuex = useVuex(ctx)
 
-    function expandSidePanel() {}
+    const pageFoldRef = ref<HTMLElement>(null)
+    const pageFoldState = ref(false)
+
+    function expandSidePanel() {
+      if (!pageFoldRef.value) return
+      const sidePanel = document.querySelector('.side-panel') as HTMLElement
+      const viewHide = document.querySelector('.view-hide') as HTMLElement
+      const imgLoad = document.querySelector('.img-load-box') as HTMLElement
+      if (pageFoldState.value) {
+        pageFoldState.value = false
+        imgLoad.style.display = 'block'
+        sidePanel.style.width = '300px'
+        sidePanel.style.display = 'block'
+        viewHide.style.display = 'block'
+        pageFoldRef.value.classList.remove('fold-expand')
+        for (let i = 0; i < sidePanel.children.length; i++) {
+          sidePanel.children[i].classList.remove('panel-expand')
+        }
+      } else {
+        pageFoldState.value = true
+        imgLoad.style.display = 'none'
+        sidePanel.style.width = '100%'
+        sidePanel.style.display = 'flex'
+        viewHide.style.display = 'none'
+        pageFoldRef.value.classList.add('fold-expand')
+        for (let i = 0; i < sidePanel.children.length; i++) {
+          sidePanel.children[i].classList.add('panel-expand')
+        }
+      }
+    }
 
     return {
       vuex,
       expandSidePanel,
+      pageFoldRef,
     }
   },
 })
@@ -40,5 +71,11 @@ export default defineComponent({
   padding: 8px;
   transform: rotate(90deg);
   cursor: pointer;
+  z-index: 10;
+}
+.fold-expand {
+  left: 20px;
+  bottom: 20px;
+  transform: rotate(270deg);
 }
 </style>
