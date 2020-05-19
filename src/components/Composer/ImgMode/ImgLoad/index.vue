@@ -1,6 +1,7 @@
 <template>
   <div id="img-load">
-    <ViewHide />
+    <ViewHide v-show="vuex.identifier.fileState" />
+    <ExpandPanel />
     <div ref="sampleRef" class="img-load-box" @mousedown="drawSelector">
       <div ref="imgLoadRef" class="preview-wrapper">
         <img id="preview" src width="700" />
@@ -72,6 +73,7 @@ import { Chrome } from 'vue-color'
 import CompoLink from '@/components/Composer/ImgMode/ImgLoad/CompoLink/index.vue'
 import { Cem } from '@/modules/custom-events-manager'
 import ViewHide from '../ViewHide.vue'
+import ExpandPanel from '../ExpandPanel.vue'
 import { settings } from 'cluster'
 import pathListToTree from 'path-list-to-tree'
 import { fileURLToPath } from 'url'
@@ -81,6 +83,7 @@ export default defineComponent({
     ComponentData,
     ChromeColor: Chrome,
     CompoLink,
+    ExpandPanel,
     ViewHide,
   },
   setup(props, ctx) {
@@ -224,12 +227,6 @@ export default defineComponent({
           }
 
           vuex.identifier.updateIden(newData)
-          setTimeout(() => {
-            console.log(
-              vuex.identifier.pages[vuex.identifier.selectedPageIndex as number]
-                .identifiers
-            )
-          }, 0)
         })
       )
     }
@@ -404,7 +401,6 @@ export default defineComponent({
 
       const rootDirectory = pathListToTree(fileArray)[0]
       vuex.folderDirectory.SET_ROOT_TITLE(rootDirectory.name)
-      console.log(rootDirectory)
       vuex.folderDirectory.SET_DIRECTORY(rootDirectory)
       vuex.folderDirectory.SET_CURRENT_LIST(rootDirectory.children)
     }
@@ -445,7 +441,7 @@ export default defineComponent({
       position: fixed;
       z-index: 500;
       top: 50%;
-      left: 50%;
+      left: calc(150px + 50%);
       display: flex;
       flex-direction: column;
       align-items: center;

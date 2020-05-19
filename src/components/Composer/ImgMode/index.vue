@@ -2,12 +2,7 @@
   <div id="image-mode">
     <SidePanel />
     <ImgLoad @img-load="activatePageMenu" />
-    <img
-      v-show="isPageMenu"
-      class="page-menu"
-      src="@/assets/images/menu.svg"
-      @click="activatePageList"
-    />
+    <PageMenu :isPageMenu="isPageMenu" @page-state="activatePageList" />
     <Pages v-show="isPageList" id="page" />
   </div>
 </template>
@@ -19,10 +14,13 @@ import Tabs from '@/components/Editor/Tabs/index.vue'
 import ImgLoad from './ImgLoad/index.vue'
 import SidePanel from './SidePanel/index.vue'
 import Pages from '@/components/Composer/ImgMode/Pages/index.vue'
+import PageMenu from './PageMenu.vue'
 
 export default defineComponent({
-  components: { MenuBar, Tabs, ImgLoad, SidePanel, Pages },
+  components: { MenuBar, Tabs, ImgLoad, SidePanel, Pages, PageMenu },
   setup() {
+    const isPageMenu = ref(false)
+
     const isPageList = ref(false)
 
     function activatePageList() {
@@ -33,17 +31,15 @@ export default defineComponent({
       }
     }
 
-    const isPageMenu = ref(false)
-
     function activatePageMenu() {
       isPageMenu.value = true
     }
 
     return {
-      isPageList,
-      activatePageList,
       isPageMenu,
       activatePageMenu,
+      isPageList,
+      activatePageList,
     }
   },
 })
@@ -52,13 +48,6 @@ export default defineComponent({
 <style lang="scss">
 #image-mode {
   color: black;
-
-  .page-menu {
-    position: fixed;
-    right: 30px;
-    bottom: 30px;
-    cursor: pointer;
-  }
 
   #page {
     position: fixed;

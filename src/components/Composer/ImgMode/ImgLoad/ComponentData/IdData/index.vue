@@ -219,7 +219,6 @@ export default defineComponent({
     let timeValue: number
 
     function resizeInputField(e: InputEvent) {
-      console.log(index)
       const target = e.target as HTMLInputElement
       const hide = document.querySelector('#hide') as HTMLElement
       hide.innerHTML = target.value
