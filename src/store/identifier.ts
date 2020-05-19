@@ -15,14 +15,10 @@ export const state: () => {
   pages: Page[]
   selectedPageIndex: number | null
   fileState: boolean
-  /** @deprecated */
-  identifierData: Identifiers
 } = () => ({
   pages: [],
   selectedPageIndex: null,
   fileState: false,
-  /** @deprecated */
-  identifierData: [],
 })
 
 export const mutations = mutationTree(state, {

@@ -376,7 +376,6 @@ export default defineComponent({
             ctx.emit('img-load')
           }
 
-          console.log(file)
           vuex.identifier.addPage({
             imageData: reader.result as string,
             imagePath: file.webkitRelativePath,

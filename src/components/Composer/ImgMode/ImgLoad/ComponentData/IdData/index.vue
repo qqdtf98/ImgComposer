@@ -185,7 +185,6 @@ export default defineComponent({
     const componentData: CompoData = []
 
     function addData(data: string) {
-      console.log(data)
       isDataSelect.value = !isDataSelect.value
       componentData.push({
         key: data,
@@ -242,12 +241,6 @@ export default defineComponent({
         }
 
         vuex.identifier.updateIden(newData)
-        setTimeout(() => {
-          console.log(
-            vuex.identifier.pages[vuex.identifier.selectedPageIndex as number]
-              .identifiers
-          )
-        }, 0)
       }, 400)
     }
 
@@ -303,7 +296,6 @@ export default defineComponent({
     const tableData = ref<tableType>(null)
 
     function insertQuery(data: tableType) {
-      console.log(data)
       if (!dbBtnRef.value) return
       isShowDbList.value = true
       tableData.value = data
