@@ -1,6 +1,7 @@
 <template>
   <div id="img-load">
-    <ViewHide />
+    <ViewHide v-show="vuex.identifier.fileState" />
+    <ExpandPanel />
     <div ref="sampleRef" class="img-load-box" @mousedown="drawSelector">
       <div ref="imgLoadRef" class="preview-wrapper">
         <img id="preview" src width="700" />
@@ -9,7 +10,18 @@
         <img class="img-load-icon" src="@/assets/images/img.svg" />
         <div class="img-load-text">Select an image</div>
       </label>
-      <input id="getfile" type="file" accept="image/*" @change="inputChange" />
+      <input
+        id="getfile"
+        ref="folderInput"
+        type="file"
+        mozdirectory
+        msdirectory
+        webkitdirectory
+        odirectory
+        directory
+        multiple
+        @change="onFolderSelected"
+      />
       <div v-if="vuex.identifier.fileState">
         <ComponentData
           v-for="(id, i) in vuex.identifier.pages[
@@ -61,12 +73,17 @@ import { Chrome } from 'vue-color'
 import CompoLink from '@/components/Composer/ImgMode/ImgLoad/CompoLink/index.vue'
 import { Cem } from '@/modules/custom-events-manager'
 import ViewHide from '../ViewHide.vue'
+import ExpandPanel from '../ExpandPanel.vue'
+import { settings } from 'cluster'
+import pathListToTree from 'path-list-to-tree'
+import { fileURLToPath } from 'url'
 
 export default defineComponent({
   components: {
     ComponentData,
     ChromeColor: Chrome,
     CompoLink,
+    ExpandPanel,
     ViewHide,
   },
   setup(props, ctx) {
@@ -75,28 +92,6 @@ export default defineComponent({
     const imgLoadRef = ref<HTMLElement>(null)
 
     const isImgUnLoad = ref(true)
-
-    function inputChange() {
-      const file = document.querySelector('#getfile') as HTMLInputElement
-      const fileList = file?.files
-      const fileReader: FileReader = new FileReader()
-      if (!fileList) return
-      fileReader.readAsDataURL(fileList[0])
-      fileReader.onload = function () {
-        const preview = document.querySelector('#preview') as HTMLImageElement
-        preview.style.height = '100%'
-        preview.style.width = '100%'
-        preview.src = fileReader.result as string
-        isImgUnLoad.value = false
-        vuex.identifier.addPage({
-          imageData: fileReader.result as string,
-          identifiers: [],
-        })
-        vuex.identifier.SET_SELECTED_PAGE_INDEX(0)
-        ctx.emit('img-load')
-        vuex.identifier.SET_FILE_STATE(true)
-      }
-    }
 
     const sampleRef = ref() as Ref<HTMLElement>
 
@@ -232,12 +227,6 @@ export default defineComponent({
           }
 
           vuex.identifier.updateIden(newData)
-          setTimeout(() => {
-            console.log(
-              vuex.identifier.pages[vuex.identifier.selectedPageIndex as number]
-                .identifiers
-            )
-          }, 0)
         })
       )
     }
@@ -365,8 +354,57 @@ export default defineComponent({
       )
     })
 
+    const firstImage = ref(true)
+
+    const fileArray: string[] = []
+
+    function processFile(file: File) {
+      return new Promise(function (resolve, reject) {
+        const reader = new FileReader()
+        reader.onload = (e) => {
+          if (firstImage.value) {
+            const preview = document.querySelector(
+              '#preview'
+            ) as HTMLImageElement
+            preview.style.height = '100%'
+            preview.style.width = '100%'
+            preview.src = reader.result as string
+            isImgUnLoad.value = false
+            firstImage.value = false
+            vuex.identifier.SET_SELECTED_PAGE_INDEX(0)
+            vuex.identifier.SET_FILE_STATE(true)
+            ctx.emit('img-load')
+          }
+
+          vuex.identifier.addPage({
+            imageData: reader.result as string,
+            imagePath: file.webkitRelativePath,
+            identifiers: [],
+          })
+          vuex.identifier.SET_SELECTED_PAGE_INDEX(0)
+          fileArray.push(file.webkitRelativePath)
+          resolve()
+        }
+        reader.readAsDataURL(file)
+      })
+    }
+
+    async function onFolderSelected(e: InputEvent) {
+      const target = e.target as HTMLInputElement
+      if (!target.files) return
+
+      let i
+      for (i = 0; i < target.files.length; i++) {
+        await processFile(target.files[i])
+      }
+
+      const rootDirectory = pathListToTree(fileArray)[0]
+      vuex.folderDirectory.SET_ROOT_TITLE(rootDirectory.name)
+      vuex.folderDirectory.SET_DIRECTORY(rootDirectory)
+      vuex.folderDirectory.SET_CURRENT_LIST(rootDirectory.children)
+    }
+
     return {
-      inputChange,
       sampleRef,
       imgLoadRef,
       drawSelector,
@@ -379,6 +417,7 @@ export default defineComponent({
       isCompoLink,
       isImgUnLoad,
       vuex,
+      onFolderSelected,
     }
   },
 })
@@ -401,7 +440,7 @@ export default defineComponent({
       position: fixed;
       z-index: 500;
       top: 50%;
-      left: 50%;
+      left: calc(150px + 50%);
       display: flex;
       flex-direction: column;
       align-items: center;

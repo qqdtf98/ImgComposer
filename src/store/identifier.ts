@@ -1,12 +1,13 @@
 import {
-  Identifiers,
   IdentifierType,
+  Identifiers,
   NewIden,
 } from '@/interfaces/any-editor-file.ts'
 import { actionTree, mutationTree } from 'nuxt-typed-vuex'
 
 type Page = {
   imageData: string
+  imagePath: string
   identifiers: Identifiers
 }
 
@@ -14,14 +15,10 @@ export const state: () => {
   pages: Page[]
   selectedPageIndex: number | null
   fileState: boolean
-  /** @deprecated */
-  identifierData: Identifiers
 } = () => ({
   pages: [],
   selectedPageIndex: null,
   fileState: false,
-  /** @deprecated */
-  identifierData: [],
 })
 
 export const mutations = mutationTree(state, {

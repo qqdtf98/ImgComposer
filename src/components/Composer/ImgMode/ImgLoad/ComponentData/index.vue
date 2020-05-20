@@ -8,6 +8,20 @@
         top: identifier.top + 'px',
       }"
     >
+      <img
+        v-if="identifier.state"
+        class="delete-identifier"
+        src="@/assets/images/delete.svg"
+        @click="deleteIdentifier"
+        @mousedown.stop
+      />
+      <img
+        v-if="identifier.state"
+        class="move-identifier"
+        src="@/assets/images/moveicon.svg"
+        @mousedown="moveIdentifier"
+        @mousedown.stop
+      />
       <Identifier
         class="component-identifier"
         :style="{
@@ -37,9 +51,10 @@
 
 <script lang="ts">
 import { defineComponent, provide } from '@vue/composition-api'
-import { IdentifierType } from '@/interfaces/any-editor-file.ts'
+import { IdentifierType, NewIden } from '@/interfaces/any-editor-file.ts'
 import IdData from '@/components/Composer/ImgMode/ImgLoad/ComponentData/IdData/index.vue'
 import Identifier from '@/components/Composer/ImgMode/ImgLoad/ComponentData/Identifier.vue'
+import { useVuex } from '../../../../../modules/vue-hooks'
 
 export default defineComponent({
   components: { Identifier, IdData },
@@ -47,6 +62,8 @@ export default defineComponent({
     identifier: Object,
   },
   setup(props, ctx) {
+    const vuex = useVuex(ctx)
+
     const { identifier } = props as {
       identifier: IdentifierType
     }
@@ -60,9 +77,64 @@ export default defineComponent({
       ctx.emit('activate-color', state)
     }
 
+    function deleteIdentifier() {
+      const identifiers =
+        vuex.identifier.pages[vuex.identifier.selectedPageIndex as number]
+          .identifiers
+      const deleteIndex = identifiers.findIndex((elem) => elem === identifier)
+
+      vuex.identifier.spliceIden(deleteIndex)
+    }
+
+    function moveIdentifier(e: MouseEvent) {
+      e.preventDefault()
+      let moveEvent: (e: MouseEvent) => void
+      let upEvent: (e: MouseEvent) => void
+
+      const identifiers =
+        vuex.identifier.pages[vuex.identifier.selectedPageIndex as number]
+          .identifiers
+      const moveIndex = identifiers.findIndex(
+        (elem) => elem.index === identifier.index
+      )
+      const iden = { ...identifiers[moveIndex] }
+
+      const initX = e.clientX - iden.left
+      const initY = e.clientY - iden.top
+
+      window.addEventListener(
+        'mousemove',
+        (moveEvent = (e) => {
+          const moveIden = { ...identifiers[moveIndex] }
+          moveIden.left = e.clientX - initX
+          moveIden.top = e.clientY - initY
+          const newIden: NewIden = {
+            index: moveIndex,
+            identifier: moveIden,
+          }
+
+          vuex.identifier.updateIden(newIden)
+
+          window.addEventListener(
+            'mouseup',
+            (upEvent = (e) => {
+              window.removeEventListener('mousemove', moveEvent)
+              window.removeEventListener('mouseup', upEvent)
+            })
+          )
+        })
+      )
+    }
+
+    // TODO 이동구현 move icon
+    // TODO resize구현
+
     return {
       setColor,
       activateColor,
+      deleteIdentifier,
+      vuex,
+      moveIdentifier,
     }
   },
 })
@@ -72,6 +144,21 @@ export default defineComponent({
 .component-data-box {
   .identifier-wrapper {
     position: fixed;
+
+    .delete-identifier,
+    .move-identifier {
+      position: absolute;
+      z-index: 1;
+      top: -2px;
+      width: 19px;
+      cursor: pointer;
+    }
+
+    .move-identifier {
+      width: 17px;
+      left: 20px;
+      user-select: none;
+    }
 
     .component-identifier {
       border: 2px solid black;
