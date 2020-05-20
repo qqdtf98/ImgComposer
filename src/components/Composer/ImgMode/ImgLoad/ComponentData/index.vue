@@ -22,6 +22,46 @@
         @mousedown="moveIdentifier"
         @mousedown.stop
       />
+      <div
+        :style="{
+          left: identifier.left + 'px',
+          top: identifier.top + 'px',
+          height: identifier.height + 'px',
+        }"
+        class="border-left"
+        @mousedown="resizeIdentifier"
+        @mousedown.stop
+      ></div>
+      <div
+        class="border-right"
+        :style="{
+          left: identifier.left + identifier.width - 8 + 'px',
+          top: identifier.top + 'px',
+          height: identifier.height + 'px',
+        }"
+        @mousedown="resizeIdentifier"
+        @mousedown.stop
+      ></div>
+      <div
+        :style="{
+          left: identifier.left + 'px',
+          top: identifier.top + 'px',
+          width: identifier.width + 'px',
+        }"
+        class="border-top"
+        @mousedown="resizeIdentifier"
+        @mousedown.stop
+      ></div>
+      <div
+        :style="{
+          left: identifier.left + 'px',
+          top: identifier.top + identifier.height - 8 + 'px',
+          width: identifier.width + 'px',
+        }"
+        class="border-bottom"
+        @mousedown="resizeIdentifier"
+        @mousedown.stop
+      ></div>
       <Identifier
         class="component-identifier"
         :style="{
@@ -81,7 +121,9 @@ export default defineComponent({
       const identifiers =
         vuex.identifier.pages[vuex.identifier.selectedPageIndex as number]
           .identifiers
-      const deleteIndex = identifiers.findIndex((elem) => elem === identifier)
+      const deleteIndex = identifiers.findIndex(
+        (elem) => elem.index === identifier.index
+      )
 
       vuex.identifier.spliceIden(deleteIndex)
     }
@@ -126,8 +168,23 @@ export default defineComponent({
       )
     }
 
-    // TODO 이동구현 move icon
-    // TODO resize구현
+    function resizeIdentifier(e: MouseEvent) {
+      const target = e.target as HTMLElement
+      const direction = target.className.split('-')[1]
+      window.addEventListener('mousemove', () => {})
+      if (direction === 'right') {
+        const identifiers =
+          vuex.identifier.pages[vuex.identifier.selectedPageIndex as number]
+            .identifiers
+        const resizeIndex = identifiers.findIndex(
+          (elem) => elem.index === identifier.index
+        )
+
+        const resizeIden = { ...identifiers[resizeIndex] }
+
+        // resize
+      }
+    }
 
     return {
       setColor,
@@ -135,6 +192,7 @@ export default defineComponent({
       deleteIdentifier,
       vuex,
       moveIdentifier,
+      resizeIdentifier,
     }
   },
 })
@@ -158,6 +216,24 @@ export default defineComponent({
       width: 17px;
       left: 20px;
       user-select: none;
+    }
+
+    .border-top,
+    .border-bottom,
+    .border-left,
+    .border-right {
+      position: fixed;
+      height: 8px;
+      z-index: 1;
+      background-color: yellowgreen;
+      cursor: ns-resize;
+    }
+    .border-left,
+    .border-right {
+      position: fixed;
+      width: 8px;
+      background-color: yellowgreen;
+      cursor: ew-resize;
     }
 
     .component-identifier {

@@ -27,7 +27,7 @@
             v-for="iden in vuex.identifier.pages[
               vuex.identifier.selectedPageIndex
             ].identifiers"
-            :key="iden.index"
+            :key="'r' + iden.index"
             :value="JSON.stringify(iden)"
             >{{ iden.compoName }}
           </option>
