@@ -7,15 +7,43 @@
       @input="storeInputValue"
     />
     <div class="left-data">
-      <div class="component-name">
-        {{ transferData.startCompo.compoName }}
+      <div class="left-data-name">
+        <div
+          v-for="(data, i) in transferData.startCompo"
+          :key="i"
+          class="component-name"
+        >
+          {{ data.compoName }}
+        </div>
       </div>
     </div>
     <img class="center-arrow" src="@/assets/images/arrow.svg" />
     <div class="right-data">
-      <div class="component-name">
-        {{ transferData.endCompo.compoName }}
+      <div class="right-data-name">
+        <div
+          v-for="(data, i) in transferData.endCompo"
+          :key="'e' + i"
+          class="component-name"
+        >
+          {{ data.compoName }}
+        </div>
       </div>
+      <img
+        src="@/assets/images/plusblue.svg"
+        class="plus-blue"
+        @click="selectEndCompo"
+      />
+      <select v-show="selectCompo" class="right-select" @change="addEndCompo">
+        <option value="none">선택</option>
+        <option
+          v-for="iden in vuex.identifier.pages[
+            vuex.identifier.selectedPageIndex
+          ].identifiers"
+          :key="'r' + iden.index"
+          :value="JSON.stringify(iden)"
+          >{{ iden.compoName }}
+        </option>
+      </select>
     </div>
   </div>
 </template>
@@ -38,37 +66,38 @@ export default defineComponent({
     }
 
     function viewSelectedPair() {
-      for (
-        let i = 0;
-        i <
-        vuex.identifier.pages[vuex.identifier.selectedPageIndex as number]
-          .identifiers.length;
-        i++
-      ) {
-        const copyIden = {
-          ...vuex.identifier.pages[vuex.identifier.selectedPageIndex as number]
-            .identifiers[i],
-        }
-        if (!transferData.startCompo) return
-        if (!transferData.endCompo) return
-        if (
-          transferData.startCompo.index ===
-            vuex.identifier.pages[vuex.identifier.selectedPageIndex as number]
-              .identifiers[i].index ||
-          transferData.endCompo.index ===
-            vuex.identifier.pages[vuex.identifier.selectedPageIndex as number]
-              .identifiers[i].index
-        ) {
-          copyIden.compoView = true
-        } else {
-          copyIden.compoView = false
-        }
-        const newIden: NewIden = {
-          index: i,
-          identifier: copyIden,
-        }
-        vuex.identifier.updateIden(newIden)
-      }
+      // TODO startcompo와 endcompo에 있는 identifier의 index 전부 비교하기
+      // for (
+      //   let i = 0;
+      //   i <
+      //   vuex.identifier.pages[vuex.identifier.selectedPageIndex as number]
+      //     .identifiers.length;
+      //   i++
+      // ) {
+      //   const copyIden = {
+      //     ...vuex.identifier.pages[vuex.identifier.selectedPageIndex as number]
+      //       .identifiers[i],
+      //   }
+      //   if (!transferData.startCompo) return
+      //   if (!transferData.endCompo) return
+      //   if (
+      //     transferData.startCompo.index ===
+      //       vuex.identifier.pages[vuex.identifier.selectedPageIndex as number]
+      //         .identifiers[i].index ||
+      //     transferData.endCompo.index ===
+      //       vuex.identifier.pages[vuex.identifier.selectedPageIndex as number]
+      //         .identifiers[i].index
+      //   ) {
+      //     copyIden.compoView = true
+      //   } else {
+      //     copyIden.compoView = false
+      //   }
+      //   const newIden: NewIden = {
+      //     index: i,
+      //     identifier: copyIden,
+      //   }
+      //   vuex.identifier.updateIden(newIden)
+      // }
     }
 
     let timeValue: number
@@ -110,12 +139,42 @@ export default defineComponent({
 
     const inputRef = ref<HTMLElement>(null)
 
+    function addEndCompo(e: MouseEvent) {
+      const target = e.target as HTMLSelectElement
+      if (target.value === 'none') return
+      console.log(props.transferData)
+      const addIndex = vuex.dataTransfer.eventTransfer.findIndex(
+        (elem) => elem.index === props.transferData?.index
+      )
+      const addData = { ...vuex.dataTransfer.eventTransfer[addIndex] }
+      const addEndData = [...addData.endCompo]
+      addEndData.push(JSON.parse(target.value))
+      addData.endCompo = addEndData
+      console.log(addData)
+      const newData = {
+        index: addIndex,
+        transfer: addData,
+      }
+      vuex.dataTransfer.updateEventData(newData)
+      selectCompo.value = false
+    }
+
+    const selectCompo = ref(false)
+
+    function selectEndCompo() {
+      selectCompo.value = true
+    }
+
     // TODO input 받아서 저장하기
 
     return {
       viewSelectedPair,
       inputRef,
       storeInputValue,
+      addEndCompo,
+      vuex,
+      selectEndCompo,
+      selectCompo,
     }
   },
 })
@@ -134,12 +193,11 @@ export default defineComponent({
   // width: 100%;
   cursor: pointer;
   position: relative;
-  height: 65px;
 
   .data-transfer-input {
     position: absolute;
     top: 0;
-    left: 50%;
+    left: 30%;
     transform: translateX(-50%);
     width: 100px;
     text-align: center;
@@ -157,17 +215,27 @@ export default defineComponent({
   .right-data {
     display: flex;
     flex-direction: row;
-    @include tip-style;
     align-items: center;
-    height: 32px;
 
-    .component-name {
-      font-family: inherit;
-      margin-left: 0.5rem;
-      margin-right: 0.5rem;
-      font-weight: 600;
-      font-size: 13px;
-      user-select: none;
+    .right-data-name,
+    .left-data-name {
+      display: flex;
+      flex-direction: column;
+
+      .component-name {
+        @include tip-style;
+        font-family: inherit;
+        margin: 0.2rem 0.5rem;
+        font-weight: 600;
+        font-size: 13px;
+        user-select: none;
+        padding: 2px 5px;
+      }
+    }
+
+    .plus-blue {
+      margin: 0 0.5rem;
+      cursor: pointer;
     }
   }
 

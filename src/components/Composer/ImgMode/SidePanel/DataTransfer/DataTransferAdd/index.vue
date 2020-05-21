@@ -121,8 +121,8 @@ export default defineComponent({
       if (eventRef.value.value === 'none') return
       if (target.value === 'none ') return
       const newData: DataTransfer = {
-        startCompo: JSON.parse(eventRef.value.value),
-        endCompo: JSON.parse(target.value),
+        startCompo: [JSON.parse(eventRef.value.value)],
+        endCompo: [JSON.parse(target.value)],
         data: null,
         index: index.value,
         type: 'event',
@@ -138,8 +138,8 @@ export default defineComponent({
       if (!e.target) return
       const target = e.target as HTMLSelectElement
       const newData: DataTransfer = {
-        startCompo: JSON.parse(propsRef.value.value),
-        endCompo: JSON.parse(target.value),
+        startCompo: [JSON.parse(propsRef.value.value)],
+        endCompo: [JSON.parse(target.value)],
         data: null,
         index: index.value,
         type: 'props',

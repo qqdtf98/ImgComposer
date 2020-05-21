@@ -81,8 +81,8 @@ export interface NewIden {
 }
 
 export interface DataTransfer {
-  startCompo: IdentifierType | null
-  endCompo: IdentifierType | null
+  startCompo: IdentifierType[]
+  endCompo: IdentifierType[]
   data: string | null
   index: number
   type: 'event' | 'props'
