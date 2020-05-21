@@ -171,19 +171,47 @@ export default defineComponent({
     function resizeIdentifier(e: MouseEvent) {
       const target = e.target as HTMLElement
       const direction = target.className.split('-')[1]
-      window.addEventListener('mousemove', () => {})
-      if (direction === 'right') {
-        const identifiers =
-          vuex.identifier.pages[vuex.identifier.selectedPageIndex as number]
-            .identifiers
-        const resizeIndex = identifiers.findIndex(
-          (elem) => elem.index === identifier.index
-        )
+      let moveEvent: (e: MouseEvent) => void
+      let upEvent: (e: MouseEvent) => void
 
-        const resizeIden = { ...identifiers[resizeIndex] }
+      window.addEventListener(
+        'mousemove',
+        (moveEvent = (e) => {
+          const identifiers =
+            vuex.identifier.pages[vuex.identifier.selectedPageIndex as number]
+              .identifiers
+          const resizeIndex = identifiers.findIndex(
+            (elem) => elem.index === identifier.index
+          )
+          const resizeIden = { ...identifiers[resizeIndex] }
 
-        // resize
-      }
+          if (direction === 'right') {
+            resizeIden.width = e.clientX - resizeIden.left
+          } else if (direction === 'bottom') {
+            resizeIden.height = e.clientY - resizeIden.top
+          } else if (direction === 'left') {
+            resizeIden.width = resizeIden.left - e.clientX + resizeIden.width
+            resizeIden.left = e.clientX
+          } else if (direction === 'top') {
+            resizeIden.height = resizeIden.top - e.clientY + resizeIden.height
+            resizeIden.top = e.clientY
+          }
+
+          const newIden = {
+            index: resizeIndex,
+            identifier: resizeIden,
+          }
+          vuex.identifier.updateIden(newIden)
+
+          window.addEventListener(
+            'mouseup',
+            (upEvent = (e) => {
+              window.removeEventListener('mousemove', moveEvent)
+              window.removeEventListener('mouseup', upEvent)
+            })
+          )
+        })
+      )
     }
 
     return {
@@ -206,7 +234,7 @@ export default defineComponent({
     .delete-identifier,
     .move-identifier {
       position: absolute;
-      z-index: 1;
+      z-index: 5;
       top: -2px;
       width: 19px;
       cursor: pointer;
@@ -227,6 +255,7 @@ export default defineComponent({
       z-index: 1;
       background-color: yellowgreen;
       cursor: ns-resize;
+      opacity: 0;
     }
     .border-left,
     .border-right {
