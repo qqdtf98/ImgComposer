@@ -10,12 +10,17 @@
       v-show="!showImgList"
       class="expand-icon"
       src="@/assets/images/imggray.svg"
-      @click="changeMode"
+      @click="activateImgList"
     />
     <img
       class="folder-icon"
       src="@/assets/images/foldergray.svg"
-      @click="changeMode"
+      @click="activateDirectory"
+    />
+    <img
+      class="folder-icon left"
+      src="@/assets/images/foldergray.svg"
+      @click="activateFileTree"
     />
     <div v-show="showImgList" ref="gridRef" class="previews">
       <div
@@ -37,7 +42,8 @@
         />
       </div>
     </div>
-    <Directory v-show="!showImgList" />
+    <Directory v-show="showDirectory" />
+    <FileTree v-show="showFileTree" />
     <input
       id="side-panel-input-file"
       type="file"
@@ -55,9 +61,10 @@ import { defineComponent, ref } from '@vue/composition-api'
 import { useStore } from '@/modules/vue-hooks'
 import { Identifiers } from '@/interfaces/any-editor-file.ts'
 import Directory from './Directory/index.vue'
+import FileTree from './FileTree/index.vue'
 
 export default defineComponent({
-  components: { Directory },
+  components: { Directory, FileTree },
   setup(...args) {
     const ctx = args[1]
     const store = useStore(ctx)
@@ -192,13 +199,24 @@ export default defineComponent({
     }
 
     const showImgList = ref(true)
+    const showDirectory = ref(false)
+    const showFileTree = ref(false)
 
-    function changeMode() {
-      if (showImgList.value) {
-        showImgList.value = false
-      } else {
-        showImgList.value = true
-      }
+    function activateImgList() {
+      showImgList.value = true
+      showDirectory.value = false
+      showFileTree.value = false
+    }
+
+    function activateDirectory() {
+      showImgList.value = false
+      showDirectory.value = true
+      showFileTree.value = false
+    }
+    function activateFileTree() {
+      showImgList.value = false
+      showDirectory.value = false
+      showFileTree.value = true
     }
 
     return {
@@ -213,7 +231,11 @@ export default defineComponent({
       openPage,
       deletePage,
       showImgList,
-      changeMode,
+      activateImgList,
+      showDirectory,
+      showFileTree,
+      activateFileTree,
+      activateDirectory,
     }
   },
 })
@@ -235,7 +257,7 @@ export default defineComponent({
     left: 10px;
     cursor: pointer;
     padding: 5px;
-    width: 27px;
+    width: 25px;
 
     &:hover {
       background-color: #ebebeb;
@@ -249,12 +271,16 @@ export default defineComponent({
     left: 40px;
     cursor: pointer;
     padding: 5px;
-    width: 30px;
+    width: 31px;
 
     &:hover {
       background-color: #ebebeb;
       border-radius: 7px;
     }
+  }
+
+  .left {
+    left: 73px;
   }
 
   #side-panel-input-file {
