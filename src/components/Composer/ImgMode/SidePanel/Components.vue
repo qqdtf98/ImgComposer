@@ -1,7 +1,18 @@
 <template>
   <div id="components-panel">
-    <h1>Components</h1>
-    <div v-if="vuex.identifier.fileState">
+    <div class="header-container">
+      <h1 class="header">Components</h1>
+      <img
+        class="fold-panel-data"
+        src="@/assets/images/rightarrow.svg"
+        @click="foldComponents"
+      />
+    </div>
+    <div
+      v-show="isElementUnfolded"
+      v-if="vuex.identifier.fileState"
+      class="component-data-list"
+    >
       <h3 @click="viewEveryCompo">view all</h3>
       <div class="component-list">
         <div
@@ -211,6 +222,19 @@ export default defineComponent({
       )
     }
 
+    const isElementUnfolded = ref(true)
+
+    function foldComponents(e: MouseEvent) {
+      const target = e.target as HTMLElement
+      if (isElementUnfolded.value) {
+        isElementUnfolded.value = false
+        target.style.transform = 'rotate(270deg)'
+      } else {
+        isElementUnfolded.value = true
+        target.style.transform = 'rotate(90deg)'
+      }
+    }
+
     return {
       vuex,
       nameRef,
@@ -218,6 +242,8 @@ export default defineComponent({
       viewSelectedCompo,
       viewEveryCompo,
       createParentCompo,
+      foldComponents,
+      isElementUnfolded,
     }
   },
 })
@@ -228,49 +254,70 @@ export default defineComponent({
 @use '@/assets/styles/component-composer/common-styles.scss' as *;
 
 #components-panel {
-  margin-top: 20px;
+  margin: 20px 0;
 
-  h1 {
-    font-size: 17px;
-    font-weight: 500;
-  }
-  .component-list {
-    .color-name-select {
-      display: flex;
-      flex-direction: row;
-      @include tip-style;
-      align-items: center;
-      height: 32px;
-      margin-top: 10px;
+  .header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .header {
+      font-size: 17px;
+      font-weight: 500;
+    }
+
+    .fold-panel-data {
+      transform: rotate(90deg);
+      border-radius: 5px;
+      padding: 4px 6px;
       cursor: pointer;
 
-      .chrome-picker {
-        $size: 13px;
-        width: $size;
-        height: $size;
-        border-radius: 2px;
-        margin-left: 0.5rem;
+      &:hover {
+        background-color: #e2e2e2;
       }
+    }
+  }
 
-      .component-name {
-        font-family: inherit;
-        margin-left: 0.5rem;
-        margin-right: 0.5rem;
-        font-weight: 600;
-        font-size: 13px;
-        user-select: none;
-      }
+  .component-data-list {
+    margin: 5px 0;
+    .component-list {
+      .color-name-select {
+        display: flex;
+        flex-direction: row;
+        @include tip-style;
+        align-items: center;
+        height: 32px;
+        margin-top: 10px;
+        cursor: pointer;
 
-      #hide-compo {
-        width: auto;
-        display: inline-block;
-        visibility: hidden;
-        position: fixed;
-        top: 10px;
-        overflow: auto;
-        font-size: 13px;
-        font-weight: 600;
-        font-family: inherit;
+        .chrome-picker {
+          $size: 13px;
+          width: $size;
+          height: $size;
+          border-radius: 2px;
+          margin-left: 0.5rem;
+        }
+
+        .component-name {
+          font-family: inherit;
+          margin-left: 0.5rem;
+          margin-right: 0.5rem;
+          font-weight: 600;
+          font-size: 13px;
+          user-select: none;
+        }
+
+        #hide-compo {
+          width: auto;
+          display: inline-block;
+          visibility: hidden;
+          position: fixed;
+          top: 10px;
+          overflow: auto;
+          font-size: 13px;
+          font-weight: 600;
+          font-family: inherit;
+        }
       }
     }
   }
