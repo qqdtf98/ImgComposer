@@ -124,6 +124,7 @@ export default defineComponent({
       const deleteIndex = identifiers.findIndex(
         (elem) => elem.index === identifier.index
       )
+      // TODO identifier 삭제하면 data transfer의 해당 pair 찾아서 삭제하기
 
       vuex.identifier.spliceIden(deleteIndex)
     }

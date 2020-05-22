@@ -9,19 +9,23 @@
         @click="foldDataTransfer"
       />
     </div>
+
     <div v-show="isElementUnfolded" class="data-value-list">
       <h4 @click="viewEveryCompo">view all</h4>
-      <DataValue
-        v-for="(event, i) in vuex.dataTransfer.eventTransfer"
-        :key="i"
-        :transferData="event"
-      />
-      <DataValue
-        v-for="(props, i) in vuex.dataTransfer.propsTransfer"
-        :key="`p+${i}`"
-        :transferData="props"
-      />
+      <vue-custom-scrollbar class="panel-transfer-area">
+        <DataValue
+          v-for="(event, i) in vuex.dataTransfer.eventTransfer"
+          :key="i"
+          :transferData="event"
+        />
+        <DataValue
+          v-for="(props, i) in vuex.dataTransfer.propsTransfer"
+          :key="`p+${i}`"
+          :transferData="props"
+        />
+      </vue-custom-scrollbar>
     </div>
+
     <DataTransferAdd v-show="dataState" @close-data="showDataTransfer" />
   </div>
 </template>
@@ -32,9 +36,10 @@ import DataTransferAdd from './DataTransferAdd/index.vue'
 import { useVuex } from '../../../../../modules/vue-hooks'
 import DataValue from './DataTransferAdd/DataValue.vue'
 import { NewIden, DataTransfer } from '@/interfaces/any-editor-file.ts'
+import vueCustomScrollbar from 'vue-custom-scrollbar'
 
 export default defineComponent({
-  components: { DataTransferAdd, DataValue },
+  components: { DataTransferAdd, DataValue, vueCustomScrollbar },
   setup(props, ctx) {
     const vuex = useVuex(ctx)
 
@@ -172,6 +177,10 @@ export default defineComponent({
       .link-value {
         padding-left: 10px;
       }
+    }
+
+    .panel-transfer-area {
+      width: 100%;
     }
   }
 }

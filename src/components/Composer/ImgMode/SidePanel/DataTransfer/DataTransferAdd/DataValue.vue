@@ -1,11 +1,5 @@
 <template>
   <div class="data-transfer-wrapper" @click="viewSelectedPair">
-    <input
-      ref="inputRef"
-      class="data-transfer-input"
-      placeholder="write data"
-      @input="storeInputValue"
-    />
     <div class="left-data">
       <div class="left-data-name">
         <div
@@ -45,6 +39,13 @@
         </option>
       </select>
     </div>
+    <input
+      ref="inputRef"
+      class="data-transfer-input"
+      placeholder="write data"
+      :value="transferData.data"
+      @input="storeInputValue"
+    />
   </div>
 </template>
 
@@ -195,16 +196,13 @@ export default defineComponent({
   position: relative;
 
   .data-transfer-input {
-    position: absolute;
-    top: 0;
-    left: 30%;
-    transform: translateX(-50%);
-    width: 100px;
+    width: 200px;
     text-align: center;
     background-color: #2d2d2d;
     color: #dadada;
-    height: 28px;
+    height: 70px;
     border-radius: 5px;
+    margin-left: 10px;
   }
 
   .data-transfer-input::placeholder {
@@ -242,7 +240,7 @@ export default defineComponent({
   .center-arrow {
     margin-right: 12px;
     margin-left: 12px;
-    width: 140px;
+    min-width: 40px;
   }
 }
 </style>
