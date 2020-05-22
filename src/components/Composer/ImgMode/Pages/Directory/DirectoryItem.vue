@@ -64,7 +64,6 @@ export default defineComponent({
         const selectedPageIndex = imageArr.findIndex(
           (elem) => elem.src === changePage.imageData
         )
-        console.log(selectedPageIndex)
         vuex.identifier.SET_SELECTED_PAGE_INDEX(selectedPageIndex)
       }
     }

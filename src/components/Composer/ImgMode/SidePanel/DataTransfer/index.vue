@@ -3,20 +3,29 @@
     <div class="header-container">
       <h1 class="header">Data Transfer</h1>
       <p class="add" @click="showDataTransfer">+</p>
+      <img
+        class="fold-panel-data"
+        src="@/assets/images/rightarrow.svg"
+        @click="foldDataTransfer"
+      />
     </div>
-    <div class="data-value-list">
+
+    <div v-show="isElementUnfolded" class="data-value-list">
       <h4 @click="viewEveryCompo">view all</h4>
-      <DataValue
-        v-for="(event, i) in vuex.dataTransfer.eventTransfer"
-        :key="i"
-        :transferData="event"
-      />
-      <DataValue
-        v-for="(props, i) in vuex.dataTransfer.propsTransfer"
-        :key="`p+${i}`"
-        :transferData="props"
-      />
+      <vue-custom-scrollbar class="panel-transfer-area">
+        <DataValue
+          v-for="(event, i) in vuex.dataTransfer.eventTransfer"
+          :key="i"
+          :transferData="event"
+        />
+        <DataValue
+          v-for="(props, i) in vuex.dataTransfer.propsTransfer"
+          :key="`p+${i}`"
+          :transferData="props"
+        />
+      </vue-custom-scrollbar>
     </div>
+
     <DataTransferAdd v-show="dataState" @close-data="showDataTransfer" />
   </div>
 </template>
@@ -27,9 +36,10 @@ import DataTransferAdd from './DataTransferAdd/index.vue'
 import { useVuex } from '../../../../../modules/vue-hooks'
 import DataValue from './DataTransferAdd/DataValue.vue'
 import { NewIden, DataTransfer } from '@/interfaces/any-editor-file.ts'
+import vueCustomScrollbar from 'vue-custom-scrollbar'
 
 export default defineComponent({
-  components: { DataTransferAdd, DataValue },
+  components: { DataTransferAdd, DataValue, vueCustomScrollbar },
   setup(props, ctx) {
     const vuex = useVuex(ctx)
 
@@ -68,11 +78,26 @@ export default defineComponent({
       }
     }
 
+    const isElementUnfolded = ref(true)
+
+    function foldDataTransfer(e: MouseEvent) {
+      const target = e.target as HTMLElement
+      if (isElementUnfolded.value) {
+        isElementUnfolded.value = false
+        target.style.transform = 'rotate(270deg)'
+      } else {
+        isElementUnfolded.value = true
+        target.style.transform = 'rotate(90deg)'
+      }
+    }
+
     return {
       dataState,
       showDataTransfer,
       vuex,
       viewEveryCompo,
+      isElementUnfolded,
+      foldDataTransfer,
     }
   },
 })
@@ -110,6 +135,17 @@ export default defineComponent({
         background-color: #e0e0e0;
       }
     }
+
+    .fold-panel-data {
+      transform: rotate(90deg);
+      border-radius: 5px;
+      padding: 4px 6px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #e2e2e2;
+      }
+    }
   }
 
   .data-value-list {
@@ -141,6 +177,10 @@ export default defineComponent({
       .link-value {
         padding-left: 10px;
       }
+    }
+
+    .panel-transfer-area {
+      width: 100%;
     }
   }
 }

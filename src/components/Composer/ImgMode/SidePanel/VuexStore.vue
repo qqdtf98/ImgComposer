@@ -1,14 +1,20 @@
 <template>
   <div class="vuex-store">
-    <h1>Vuex Store</h1>
-
-    <div ref="stateSection" class="section">
+    <div class="header-container">
+      <h1 class="header">Vuex Store</h1>
+      <img
+        class="fold-panel-data"
+        src="@/assets/images/rightarrow.svg"
+        @click="foldVuexStore"
+      />
+    </div>
+    <div v-show="isElementUnfolded" ref="stateSection" class="section">
       <h2 class="header">state</h2>
     </div>
-    <div ref="mutationsSection" class="section">
+    <div v-show="isElementUnfolded" ref="mutationsSection" class="section">
       <h2 class="header">mutations</h2>
     </div>
-    <div ref="actionsSection" class="section">
+    <div v-show="isElementUnfolded" ref="actionsSection" class="section">
       <h2 class="header">actions</h2>
     </div>
   </div>
@@ -62,10 +68,25 @@ export default defineComponent({
       }
     })
 
+    const isElementUnfolded = ref(true)
+
+    function foldVuexStore(e: MouseEvent) {
+      const target = e.target as HTMLElement
+      if (isElementUnfolded.value) {
+        isElementUnfolded.value = false
+        target.style.transform = 'rotate(270deg)'
+      } else {
+        isElementUnfolded.value = true
+        target.style.transform = 'rotate(90deg)'
+      }
+    }
+
     return {
       stateSection,
       mutationsSection,
       actionsSection,
+      isElementUnfolded,
+      foldVuexStore,
     }
   },
 })
@@ -83,9 +104,26 @@ export default defineComponent({
 }
 
 .vuex-store {
-  h1 {
-    font-size: 17px;
-    font-weight: 500;
+  .header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .header {
+      font-size: 17px;
+      font-weight: 500;
+    }
+
+    .fold-panel-data {
+      transform: rotate(90deg);
+      border-radius: 5px;
+      padding: 4px 6px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #e2e2e2;
+      }
+    }
   }
 
   .section {

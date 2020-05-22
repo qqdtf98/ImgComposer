@@ -1,8 +1,8 @@
 <template>
   <div class="side-panel">
     <DataTransfer />
-    <VuexStore />
     <Components />
+    <VuexStore />
   </div>
 </template>
 

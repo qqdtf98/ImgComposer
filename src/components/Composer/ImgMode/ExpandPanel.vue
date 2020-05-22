@@ -34,6 +34,7 @@ export default defineComponent({
         for (let i = 0; i < sidePanel.children.length; i++) {
           sidePanel.children[i].classList.remove('panel-expand')
         }
+        sidePanel.children[0].classList.remove('transfer-expand')
       } else {
         pageFoldState.value = true
         imgLoad.style.display = 'none'
@@ -44,6 +45,7 @@ export default defineComponent({
         for (let i = 0; i < sidePanel.children.length; i++) {
           sidePanel.children[i].classList.add('panel-expand')
         }
+        sidePanel.children[0].classList.add('transfer-expand')
       }
     }
 

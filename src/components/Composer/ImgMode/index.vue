@@ -54,6 +54,10 @@ export default defineComponent({
     margin: 5px 10px;
   }
 
+  .transfer-expand {
+    width: 500px;
+  }
+
   #page {
     position: fixed;
     right: 30px;
