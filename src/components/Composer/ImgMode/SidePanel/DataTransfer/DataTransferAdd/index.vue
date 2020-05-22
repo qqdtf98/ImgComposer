@@ -79,6 +79,45 @@
           :transferData="props"
         />
       </div>
+      <div class="data-text-box">
+        <div>Global Event</div>
+        <img
+          src="@/assets/images/plusblue.svg"
+          class="plus-blue"
+          @click="showGlobalSelector"
+        />
+      </div>
+      <div v-show="isGlobalSelector" class="select-component">
+        <select ref="globalRef" class="left-select">
+          <option value="none">선택</option>
+          <option
+            v-for="iden in vuex.identifier.pages[
+              vuex.identifier.selectedPageIndex
+            ].identifiers"
+            :key="iden.index"
+            :value="JSON.stringify(iden)"
+            >{{ iden.compoName }}
+          </option>
+        </select>
+        <select class="right-select" @change="addGlobalTransfer">
+          <option value="none">선택</option>
+          <option
+            v-for="iden in vuex.identifier.pages[
+              vuex.identifier.selectedPageIndex
+            ].identifiers"
+            :key="iden.index"
+            :value="JSON.stringify(iden)"
+            >{{ iden.compoName }}
+          </option>
+        </select>
+      </div>
+      <div class="data-value-list">
+        <DataValue
+          v-for="(global, i) in vuex.dataTransfer.globalTransfer"
+          :key="i"
+          :transferData="global"
+        />
+      </div>
       <div class="data-store">
         <button class="data-store-btn" @click="closeDataTransfer">Done</button>
       </div>
@@ -108,6 +147,12 @@ export default defineComponent({
 
     function showPropsSelector() {
       isPropsSelector.value = true
+    }
+
+    const isGlobalSelector = ref(false)
+
+    function showGlobalSelector() {
+      isGlobalSelector.value = true
     }
 
     const eventRef = ref<HTMLSelectElement>(null)
@@ -148,6 +193,23 @@ export default defineComponent({
       vuex.dataTransfer.addPropsData(newData)
     }
 
+    const globalRef = ref<HTMLSelectElement>(null)
+
+    function addGlobalTransfer(e: MouseEvent) {
+      if (!globalRef.value) return
+      if (!e.target) return
+      const target = e.target as HTMLSelectElement
+      const newData: DataTransfer = {
+        startCompo: [JSON.parse(globalRef.value.value)],
+        endCompo: [JSON.parse(target.value)],
+        data: null,
+        index: index.value,
+        type: 'global',
+      }
+      index.value++
+      vuex.dataTransfer.addGlobalData(newData)
+    }
+
     function closeDataTransfer() {
       isPropsSelector.value = false
       isEventSelector.value = false
@@ -162,9 +224,13 @@ export default defineComponent({
       addPropsTransfer,
       showPropsSelector,
       isPropsSelector,
+      showGlobalSelector,
+      isGlobalSelector,
       eventRef,
       propsRef,
+      globalRef,
       closeDataTransfer,
+      addGlobalTransfer,
     }
   },
 })

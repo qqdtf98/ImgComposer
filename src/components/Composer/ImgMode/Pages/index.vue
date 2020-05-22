@@ -19,7 +19,7 @@
     />
     <img
       class="folder-icon left"
-      src="@/assets/images/foldergray.svg"
+      src="@/assets/images/filetree.svg"
       @click="activateFileTree"
     />
     <div v-show="showImgList" ref="gridRef" class="previews">
@@ -281,6 +281,7 @@ export default defineComponent({
 
   .left {
     left: 73px;
+    width: 28px;
   }
 
   #side-panel-input-file {

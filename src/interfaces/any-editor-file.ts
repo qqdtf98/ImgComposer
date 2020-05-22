@@ -85,7 +85,7 @@ export interface DataTransfer {
   endCompo: IdentifierType[]
   data: string | null
   index: number
-  type: 'event' | 'props'
+  type: 'event' | 'props' | 'global'
 }
 
 export interface NewData {

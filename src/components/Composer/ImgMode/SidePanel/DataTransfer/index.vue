@@ -23,6 +23,11 @@
           :key="`p+${i}`"
           :transferData="props"
         />
+        <DataValue
+          v-for="(global, i) in vuex.dataTransfer.globalTransfer"
+          :key="`g+${i}`"
+          :transferData="global"
+        />
       </vue-custom-scrollbar>
     </div>
 
