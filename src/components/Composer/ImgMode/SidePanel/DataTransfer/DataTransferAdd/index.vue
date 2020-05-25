@@ -159,6 +159,9 @@ export default defineComponent({
 
     const index = ref(0)
 
+    /**
+     * vuex의 dataTransfer에 새로운 eventTransfer 저장
+     */
     function addEventTransfer(e: MouseEvent) {
       const target = e.target as HTMLSelectElement
       if (!eventRef.value) return
@@ -178,6 +181,9 @@ export default defineComponent({
 
     const propsRef = ref<HTMLSelectElement>(null)
 
+    /**
+     * vuex의 dataTransfer에 새로운 propsTransfer 저장
+     */
     function addPropsTransfer(e: MouseEvent) {
       if (!propsRef.value) return
       if (!e.target) return
@@ -195,6 +201,9 @@ export default defineComponent({
 
     const globalRef = ref<HTMLSelectElement>(null)
 
+    /**
+     * vuex의 dataTransfer에 새로운 globalTransfer 저장
+     */
     function addGlobalTransfer(e: MouseEvent) {
       if (!globalRef.value) return
       if (!e.target) return
