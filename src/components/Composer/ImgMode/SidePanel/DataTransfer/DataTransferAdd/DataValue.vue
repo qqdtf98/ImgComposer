@@ -23,11 +23,17 @@
         </div>
       </div>
       <img
+        v-if="transferData.type === 'global'"
         src="@/assets/images/plusblue.svg"
         class="plus-blue"
         @click="selectEndCompo"
       />
-      <select v-show="selectCompo" class="right-select" @change="addEndCompo">
+      <select
+        v-if="transferData.type === 'global'"
+        v-show="selectCompo"
+        class="right-select"
+        @change="addEndCompo"
+      >
         <option value="none">선택</option>
         <option
           v-for="iden in vuex.identifier.pages[
@@ -35,8 +41,8 @@
           ].identifiers"
           :key="'r' + iden.index"
           :value="JSON.stringify(iden)"
-          >{{ iden.compoName }}
-        </option>
+          >{{ iden.compoName }}</option
+        >
       </select>
     </div>
     <input
@@ -60,6 +66,7 @@ export default defineComponent({
     transferData: Object,
   },
   setup(props, ctx) {
+    console.log(props.transferData)
     const vuex = useVuex(ctx)
 
     const { transferData } = props as {
@@ -143,20 +150,18 @@ export default defineComponent({
     function addEndCompo(e: MouseEvent) {
       const target = e.target as HTMLSelectElement
       if (target.value === 'none') return
-      console.log(props.transferData)
-      const addIndex = vuex.dataTransfer.eventTransfer.findIndex(
+      const addIndex = vuex.dataTransfer.globalTransfer.findIndex(
         (elem) => elem.index === props.transferData?.index
       )
-      const addData = { ...vuex.dataTransfer.eventTransfer[addIndex] }
+      const addData = { ...vuex.dataTransfer.globalTransfer[addIndex] }
       const addEndData = [...addData.endCompo]
       addEndData.push(JSON.parse(target.value))
       addData.endCompo = addEndData
-      console.log(addData)
       const newData = {
         index: addIndex,
         transfer: addData,
       }
-      vuex.dataTransfer.updateEventData(newData)
+      vuex.dataTransfer.updateGlobalData(newData)
       selectCompo.value = false
     }
 
