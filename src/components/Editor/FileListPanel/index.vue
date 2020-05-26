@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from '@vue/composition-api'
+import { defineComponent, ref, watch, onMounted } from '@vue/composition-api'
 import { getMatchedCssRules } from '@/modules/get-matched-css-rules'
 import FileList from './FileList.vue'
 import { useVuex } from '../../../modules/vue-hooks'
@@ -21,6 +21,10 @@ export default defineComponent({
   setup(props, ctx) {
     const vuex = useVuex(ctx)
     const isFileListOn = ref(false)
+
+    onMounted(() => {
+      activateFileList()
+    })
 
     // fileList 열고 닫을 때마다 file-panel과 layout 길이 변경
     function activateFileList() {

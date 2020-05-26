@@ -105,7 +105,6 @@ export default defineComponent({
           }
         } else {
           for (const slider in sliders) {
-            console.log(sliders[slider])
             if (
               sliders[slider] === 'contrast' ||
               sliders[slider] === 'saturate' ||
