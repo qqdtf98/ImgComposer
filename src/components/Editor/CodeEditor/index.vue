@@ -80,8 +80,16 @@ export default defineComponent({
         })
 
         htmlCodeMirror.setSize('100%', '100%')
+
         htmlCodeMirror.on('change', function (cm, change) {
-          vuex.fileData.updateFileValue(cm.getValue())
+          if (vuex.codeMirror.htmlSectionIndex !== -1) {
+            const valueType = {
+              value: cm.getValue(),
+              type: 'html',
+              index: vuex.codeMirror.htmlSectionIndex,
+            }
+            vuex.fileData.updateFileValue(valueType)
+          }
         })
       }
 
@@ -91,8 +99,16 @@ export default defineComponent({
           value: '',
         })
         cssCodeMirror.setSize('100%', '100%')
+
         cssCodeMirror.on('change', function (cm, change) {
-          vuex.fileData.updateFileValue(cm.getValue())
+          if (vuex.codeMirror.cssSectionIndex !== -1) {
+            const valueType = {
+              value: cm.getValue(),
+              type: 'css',
+              index: vuex.codeMirror.cssSectionIndex,
+            }
+            vuex.fileData.updateFileValue(valueType)
+          }
         })
       }
 

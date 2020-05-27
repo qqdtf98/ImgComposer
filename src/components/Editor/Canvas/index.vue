@@ -183,7 +183,7 @@ ${formattedCss}
       })
 
       watch(
-        () => vuex.fileData.selectedFile,
+        () => vuex.fileData.fileList,
         () => {
           if (!vuex.fileData.selectedFile) return
 

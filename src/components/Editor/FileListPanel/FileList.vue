@@ -78,15 +78,17 @@ export default defineComponent({
           parser: 'html',
           plugins: [parserHtml],
         })
-        vuex.codeMirror.SET_HTML_SECTION(formattedHtml)
+        vuex.codeMirror.SET_HTML_SECTION_VALUE(formattedHtml)
+        vuex.codeMirror.SET_HTML_SECTION_INDEX(selectedFile.fileId)
+        vuex.fileData.SET_SELECTED_FILE(selectedFile)
       } else if (selectedFile.fileType === 'css') {
         const formattedCss = prettier.format(selectedFile.data, {
           parser: 'css',
           plugins: [parserPostCss],
         })
-        vuex.codeMirror.SET_CSS_SECTION(formattedCss)
+        vuex.codeMirror.SET_CSS_SECTION_VALUE(formattedCss)
+        vuex.codeMirror.SET_CSS_SECTION_INDEX(selectedFile.fileId)
       }
-      vuex.fileData.SET_SELECTED_FILE(selectedFile)
     }
 
     onMounted(() => {

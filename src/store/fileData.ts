@@ -59,18 +59,30 @@ export const actions = actionTree(
       if (idx > -1) newList.splice(idx, 1)
       commit('SET_FILE_LIST', newList)
     },
-    updateFileValue({ commit, state }, value: string) {
-      const newSelectedFile = { ...state.selectedFile } as File
-      newSelectedFile.data = value
-      commit('SET_SELECTED_FILE', newSelectedFile)
-      const newFileList = [...state.fileList]
-      const newFileIndex = state.fileList.findIndex(
-        (elem) => elem.fileId === newSelectedFile.fileId
-      )
-      const newFile = { ...state.fileList[newFileIndex] }
-      newFile.data = value
-      newFileList.splice(newFileIndex, 1, newFile)
-      commit('SET_FILE_LIST', newFileList)
+    updateFileValue({ commit, state }, { value, type, index }) {
+      if (type === 'html') {
+        const newSelectedFile = { ...state.selectedFile } as File
+        newSelectedFile.data = value
+        commit('SET_SELECTED_FILE', newSelectedFile)
+        const newFileList = [...state.fileList]
+        const newFileIndex = state.fileList.findIndex(
+          (elem) => elem.fileId === newSelectedFile.fileId
+        )
+        const newFile = { ...state.fileList[newFileIndex] }
+        newFile.data = value
+        newFileList.splice(newFileIndex, 1, newFile)
+        commit('SET_FILE_LIST', newFileList)
+      } else if (type === 'css') {
+        const newFileList = [...state.fileList]
+        const newFileIndex = state.fileList.findIndex(
+          (elem) => elem.fileId === index
+        )
+        const newFile = { ...state.fileList[newFileIndex] }
+        newFile.data = value
+        console.log(newFile)
+        newFileList.splice(newFileIndex, 1, newFile)
+        commit('SET_FILE_LIST', newFileList)
+      }
     },
   }
 )
