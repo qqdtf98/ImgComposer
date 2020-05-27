@@ -1,3 +1,4 @@
+import * as codeMirror from './codeMirror'
 import * as composer from './composer'
 import * as dataTransfer from './dataTransfer'
 import * as editorInfo from './editorInfo'
@@ -29,5 +30,6 @@ export const accessorType = getAccessorType({
     dataTransfer,
     identifier,
     folderDirectory,
+    codeMirror,
   },
 })
