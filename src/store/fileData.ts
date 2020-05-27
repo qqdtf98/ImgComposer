@@ -1,6 +1,7 @@
-import { cssPair, dataType, File } from '@/interfaces/any-editor-file'
-import { reactive } from '@vue/composition-api'
+import { File, cssPair, dataType } from '@/interfaces/any-editor-file'
 import { actionTree, mutationTree } from 'nuxt-typed-vuex'
+
+import { reactive } from '@vue/composition-api'
 
 export const state: () => {
   fileList: File[]
@@ -57,6 +58,19 @@ export const actions = actionTree(
       })
       if (idx > -1) newList.splice(idx, 1)
       commit('SET_FILE_LIST', newList)
+    },
+    updateFileValue({ commit, state }, value: string) {
+      const newSelectedFile = { ...state.selectedFile } as File
+      newSelectedFile.data = value
+      commit('SET_SELECTED_FILE', newSelectedFile)
+      const newFileList = [...state.fileList]
+      const newFileIndex = state.fileList.findIndex(
+        (elem) => elem.fileId === newSelectedFile.fileId
+      )
+      const newFile = { ...state.fileList[newFileIndex] }
+      newFile.data = value
+      newFileList.splice(newFileIndex, 1, newFile)
+      commit('SET_FILE_LIST', newFileList)
     },
   }
 )

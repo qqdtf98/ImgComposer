@@ -58,7 +58,6 @@ export default defineComponent({
       () => vuex.codeMirror.htmlSectionValue,
       () => {
         if (vuex.codeMirror.htmlSectionValue) {
-          console.log('sethtml')
           htmlCodeMirror.setValue(vuex.codeMirror.htmlSectionValue)
         }
       }
@@ -68,7 +67,6 @@ export default defineComponent({
       () => vuex.codeMirror.cssSectionValue,
       () => {
         if (vuex.codeMirror.cssSectionValue) {
-          console.log('setcss')
           cssCodeMirror.setValue(vuex.codeMirror.cssSectionValue)
         }
       }
@@ -82,10 +80,9 @@ export default defineComponent({
         })
 
         htmlCodeMirror.setSize('100%', '100%')
-        // htmlCodeMirror.on('change', function (cm, change) {
-        //   console.log(cm.getValue())
-        //   console.log(change)
-        // })
+        htmlCodeMirror.on('change', function (cm, change) {
+          vuex.fileData.updateFileValue(cm.getValue())
+        })
       }
 
       if (cssSection.value) {
@@ -94,10 +91,9 @@ export default defineComponent({
           value: '',
         })
         cssCodeMirror.setSize('100%', '100%')
-        // cssCodeMirror.on('change', function (cm, change) {
-        //   console.log(cm.getValue())
-        //   console.log(change)
-        // })
+        cssCodeMirror.on('change', function (cm, change) {
+          vuex.fileData.updateFileValue(cm.getValue())
+        })
       }
 
       isCodeMirrorOn.value = false
