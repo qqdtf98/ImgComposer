@@ -28,6 +28,9 @@ import 'codemirror/mode/htmlmixed/htmlmixed'
 import 'codemirror/mode/xml/xml'
 import 'codemirror/mode/css/css'
 import { useVuex } from '../../../modules/vue-hooks'
+import FileService from '@/services/file-service'
+import { File } from '@/interfaces/any-editor-file.ts'
+import fileService from '@/services/file-service'
 
 export default defineComponent({
   setup(props, ctx) {
@@ -78,7 +81,56 @@ export default defineComponent({
       }
     )
 
+    const isCtrl = ref(false)
+
+    function addMouseUpEvent() {
+      let upEvent: (e: KeyboardEvent) => void
+      window.addEventListener(
+        'keyup',
+        (upEvent = (e: KeyboardEvent) => {
+          if (e.which === 17) {
+            isCtrl.value = false
+          }
+          window.removeEventListener('keyup', upEvent)
+        })
+      )
+    }
+
+    function saveFileAtServer() {
+      const openedFileList: {
+        file_seq: number
+        contents: string
+      }[] = []
+      for (const open of vuex.openedFileIndex.openedFileIndexList) {
+        const openedFile = (vuex.fileData.fileList.find(
+          (elem) => elem.fileId === open
+        ) as unknown) as File
+        openedFileList.push({
+          file_seq: openedFile.fileId,
+          contents: openedFile.data,
+        })
+      }
+      FileService.updateFileContents(openedFileList).then((res) => {
+        console.log(res)
+      })
+    }
+
     onMounted(() => {
+      window.addEventListener('keydown', (e: KeyboardEvent) => {
+        if (e.which === 17 || e.which === 91) {
+          console.log('??')
+          isCtrl.value = true
+          addMouseUpEvent()
+        }
+        if (e.which === 83 && isCtrl.value) {
+          console.log('isave')
+          // ctrl+s => 저장 단축키
+          e.preventDefault()
+          saveFileAtServer()
+          addMouseUpEvent()
+        }
+      })
+
       if (htmlSection.value) {
         htmlCodeMirror = CodeMirror(htmlSection.value, {
           ...codeMirrorHtmlOptions,
