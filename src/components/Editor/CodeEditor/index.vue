@@ -1,10 +1,16 @@
 <template>
   <div id="code-editor">
-    <button class="code-on-btn" @click="activateCodeEditor">
+    <button ref="codeBtnRef" class="code-on-btn" @click="activateCodeEditor">
       <div>Code Editor</div>
       <img class="code-arrow" src="@/assets/images/rightarrow.svg" />
     </button>
-    <div ref="codeRef" v-show="isCodeMirrorOn" class="code-mirror-section">
+    <div
+      v-show="isCodeMirrorOn"
+      ref="resizeRef"
+      class="code-mirror-resize"
+      @mousedown="resizeCodeMirror"
+    ></div>
+    <div v-show="isCodeMirrorOn" ref="codeRef" class="code-mirror-section">
       <div ref="htmlSection" class="html-section"></div>
       <div ref="cssSection" class="css-section"></div>
     </div>
@@ -129,9 +135,11 @@ export default defineComponent({
         isCodeMirrorOn.value = true
         setTimeout(() => {
           if (!codeRef.value) return
+          if (!resizeRef.value) return
           codeRef.value.style.display = 'flex'
-          target.style.bottom =
-            codeRef.value.getBoundingClientRect().height + 'px'
+          const codeRefRect = codeRef.value.getBoundingClientRect()
+          resizeRef.value.style.bottom = codeRefRect.height + 'px'
+          target.style.bottom = codeRefRect.height + 10 + 'px'
           const arrowImg = target.children[1] as HTMLElement
           arrowImg.style.transform = 'rotate(90deg)'
           htmlCodeMirror.setCursor(0, 0)
@@ -140,12 +148,79 @@ export default defineComponent({
       }
     }
 
+    const resizeRef = ref<HTMLElement>(null)
+    const codeBtnRef = ref<HTMLButtonElement>(null)
+
+    function resizeCodeMirror(e: MouseEvent) {
+      const target = e.target as HTMLElement
+      if (!codeRef.value) return
+      if (!codeBtnRef.value) return
+
+      let moveEvent: (e: MouseEvent) => void
+      let upEvent: (e: MouseEvent) => void
+
+      const targetRect = target.getBoundingClientRect()
+      const initTopGap = e.clientY - targetRect.top
+      const initBottomGap = targetRect.bottom - e.clientY
+      const initX = e.clientX
+      const initY = e.clientY
+      const initHeight = codeRef.value.getBoundingClientRect().height
+      const btnHeight = codeBtnRef.value.getBoundingClientRect().height
+
+      const canvasIframe = document.querySelector(
+        '.canvas-iframe'
+      ) as HTMLIFrameElement
+
+      canvasIframe.style.pointerEvents = 'none'
+      document.body.style.userSelect = 'none'
+
+      window.addEventListener(
+        'mousemove',
+        (moveEvent = (evt: MouseEvent) => {
+          if (!codeRef.value) return
+          if (!codeBtnRef.value) return
+
+          htmlCodeMirror.scrollTo(
+            htmlCodeMirror.getScrollInfo().left,
+            htmlCodeMirror.getScrollInfo().top
+          )
+          cssCodeMirror.scrollTo(
+            cssCodeMirror.getScrollInfo().left,
+            cssCodeMirror.getScrollInfo().top
+          )
+
+          codeRef.value.style.height = initHeight - (evt.clientY - initY) + 'px'
+          target.style.top = evt.clientY - initTopGap + 'px'
+          codeBtnRef.value.style.top =
+            evt.clientY - initTopGap - btnHeight + 'px'
+          codeBtnRef.value.style.height = btnHeight + 'px'
+          // console.log(codeBtnRef.value.getBoundingClientRect().height)
+
+          // TODO resize해결하기
+
+          window.addEventListener(
+            'mouseup',
+            (upEvent = () => {
+              window.removeEventListener('mousemove', moveEvent)
+              window.removeEventListener('mouseup', upEvent)
+
+              canvasIframe.style.pointerEvents = ''
+              document.body.style.userSelect = ''
+            })
+          )
+        })
+      )
+    }
+
     return {
       activateCodeEditor,
       htmlSection,
       isCodeMirrorOn,
       codeRef,
       cssSection,
+      resizeCodeMirror,
+      codeBtnRef,
+      resizeRef,
     }
   },
 })
@@ -174,14 +249,22 @@ export default defineComponent({
     }
   }
 
+  .code-mirror-resize {
+    position: fixed;
+    width: calc(100% - 280px);
+    height: 10px;
+    background-color: #dede7b;
+    cursor: ns-resize;
+  }
+
   .code-mirror-section {
     position: fixed;
     bottom: 0;
     left: 0;
     display: flex;
     flex-direction: row;
-    width: calc((100% - 280px));
-    height: 300px;
+    width: calc(100% - 280px);
+    height: 400px;
 
     .html-section,
     .css-section {
