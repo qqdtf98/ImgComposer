@@ -5,6 +5,7 @@ import * as editorInfo from './editorInfo'
 import * as fileData from './fileData'
 import * as folderDirectory from './folderDirectory'
 import * as identifier from './identifier'
+import * as openedFileIndex from './openedFileIndex'
 import * as styleData from './styleData'
 
 import { getAccessorType, mutationTree } from 'nuxt-typed-vuex'
@@ -31,5 +32,6 @@ export const accessorType = getAccessorType({
     identifier,
     folderDirectory,
     codeMirror,
+    openedFileIndex,
   },
 })

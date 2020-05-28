@@ -89,6 +89,7 @@ export default defineComponent({
         vuex.codeMirror.SET_CSS_SECTION_VALUE(formattedCss)
         vuex.codeMirror.SET_CSS_SECTION_INDEX(selectedFile.fileId)
       }
+      vuex.openedFileIndex.storeFileIndex(selectedFile.fileId)
     }
 
     onMounted(() => {
