@@ -6,14 +6,17 @@ import { reactive } from '@vue/composition-api'
 export const state: () => {
   fileList: File[]
   selectedFile: File | null
+  cssFileList: File[]
 } = () => ({
   fileList: [],
   selectedFile: null,
+  cssFileList: [],
 })
 
 export const mutations = mutationTree(state, {
   SET_FILE_LIST: (state, files: File[]) => (state.fileList = files),
   SET_SELECTED_FILE: (state, file: File) => (state.selectedFile = file),
+  SET_CSS_FILE_LIST: (state, files: File[]) => (state.cssFileList = files),
 })
 
 export const actions = actionTree(
@@ -46,6 +49,11 @@ export const actions = actionTree(
           cssPairList.push(cssPair)
         }
         newFile.htmlCssPair = cssPairList
+      }
+      if (file.file_type === 'css') {
+        const newCssList: File[] = [...state.cssFileList]
+        newCssList.push(newFile)
+        commit('SET_CSS_FILE_LIST', newCssList)
       }
 
       newList.push(newFile)

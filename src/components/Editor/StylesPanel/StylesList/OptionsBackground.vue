@@ -47,6 +47,7 @@ import { Chrome } from 'vue-color'
 import { useVuex, useNextTick } from '@/modules/vue-hooks'
 import { VueColor } from '@/types/vue-color'
 import _ from 'lodash'
+import replaceCssRules from '@/modules/replace-css-rules'
 
 export default defineComponent({
   components: { ChromeColor: Chrome },
@@ -84,17 +85,24 @@ export default defineComponent({
     function submitDefaultValue(e: MouseEvent) {
       const target = e.target
       if (vuex.styleData.target) {
+        let beforeStatement = ''
+        let afterStatement = ''
         if (target instanceof HTMLElement) {
           if (target.className === 'color-none') {
             if (!vuex.editorInfo.selectedCssRule) return
+            beforeStatement = `background-color:${vuex.editorInfo.selectedCssRule.style.backgroundColor}`
             vuex.editorInfo.selectedCssRule.style.backgroundColor =
               'transparent'
+            afterStatement = `background-color:${vuex.editorInfo.selectedCssRule.style.backgroundColor}`
           } else {
             if (!vuex.editorInfo.selectedCssRule) return
+            beforeStatement = `background-color:${vuex.editorInfo.selectedCssRule.style.backgroundColor}`
             vuex.editorInfo.selectedCssRule.style.backgroundColor = getComputedStyle(
               target
             ).backgroundColor
+            afterStatement = `background-color:${vuex.editorInfo.selectedCssRule.style.backgroundColor}`
           }
+          replaceCssRules(beforeStatement, afterStatement)
         }
       }
     }
