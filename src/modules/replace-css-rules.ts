@@ -1,3 +1,4 @@
+import cssom from 'cssom'
 import { Vuex as vuex } from '@/modules/vuex'
 
 export default function replaceCssRules(before: string, after: string) {
@@ -8,11 +9,25 @@ export default function replaceCssRules(before: string, after: string) {
         vuex.store.editorInfo.selectedCssRule?.selectorText as string
       )
     ) {
+      const parsedCss = cssom.parse(cssData)
+      const cssRules = parsedCss.cssRules as CSSStyleRule[]
+      let changedCSS = ''
+      for (const rule of cssRules) {
+        const style = rule.style as Record<number | string, any>
+        if (
+          rule.selectorText ===
+          (vuex.store.editorInfo.selectedCssRule?.selectorText as string)
+        ) {
+          style[before] = after
+        }
+        changedCSS += rule.cssText
+      }
       vuex.store.fileData.updateFileValue({
-        value: cssData.replace(before.replace(/(\s*)/g, ''), after),
+        value: changedCSS,
         type: 'css',
         index: css.fileId,
       })
+      // TODO 바뀔때마다 editor로드하기
     }
   }
 }

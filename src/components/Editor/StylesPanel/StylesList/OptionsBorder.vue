@@ -61,6 +61,7 @@ import { defineComponent, ref, reactive, watch } from '@vue/composition-api'
 import { Chrome } from 'vue-color'
 import { useVuex, useNextTick } from '@/modules/vue-hooks'
 import { VueColor } from '@/types/vue-color'
+import replaceCssRules from '@/modules/replace-css-rules'
 
 export default defineComponent({
   components: { ChromeColor: Chrome },
@@ -139,8 +140,11 @@ export default defineComponent({
     function submitBorderRadiusValue(e: MouseEvent) {
       const target = e.target as HTMLElement
       if (!vuex.editorInfo.selectedCssRule) return
+      const beforeStatement = `border-radius`
       vuex.editorInfo.selectedCssRule.style.borderRadius =
         (target as HTMLInputElement)?.value + radiusSelected.value
+      const afterStatement = `${vuex.editorInfo.selectedCssRule.style.borderRadius}`
+      replaceCssRules(beforeStatement, afterStatement)
     }
 
     const currentStyle = ref('')

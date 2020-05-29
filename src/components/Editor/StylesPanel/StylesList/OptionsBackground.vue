@@ -90,17 +90,17 @@ export default defineComponent({
         if (target instanceof HTMLElement) {
           if (target.className === 'color-none') {
             if (!vuex.editorInfo.selectedCssRule) return
-            beforeStatement = `background-color:${vuex.editorInfo.selectedCssRule.style.backgroundColor}`
+            beforeStatement = `background-color`
             vuex.editorInfo.selectedCssRule.style.backgroundColor =
               'transparent'
-            afterStatement = `background-color:${vuex.editorInfo.selectedCssRule.style.backgroundColor}`
+            afterStatement = `${vuex.editorInfo.selectedCssRule.style.backgroundColor}`
           } else {
             if (!vuex.editorInfo.selectedCssRule) return
-            beforeStatement = `background-color:${vuex.editorInfo.selectedCssRule.style.backgroundColor}`
+            beforeStatement = `background-color`
             vuex.editorInfo.selectedCssRule.style.backgroundColor = getComputedStyle(
               target
             ).backgroundColor
-            afterStatement = `background-color:${vuex.editorInfo.selectedCssRule.style.backgroundColor}`
+            afterStatement = `${vuex.editorInfo.selectedCssRule.style.backgroundColor}`
           }
           replaceCssRules(beforeStatement, afterStatement)
         }
@@ -116,9 +116,9 @@ export default defineComponent({
       if (vuex.styleData.target) {
         if (!vuex.editorInfo.selectedCssRule) return
         const rgba = color.rgba
-        const beforeStatement = `background-color:${vuex.editorInfo.selectedCssRule.style.backgroundColor}`
+        const beforeStatement = `background-color`
         vuex.editorInfo.selectedCssRule.style.backgroundColor = `rgb(${rgba.r}, ${rgba.g}, ${rgba.b})`
-        const afterStatement = `background-color:${vuex.editorInfo.selectedCssRule.style.backgroundColor}`
+        const afterStatement = `${vuex.editorInfo.selectedCssRule.style.backgroundColor}`
         replaceCssRules(beforeStatement, afterStatement)
       }
     }
