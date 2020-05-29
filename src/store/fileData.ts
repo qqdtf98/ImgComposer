@@ -82,14 +82,21 @@ export const actions = actionTree(
         commit('SET_FILE_LIST', newFileList)
       } else if (type === 'css') {
         const newFileList = [...state.fileList]
-        const newFileIndex = state.fileList.findIndex(
+        let newFileIndex = state.fileList.findIndex(
           (elem) => elem.fileId === index
         )
-        const newFile = { ...state.fileList[newFileIndex] }
+        let newFile = { ...state.fileList[newFileIndex] }
         newFile.data = value
-        console.log(newFile)
         newFileList.splice(newFileIndex, 1, newFile)
         commit('SET_FILE_LIST', newFileList)
+        const newCssList = [...state.cssFileList]
+        newFileIndex = state.cssFileList.findIndex(
+          (elem) => elem.fileId === index
+        )
+        newFile = { ...state.cssFileList[newFileIndex] }
+        newFile.data = value
+        newCssList.splice(newFileIndex, 1, newFile)
+        commit('SET_CSS_FILE_LIST', newCssList)
       }
     },
   }

@@ -116,7 +116,10 @@ export default defineComponent({
       if (vuex.styleData.target) {
         if (!vuex.editorInfo.selectedCssRule) return
         const rgba = color.rgba
-        vuex.editorInfo.selectedCssRule.style.backgroundColor = `rgba(${rgba.r}, ${rgba.g}, ${rgba.b}, ${rgba.a})`
+        const beforeStatement = `background-color:${vuex.editorInfo.selectedCssRule.style.backgroundColor}`
+        vuex.editorInfo.selectedCssRule.style.backgroundColor = `rgb(${rgba.r}, ${rgba.g}, ${rgba.b})`
+        const afterStatement = `background-color:${vuex.editorInfo.selectedCssRule.style.backgroundColor}`
+        replaceCssRules(beforeStatement, afterStatement)
       }
     }
 

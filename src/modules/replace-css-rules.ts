@@ -9,7 +9,7 @@ export default function replaceCssRules(before: string, after: string) {
       )
     ) {
       vuex.store.fileData.updateFileValue({
-        value: cssData.replace(before, after),
+        value: cssData.replace(before.replace(/(\s*)/g, ''), after),
         type: 'css',
         index: css.fileId,
       })
