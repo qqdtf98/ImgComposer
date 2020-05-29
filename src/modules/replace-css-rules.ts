@@ -13,15 +13,15 @@ export default function replaceCssRules(before: string, after: string) {
       const cssRules = parsedCss.cssRules as CSSStyleRule[]
       let changedCSS = ''
       for (const rule of cssRules) {
-        const style = rule.style as Record<number | string, any>
         if (
           rule.selectorText ===
           (vuex.store.editorInfo.selectedCssRule?.selectorText as string)
         ) {
-          style[before] = after
+          rule.style.setProperty(before, after)
         }
         changedCSS += rule.cssText
       }
+
       vuex.store.fileData.updateFileValue({
         value: changedCSS,
         type: 'css',

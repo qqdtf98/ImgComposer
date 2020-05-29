@@ -171,6 +171,7 @@ export default defineComponent({
           styles[style].state = true
           target.style.backgroundColor = 'blue'
           currentStyle.value = style
+          const beforeStatement = 'border'
           vuex.editorInfo.selectedCssRule.style.border =
             width.value +
             widthSelected.value +
@@ -178,6 +179,8 @@ export default defineComponent({
             style +
             ' ' +
             currentColor.value
+          const afterStatement = vuex.editorInfo.selectedCssRule.style.border
+          replaceCssRules(beforeStatement, afterStatement)
         }
       }
     }
@@ -193,6 +196,7 @@ export default defineComponent({
         ) as HTMLInputElement
         const rgba = color.rgba
 
+        const beforeStatement = 'border'
         vuex.editorInfo.selectedCssRule.style.border =
           width.value +
           widthSelected.value +
@@ -200,7 +204,10 @@ export default defineComponent({
           currentStyle.value +
           ' ' +
           `rgba(${rgba.r}, ${rgba.g}, ${rgba.b}, ${rgba.a})`
+
         currentColor.value = `rgba(${rgba.r}, ${rgba.g}, ${rgba.b}, ${rgba.a})`
+        const afterStatement = vuex.editorInfo.selectedCssRule.style.border
+        replaceCssRules(beforeStatement, afterStatement)
       }
     }
 
@@ -211,6 +218,7 @@ export default defineComponent({
         const width = document.querySelector(
           '.border-width-input-value'
         ) as HTMLInputElement
+        const beforeStatement = 'border'
         vuex.editorInfo.selectedCssRule.style.border =
           width.value +
           widthSelected.value +
@@ -218,6 +226,8 @@ export default defineComponent({
           currentStyle.value +
           ' ' +
           currentColor.value
+        const afterStatement = vuex.editorInfo.selectedCssRule.style.border
+        replaceCssRules(beforeStatement, afterStatement)
       }
     }
 

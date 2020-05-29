@@ -109,6 +109,7 @@
 <script lang="ts">
 import { defineComponent, watch, reactive, ref } from '@vue/composition-api'
 import { useVuex } from '@/modules/vue-hooks'
+import replaceCssRules from '@/modules/replace-css-rules'
 
 export default defineComponent({
   setup(props, ctx) {
@@ -126,11 +127,17 @@ export default defineComponent({
         ) as HTMLElement
 
         if (!vuex.editorInfo.selectedCssRule) return
+        let beforeStatement = 'width'
         vuex.editorInfo.selectedCssRule.style.width =
           (widthValue as HTMLInputElement)?.value + widthSelected.value
+        let afterStatement = vuex.editorInfo.selectedCssRule.style.width
+        replaceCssRules(beforeStatement, afterStatement)
 
+        beforeStatement = 'height'
         vuex.editorInfo.selectedCssRule.style.height =
           (heightValue as HTMLInputElement)?.value + heightSelected.value
+        afterStatement = vuex.editorInfo.selectedCssRule.style.height
+        replaceCssRules(beforeStatement, afterStatement)
       }
     }
 
@@ -179,11 +186,41 @@ export default defineComponent({
       if (!vuex.editorInfo.selectedCssRule) return
       const type = target.getAttribute('name')
       if (type) {
+        console.log(type)
+        let beforeStatement = ''
+        switch (type) {
+          case 'paddingLeft':
+            beforeStatement = 'padding-left'
+            break
+          case 'paddingRight':
+            beforeStatement = 'padding-right'
+            break
+          case 'paddingTop':
+            beforeStatement = 'padding-top'
+            break
+          case 'paddingBottom':
+            beforeStatement = 'padding-bottom'
+            break
+          case 'marginLeft':
+            beforeStatement = 'margin-left'
+            break
+          case 'marginRight':
+            beforeStatement = 'margin-right'
+            break
+          case 'marginTop':
+            beforeStatement = 'margin-top'
+            break
+          case 'marginBottom':
+            beforeStatement = 'margin-bottom'
+            break
+        }
         const styleRule = vuex.editorInfo.selectedCssRule.style as Record<
           string | number,
           any
         >
         styleRule[type] = (target as HTMLInputElement)?.value
+        const afterStatement = styleRule[type]
+        replaceCssRules(beforeStatement, afterStatement)
       }
     }
 
