@@ -61,6 +61,7 @@ import { defineComponent, ref, reactive, watch } from '@vue/composition-api'
 import { Chrome } from 'vue-color'
 import { useVuex, useNextTick } from '@/modules/vue-hooks'
 import { VueColor } from '@/types/vue-color'
+import replaceCssRules from '@/modules/replace-css-rules'
 
 export default defineComponent({
   components: { ChromeColor: Chrome },
@@ -139,8 +140,11 @@ export default defineComponent({
     function submitBorderRadiusValue(e: MouseEvent) {
       const target = e.target as HTMLElement
       if (!vuex.editorInfo.selectedCssRule) return
+      const beforeStatement = `border-radius`
       vuex.editorInfo.selectedCssRule.style.borderRadius =
         (target as HTMLInputElement)?.value + radiusSelected.value
+      const afterStatement = `${vuex.editorInfo.selectedCssRule.style.borderRadius}`
+      replaceCssRules(beforeStatement, afterStatement)
     }
 
     const currentStyle = ref('')
@@ -167,6 +171,7 @@ export default defineComponent({
           styles[style].state = true
           target.style.backgroundColor = 'blue'
           currentStyle.value = style
+          const beforeStatement = 'border'
           vuex.editorInfo.selectedCssRule.style.border =
             width.value +
             widthSelected.value +
@@ -174,6 +179,8 @@ export default defineComponent({
             style +
             ' ' +
             currentColor.value
+          const afterStatement = vuex.editorInfo.selectedCssRule.style.border
+          replaceCssRules(beforeStatement, afterStatement)
         }
       }
     }
@@ -189,6 +196,7 @@ export default defineComponent({
         ) as HTMLInputElement
         const rgba = color.rgba
 
+        const beforeStatement = 'border'
         vuex.editorInfo.selectedCssRule.style.border =
           width.value +
           widthSelected.value +
@@ -196,7 +204,10 @@ export default defineComponent({
           currentStyle.value +
           ' ' +
           `rgba(${rgba.r}, ${rgba.g}, ${rgba.b}, ${rgba.a})`
+
         currentColor.value = `rgba(${rgba.r}, ${rgba.g}, ${rgba.b}, ${rgba.a})`
+        const afterStatement = vuex.editorInfo.selectedCssRule.style.border
+        replaceCssRules(beforeStatement, afterStatement)
       }
     }
 
@@ -207,6 +218,7 @@ export default defineComponent({
         const width = document.querySelector(
           '.border-width-input-value'
         ) as HTMLInputElement
+        const beforeStatement = 'border'
         vuex.editorInfo.selectedCssRule.style.border =
           width.value +
           widthSelected.value +
@@ -214,6 +226,8 @@ export default defineComponent({
           currentStyle.value +
           ' ' +
           currentColor.value
+        const afterStatement = vuex.editorInfo.selectedCssRule.style.border
+        replaceCssRules(beforeStatement, afterStatement)
       }
     }
 

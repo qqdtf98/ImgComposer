@@ -59,7 +59,7 @@ export default defineComponent({
     const stylePanel = ref<HTMLElement>(null)
 
     const state = reactive({
-      collapsed: true, // Whether the panel is collapsed or not
+      collapsed: false, // Whether the panel is collapsed or not
     })
 
     // Collapse/uncollapse the styles panel

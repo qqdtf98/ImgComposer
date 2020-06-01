@@ -63,6 +63,9 @@ import { VueComponent } from '@/types/vue-component'
 import FileService from '../../../services/file-service'
 import { Slider } from 'vue-color'
 import fileService from '../../../services/file-service'
+import prettier from 'prettier/standalone'
+import parserHtml from 'prettier/parser-html'
+import parserPostCss from 'prettier/parser-postcss'
 
 export default defineComponent({
   components: { vueCustomScrollbar, FolderContext, FileContext },
@@ -70,7 +73,23 @@ export default defineComponent({
     const vuex = useVuex(ctx)
 
     function loadFile(e: MouseEvent, selectedFile: File) {
-      vuex.fileData.SET_SELECTED_FILE(selectedFile)
+      if (selectedFile.fileType === 'html') {
+        const formattedHtml = prettier.format(selectedFile.data, {
+          parser: 'html',
+          plugins: [parserHtml],
+        })
+        vuex.codeMirror.SET_HTML_SECTION_VALUE(formattedHtml)
+        vuex.codeMirror.SET_HTML_SECTION_INDEX(selectedFile.fileId)
+        vuex.fileData.SET_SELECTED_FILE(selectedFile)
+      } else if (selectedFile.fileType === 'css') {
+        const formattedCss = prettier.format(selectedFile.data, {
+          parser: 'css',
+          plugins: [parserPostCss],
+        })
+        vuex.codeMirror.SET_CSS_SECTION_VALUE(formattedCss)
+        vuex.codeMirror.SET_CSS_SECTION_INDEX(selectedFile.fileId)
+      }
+      vuex.openedFileIndex.storeFileIndex(selectedFile.fileId)
     }
 
     onMounted(() => {

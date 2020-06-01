@@ -1,18 +1,22 @@
-import { cssPair, dataType, File } from '@/interfaces/any-editor-file'
-import { reactive } from '@vue/composition-api'
+import { File, cssPair, dataType } from '@/interfaces/any-editor-file'
 import { actionTree, mutationTree } from 'nuxt-typed-vuex'
+
+import { reactive } from '@vue/composition-api'
 
 export const state: () => {
   fileList: File[]
   selectedFile: File | null
+  cssFileList: File[]
 } = () => ({
   fileList: [],
   selectedFile: null,
+  cssFileList: [],
 })
 
 export const mutations = mutationTree(state, {
   SET_FILE_LIST: (state, files: File[]) => (state.fileList = files),
   SET_SELECTED_FILE: (state, file: File) => (state.selectedFile = file),
+  SET_CSS_FILE_LIST: (state, files: File[]) => (state.cssFileList = files),
 })
 
 export const actions = actionTree(
@@ -46,6 +50,11 @@ export const actions = actionTree(
         }
         newFile.htmlCssPair = cssPairList
       }
+      if (file.file_type === 'css') {
+        const newCssList: File[] = [...state.cssFileList]
+        newCssList.push(newFile)
+        commit('SET_CSS_FILE_LIST', newCssList)
+      }
 
       newList.push(newFile)
       commit('SET_FILE_LIST', newList)
@@ -57,6 +66,38 @@ export const actions = actionTree(
       })
       if (idx > -1) newList.splice(idx, 1)
       commit('SET_FILE_LIST', newList)
+    },
+    updateFileValue({ commit, state }, { value, type, index }) {
+      if (type === 'html') {
+        const newSelectedFile = { ...state.selectedFile } as File
+        newSelectedFile.data = value
+        commit('SET_SELECTED_FILE', newSelectedFile)
+        const newFileList = [...state.fileList]
+        const newFileIndex = state.fileList.findIndex(
+          (elem) => elem.fileId === newSelectedFile.fileId
+        )
+        const newFile = { ...state.fileList[newFileIndex] }
+        newFile.data = value
+        newFileList.splice(newFileIndex, 1, newFile)
+        commit('SET_FILE_LIST', newFileList)
+      } else if (type === 'css') {
+        const newFileList = [...state.fileList]
+        let newFileIndex = state.fileList.findIndex(
+          (elem) => elem.fileId === index
+        )
+        let newFile = { ...state.fileList[newFileIndex] }
+        newFile.data = value
+        newFileList.splice(newFileIndex, 1, newFile)
+        commit('SET_FILE_LIST', newFileList)
+        const newCssList = [...state.cssFileList]
+        newFileIndex = state.cssFileList.findIndex(
+          (elem) => elem.fileId === index
+        )
+        newFile = { ...state.cssFileList[newFileIndex] }
+        newFile.data = value
+        newCssList.splice(newFileIndex, 1, newFile)
+        commit('SET_CSS_FILE_LIST', newCssList)
+      }
     },
   }
 )

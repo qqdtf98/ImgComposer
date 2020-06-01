@@ -5,6 +5,7 @@
     <Canvas />
     <StylesPanel />
     <StudioPanel />
+    <CodeEditor />
   </div>
 </template>
 
@@ -17,9 +18,10 @@ import StylesPanel from './StylesPanel/index.vue'
 import StudioPanel from './StudioPanel/index.vue'
 import { useVuex } from '@/modules/vue-hooks'
 import ProjectService from '@/services/project-service'
+import CodeEditor from './CodeEditor/index.vue'
 
 export default defineComponent({
-  components: { MenuBar, Canvas, Tabs, StylesPanel, StudioPanel },
+  components: { MenuBar, Canvas, Tabs, StylesPanel, StudioPanel, CodeEditor },
   props: {
     projectId: Number,
   },

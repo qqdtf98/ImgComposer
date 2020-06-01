@@ -1,6 +1,12 @@
 import { File, SampleType } from '@/interfaces/any-editor-file.ts'
-import axios from 'axios'
+
 import apiUrl from '../modules/api-url'
+import axios from 'axios'
+
+type updateType = {
+  file_seq: number
+  contents: string
+}
 
 class FileService {
   async deleteFile(seq: number) {
@@ -37,6 +43,12 @@ class FileService {
   //     },
   //   })
   // }
+
+  async updateFileContents(files: updateType[]) {
+    return await axios.post(apiUrl.file.update.url, {
+      files,
+    })
+  }
 }
 
 export default new FileService()

@@ -17,6 +17,7 @@ import { defineComponent, reactive, watch } from '@vue/composition-api'
 import 'vue-range-slider/dist/vue-range-slider.scss'
 // import RangeSlider from 'vue-range-slider'
 import { useVuex } from '@/modules/vue-hooks'
+import replaceCssRules from '@/modules/replace-css-rules'
 
 export default defineComponent({
   // components: { RangeSlider },
@@ -105,7 +106,6 @@ export default defineComponent({
           }
         } else {
           for (const slider in sliders) {
-            console.log(sliders[slider])
             if (
               sliders[slider] === 'contrast' ||
               sliders[slider] === 'saturate' ||
@@ -134,8 +134,14 @@ export default defineComponent({
           filterValue =
             filterValue + filters[i] + '(' + inputValue[i].value + ')' + ' '
         }
-        console.log(filterValue)
+        // TODO filter 제대로 작동안함
+        const beforeStatement = 'filter'
         vuex.editorInfo.selectedCssRule.style.filter = filterValue
+        console.log(filterValue)
+        const afterStatement = filterValue
+        console.log(beforeStatement)
+        console.log(afterStatement)
+        replaceCssRules(beforeStatement, afterStatement)
       }
     }
 

@@ -47,6 +47,7 @@ import { Chrome } from 'vue-color'
 import { useVuex, useNextTick } from '@/modules/vue-hooks'
 import { VueColor } from '@/types/vue-color'
 import _ from 'lodash'
+import replaceCssRules from '@/modules/replace-css-rules'
 
 export default defineComponent({
   components: { ChromeColor: Chrome },
@@ -84,17 +85,24 @@ export default defineComponent({
     function submitDefaultValue(e: MouseEvent) {
       const target = e.target
       if (vuex.styleData.target) {
+        let beforeStatement = ''
+        let afterStatement = ''
         if (target instanceof HTMLElement) {
           if (target.className === 'color-none') {
             if (!vuex.editorInfo.selectedCssRule) return
+            beforeStatement = `background-color`
             vuex.editorInfo.selectedCssRule.style.backgroundColor =
               'transparent'
+            afterStatement = `${vuex.editorInfo.selectedCssRule.style.backgroundColor}`
           } else {
             if (!vuex.editorInfo.selectedCssRule) return
+            beforeStatement = `background-color`
             vuex.editorInfo.selectedCssRule.style.backgroundColor = getComputedStyle(
               target
             ).backgroundColor
+            afterStatement = `${vuex.editorInfo.selectedCssRule.style.backgroundColor}`
           }
+          replaceCssRules(beforeStatement, afterStatement)
         }
       }
     }
@@ -108,7 +116,10 @@ export default defineComponent({
       if (vuex.styleData.target) {
         if (!vuex.editorInfo.selectedCssRule) return
         const rgba = color.rgba
-        vuex.editorInfo.selectedCssRule.style.backgroundColor = `rgba(${rgba.r}, ${rgba.g}, ${rgba.b}, ${rgba.a})`
+        const beforeStatement = `background-color`
+        vuex.editorInfo.selectedCssRule.style.backgroundColor = `rgb(${rgba.r}, ${rgba.g}, ${rgba.b})`
+        const afterStatement = `${vuex.editorInfo.selectedCssRule.style.backgroundColor}`
+        replaceCssRules(beforeStatement, afterStatement)
       }
     }
 
