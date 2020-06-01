@@ -14,6 +14,7 @@
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api'
 import { useVuex } from '@/modules/vue-hooks'
+import replaceCssRules from '@/modules/replace-css-rules'
 
 export default defineComponent({
   setup(props, ctx) {
@@ -24,7 +25,10 @@ export default defineComponent({
     function submitPositionValue(prop: string) {
       if (vuex.styleData.target) {
         if (!vuex.editorInfo.selectedCssRule) return
+        const beforeStatement = 'position'
         vuex.editorInfo.selectedCssRule.style.position = prop
+        const afterStatement = vuex.editorInfo.selectedCssRule.style.position
+        replaceCssRules(beforeStatement, afterStatement)
       }
     }
 
