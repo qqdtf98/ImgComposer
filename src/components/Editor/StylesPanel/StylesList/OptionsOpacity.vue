@@ -25,6 +25,7 @@
 import { defineComponent, reactive, watch, ref } from '@vue/composition-api'
 import { useVuex, useNextTick } from '@/modules/vue-hooks'
 import RangeSlider from 'vue-range-slider'
+import replaceCssRules from '@/modules/replace-css-rules'
 
 export default defineComponent({
   components: { RangeSlider },
@@ -82,7 +83,10 @@ export default defineComponent({
     function submitOpacityValue(value: string) {
       if (vuex.styleData.target) {
         if (!vuex.editorInfo.selectedCssRule) return
+        const beforeStatement = 'opacity'
         vuex.editorInfo.selectedCssRule.style.opacity = value
+        const afterStatement = vuex.editorInfo.selectedCssRule.style.opacity
+        replaceCssRules(beforeStatement, afterStatement)
       }
     }
 

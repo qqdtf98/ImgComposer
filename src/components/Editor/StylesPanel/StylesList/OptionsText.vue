@@ -101,6 +101,7 @@ import { defineComponent, reactive, ref, watch } from '@vue/composition-api'
 import { Chrome } from 'vue-color'
 import { useVuex, useNextTick } from '@/modules/vue-hooks'
 import { VueColor } from '@/types/vue-color'
+import replaceCssRules from '@/modules/replace-css-rules'
 
 export default defineComponent({
   components: { ChromeColor: Chrome },
@@ -169,6 +170,7 @@ export default defineComponent({
       if (vuex.styleData.target) {
         if (target instanceof HTMLElement) {
           if (!vuex.editorInfo.selectedCssRule) return
+          const beforeStatement = 'color'
           if (target.className === 'color-none') {
             vuex.editorInfo.selectedCssRule.style.color = 'transparent'
           } else {
@@ -176,6 +178,8 @@ export default defineComponent({
               target
             ).backgroundColor
           }
+          const afterStatement = vuex.editorInfo.selectedCssRule.style.color
+          replaceCssRules(beforeStatement, afterStatement)
         }
       }
     }
@@ -185,7 +189,9 @@ export default defineComponent({
       if (vuex.styleData.target) {
         if (!vuex.editorInfo.selectedCssRule) return
         const rgba = color.rgba
+        const beforeStatement = 'color'
         vuex.editorInfo.selectedCssRule.style.color = `rgba(${rgba.r}, ${rgba.g}, ${rgba.b}, ${rgba.a})`
+        const afterStatement = vuex.editorInfo.selectedCssRule.style.color
       }
     }
 
@@ -193,7 +199,10 @@ export default defineComponent({
     function submitWeightValue(e: MouseEvent, property: string) {
       if (vuex.styleData.target) {
         if (!vuex.editorInfo.selectedCssRule) return
+        const beforeStatement = 'font-weight'
         vuex.editorInfo.selectedCssRule.style.fontWeight = property.toLowerCase()
+        const afterStatement = vuex.editorInfo.selectedCssRule.style.fontWeight
+        replaceCssRules(beforeStatement, afterStatement)
       }
     }
 
@@ -204,8 +213,11 @@ export default defineComponent({
       if (vuex.styleData.target) {
         const target = e.target as HTMLElement
         if (!vuex.editorInfo.selectedCssRule) return
+        const beforeStatement = 'font-size'
         vuex.editorInfo.selectedCssRule.style.fontSize =
           (target as HTMLInputElement).value + sizeSelected.value
+        const afterStatement = vuex.editorInfo.selectedCssRule.style.fontSize
+        replaceCssRules(beforeStatement, afterStatement)
       }
     }
 
@@ -216,7 +228,10 @@ export default defineComponent({
         if (!vuex.editorInfo.selectedCssRule) return
         const name = target.getAttribute('name')
         if (name) {
+          const beforeStatement = 'text-align'
           vuex.editorInfo.selectedCssRule.style.textAlign = name
+          const afterStatement = vuex.editorInfo.selectedCssRule.style.textAlign
+          replaceCssRules(beforeStatement, afterStatement)
         }
       }
     }

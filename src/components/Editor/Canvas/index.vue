@@ -1,29 +1,32 @@
 <template>
   <div :id="canvasId" ref="canvas">
-    <!-- <div
-      ref="sampleRef"
-      style="border: 1px solid black; width: 500px; height: 500px;"
-    >
-      <img
-        id="preview"
-        src
-        width="700"
-        alt="로컬에 있는 이미지가 보여지는 영역"
-      />
-      <input id="getfile" type="file" accept="image/*" @change="inputChange" />
-    </div> -->
-
-    <!-- TODO: Remove -->
-    <button @click="exportComponent" v-show="btnState" class="export-btn">
+    <button v-show="btnState" class="export-btn" @click="exportComponent">
       Export as .vue
     </button>
 
     <iframe
+      id="main-iframe"
       ref="iframeRef"
       frameborder="0"
       :class="mergeClassNames(iframeClassName)"
     ></iframe>
-    <Context v-show="isContextActivate" class="canvas-context" />
+    <Context
+      v-show="isContextActivate"
+      class="canvas-context"
+      :selectState="selectState"
+      @open-selector="activateSelector"
+      @open-handler="activateHandler"
+    />
+    <CssFileSelector
+      v-show="isFileSelector"
+      :selectorType="selectorType"
+      :cssTarget="cssTarget"
+      @vacate-input="vacateInputField"
+    />
+    <ContextHandler
+      v-show="isSelectorHandler"
+      :selectorTarget="selectorTarget"
+    />
   </div>
 </template>
 
@@ -52,9 +55,11 @@ import FileSaver, { saveAs } from 'file-saver'
 import prettier from 'prettier/standalone'
 import parserHtml from 'prettier/parser-html'
 import parserPostCss from 'prettier/parser-postcss'
+import CssFileSelector from '@/components/Editor/Canvas/Context/CssFileSelector.vue'
+import ContextHandler from '@/components/Editor/Canvas/Context/ContextHandler.vue'
 
 export default defineComponent({
-  components: { Context },
+  components: { Context, CssFileSelector, ContextHandler },
   setup(props, ctx) {
     const vuex = useVuex(ctx)
 
@@ -66,8 +71,6 @@ export default defineComponent({
     })
     const iframeRef = ref() as Ref<HTMLIFrameElement>
     const isContextActivate = ref(false)
-
-    const sampleRef = ref() as Ref<HTMLElement>
 
     const btnState = ref(false)
     let cssRule: string
@@ -158,7 +161,6 @@ ${formattedCss}
         selector.style.top = initY + 'px'
         selector.style.width = '1px'
         selector.style.height = '1px'
-        // sampleRef.value.appendChild(selector)
         let moveEvent: (e: MouseEvent) => void
         let upEvent: (e: MouseEvent) => void
         window.addEventListener(
@@ -261,18 +263,55 @@ ${formattedCss}
       })
     })
 
-    function inputChange(event: Event) {
-      //   const file = document.querySelector('#getfile') as HTMLInputElement
-      //   const fileList = file?.files
-      //   const fileReader: FileReader = new FileReader()
-      //   if (!fileList) return
-      //   fileReader.readAsDataURL(fileList[0])
-      //   fileReader.onload = function () {
-      //     const preview = document.querySelector('#preview') as HTMLImageElement
-      //     preview.style.height = '200px'
-      //     preview.style.width = '200px'
-      //     preview.src = fileReader.result as string
-      //   }
+    const isFileSelector = ref(false)
+    const cssTarget = ref<HTMLInputElement>(null)
+    const selectorType = ref('')
+
+    function activateSelector(target: HTMLInputElement, type: string) {
+      cssTarget.value = target
+      selectorType.value = type
+      const targetRect: DOMRect = target.getBoundingClientRect()
+      const cssFileSelector = document.querySelector(
+        '#css-file-selector'
+      ) as HTMLDivElement
+
+      isFileSelector.value = true
+      setTimeout(() => {
+        if (!cssFileSelector) return
+        cssFileSelector.style.left = targetRect.left + targetRect.width + 'px'
+        cssFileSelector.style.top = targetRect.top + 'px'
+        targetRect.height + 'px'
+        targetRect.width + 'px'
+        targetRect
+      }, 0)
+    }
+
+    const selectState = ref(false)
+
+    function vacateInputField() {
+      isFileSelector.value = false
+      selectState.value = true
+      isContextActivate.value = false
+    }
+
+    const selectorTarget = ref<HTMLElement>(null)
+    const isSelectorHandler = ref(false)
+
+    function activateHandler(target: HTMLElement) {
+      const targetRect: DOMRect = target.getBoundingClientRect()
+      isSelectorHandler.value = true
+      selectorTarget.value = target
+      setTimeout(() => {
+        const selectHandler = document.getElementById(
+          'context-handler'
+        ) as HTMLElement
+        if (!selectHandler) return
+        selectHandler.style.left = targetRect.left + targetRect.width + 'px'
+        selectHandler.style.top = targetRect.top + 'px'
+        targetRect.height + 'px'
+        targetRect.width + 'px'
+        targetRect
+      }, 0)
     }
 
     return {
@@ -283,11 +322,18 @@ ${formattedCss}
       iframeRef,
       mergeClassNames,
       vuex,
-      sampleRef,
       isContextActivate,
-      inputChange,
       btnState,
       exportComponent,
+      activateSelector,
+      isFileSelector,
+      selectorType,
+      cssTarget,
+      vacateInputField,
+      selectState,
+      isSelectorHandler,
+      selectorTarget,
+      activateHandler,
     }
   },
 })

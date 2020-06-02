@@ -2,6 +2,7 @@ import { File, cssPair, dataType } from '@/interfaces/any-editor-file'
 import { actionTree, mutationTree } from 'nuxt-typed-vuex'
 
 import { reactive } from '@vue/composition-api'
+import { Vuex as vuex } from '@/modules/vuex'
 
 export const state: () => {
   fileList: File[]
@@ -98,6 +99,80 @@ export const actions = actionTree(
         newCssList.splice(newFileIndex, 1, newFile)
         commit('SET_CSS_FILE_LIST', newCssList)
       }
+    },
+    /**
+     *
+     * @param value file의 data부분에 변경할 내용
+     * @param title fileName
+     */
+    addFileValue({ commit, state }, { value, title }) {
+      // css file에 새로운 selector 추가
+      const newFileList = [...state.fileList]
+      let newFileIndex = state.fileList.findIndex(
+        (elem) => elem.fileName === title
+      )
+      let newFile = { ...state.fileList[newFileIndex] }
+      newFile.data = newFile.data + value
+      newFileList.splice(newFileIndex, 1, newFile)
+
+      // html file에 selector 추가된 코드 저장
+      newFileIndex = state.fileList.findIndex(
+        (elem) => elem.fileId === state.selectedFile?.fileId
+      )
+      newFile = { ...state.fileList[newFileIndex] }
+
+      const iframe = document.querySelector('#main-iframe') as HTMLIFrameElement
+      const iframeElem = iframe.contentDocument?.documentElement as HTMLElement
+
+      const markerPart = iframeElem.lastChild?.lastChild as HTMLElement
+      let iframeText = iframeElem.innerHTML.replace(markerPart.outerHTML, '')
+      const stylePart = iframeElem.getElementsByTagName('style')[0].innerHTML
+      iframeText = iframeText.replace(stylePart, '')
+
+      const selectorPart = iframeElem.querySelector(
+        '#any-editor-selector'
+      ) as HTMLElement
+      iframeText = iframeText.replace(selectorPart?.outerHTML, '')
+      newFile.data = iframeText
+      newFileList.splice(newFileIndex, 1, newFile)
+      commit('SET_FILE_LIST', newFileList)
+      commit('SET_SELECTED_FILE', newFile)
+      vuex.store.codeMirror.SET_HTML_SECTION_VALUE(newFile.data)
+
+      // css files에도 변경사항 반영
+      const newCssList = [...state.cssFileList]
+      newFileIndex = state.cssFileList.findIndex(
+        (elem) => elem.fileName === title
+      )
+      newFile = { ...state.cssFileList[newFileIndex] }
+      newFile.data = newFile.data + value
+      newCssList.splice(newFileIndex, 1, newFile)
+      commit('SET_CSS_FILE_LIST', newCssList)
+    },
+    removeFileValue({ commit, state }) {
+      // html file에 selector 추가된 코드 저장
+      const newFileIndex = state.fileList.findIndex(
+        (elem) => elem.fileId === state.selectedFile?.fileId
+      )
+      const newFile = { ...state.fileList[newFileIndex] }
+      const newFileList = [...state.fileList]
+
+      const iframe = document.querySelector('#main-iframe') as HTMLIFrameElement
+      const iframeElem = iframe.contentDocument?.documentElement as HTMLElement
+
+      const markerPart = iframeElem.lastChild?.lastChild as HTMLElement
+      let iframeText = iframeElem.innerHTML.replace(markerPart.outerHTML, '')
+      const stylePart = iframeElem.getElementsByTagName('style')[0].innerHTML
+      iframeText = iframeText.replace(stylePart, '')
+      const selectorPart = iframeElem.querySelector(
+        '#any-editor-selector'
+      ) as HTMLElement
+      iframeText = iframeText.replace(selectorPart?.outerHTML, '')
+      newFile.data = iframeText
+      newFileList.splice(newFileIndex, 1, newFile)
+      commit('SET_FILE_LIST', newFileList)
+      commit('SET_SELECTED_FILE', newFile)
+      vuex.store.codeMirror.SET_HTML_SECTION_VALUE(newFile.data)
     },
   }
 )

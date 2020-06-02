@@ -43,6 +43,7 @@ import { useVuex, useNextTick } from '@/modules/vue-hooks'
 import { Chrome } from 'vue-color'
 import RangeSlider from 'vue-range-slider'
 import { VueColor } from '@/types/vue-color'
+import replaceCssRules from '@/modules/replace-css-rules'
 
 export default defineComponent({
   components: { RangeSlider, ChromeColor: Chrome },
@@ -162,8 +163,11 @@ export default defineComponent({
         ) as HTMLInputElement
         const rgba = color.rgba
         currentColor.value = `rgba(${rgba.r}, ${rgba.g}, ${rgba.b}, ${rgba.a})`
+        const beforeStatement = 'box-shadow'
         vuex.editorInfo.selectedCssRule.style.boxShadow =
           currentBoxShadow.value + currentColor.value + currentStyle.value
+        const afterStatement = vuex.editorInfo.selectedCssRule.style.boxShadow
+        replaceCssRules(beforeStatement, afterStatement)
       }
     }
 
@@ -212,8 +216,12 @@ export default defineComponent({
             ' '
         }
         currentBoxShadow.value = boxShadowValue
+        const beforeStatement = 'box-shadow'
         vuex.editorInfo.selectedCssRule.style.boxShadow =
           boxShadowValue + currentColor.value + currentStyle.value
+        console.log(boxShadowValue + currentColor.value + currentStyle.value)
+        const afterStatement = vuex.editorInfo.selectedCssRule.style.boxShadow
+        replaceCssRules(beforeStatement, afterStatement)
       }
     }
 
