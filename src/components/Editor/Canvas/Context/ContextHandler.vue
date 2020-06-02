@@ -2,8 +2,8 @@
   <div id="context-handler">
     <div class="context-arrow"></div>
     <div class="context-handle">
-      <div @click="reviseSelectorName" class="handle-list-revise">수정</div>
-      <div @click="deleteSelector" class="handle-list-delete">삭제</div>
+      <div class="handle-list-revise" @click="reviseSelectorName">수정</div>
+      <div class="handle-list-delete" @click="deleteSelector">삭제</div>
     </div>
   </div>
 </template>
@@ -32,7 +32,7 @@ export default defineComponent({
       const selectorTarget = props.selectorTarget
       if (!selectorTarget) return
       const selectorText = selectorTarget.textContent as string
-      console.log(selectorText.trim())
+
       if (selectorText.includes('.')) {
         vuex.styleData.target?.classList.remove(
           selectorText.trim().replace('.', '')
@@ -73,7 +73,7 @@ export default defineComponent({
   .context-handle {
     display: flex;
     flex-direction: column;
-    background-color: rgba(58, 58, 60, 0.8);
+    background-color: rgba(58, 58, 60);
     border-radius: 0.5rem;
     position: absolute;
     right: 0;
@@ -85,6 +85,7 @@ export default defineComponent({
     .handle-list-delete {
       padding: 0.25rem 0.5rem;
       font-size: 0.85rem;
+      color: #4b79ff;
 
       &:hover {
         background-color: #000;
@@ -95,6 +96,7 @@ export default defineComponent({
     }
 
     .handle-list-delete {
+      color: #e85454;
       border-top: 1px solid black;
 
       &:hover {
