@@ -7,6 +7,7 @@
         :key="i"
         class="selector-list"
         @click="selectCssSelector($event, rule)"
+        @contextmenu="handleSelector"
       >
         {{ rule.selectorText }}
       </div>
@@ -102,15 +103,18 @@ export default defineComponent({
       () => {
         if (props.selectState) {
           if (!inputRef.value) return
-          console.log('cose')
           isInputField.value = false
           inputRef.value.value = ''
-          // vuex.editorInfo.SET_MATCHED_CSS_RULES(
-          //   getMatchedCssRules(vuex.styleData.target)
-          // )
         }
       }
     )
+
+    function handleSelector(e: MouseEvent) {
+      // 사용자가 선택하는 selector 이름
+      const target = e.target as HTMLElement
+
+      ctx.emit('open-handler', target)
+    }
 
     return {
       cssRules,
@@ -121,6 +125,7 @@ export default defineComponent({
       visibleInputField,
       inputRef,
       isInputField,
+      handleSelector,
     }
   },
 })

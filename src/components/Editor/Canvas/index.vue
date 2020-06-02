@@ -15,6 +15,7 @@
       class="canvas-context"
       :selectState="selectState"
       @open-selector="activateSelector"
+      @open-handler="activateHandler"
     />
     <CssFileSelector
       v-show="isFileSelector"
@@ -286,6 +287,26 @@ ${formattedCss}
       isFileSelector.value = false
       selectState.value = true
       isContextActivate.value = false
+    }
+
+    const selectorTarget = ref<HTMLElement>(null)
+    const isSelectorHandler = ref(false)
+
+    function activateHandler(target: HTMLElement) {
+      const targetRect: DOMRect = target.getBoundingClientRect()
+      isSelectorHandler.value = true
+      selectorTarget.value = target
+      setTimeout(() => {
+        const selectHandler = document.getElementById(
+          'context-handler'
+        ) as HTMLElement
+        if (!selectHandler) return
+        selectHandler.style.left = targetRect.left + targetRect.width + 'px'
+        selectHandler.style.top = targetRect.top + 'px'
+        targetRect.height + 'px'
+        targetRect.width + 'px'
+        targetRect
+      }, 0)
     }
 
     return {
