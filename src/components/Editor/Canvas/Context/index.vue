@@ -10,6 +10,23 @@
       >
         {{ rule.selectorText }}
       </div>
+      <input
+        v-show="isInputField"
+        ref="inputRef"
+        class="selector-list selector-input"
+        @keydown.enter="activateCssFileSelector"
+      />
+      <div
+        v-show="isAddBtn"
+        class="selector-list add-selector"
+        @click="selectType"
+      >
+        +
+      </div>
+      <div v-show="!isAddBtn" class="new-selector" @click="visibleInputField">
+        <div class="new-class">class</div>
+        <div class="new-id">id</div>
+      </div>
     </div>
   </div>
 </template>
@@ -18,8 +35,12 @@
 import { defineComponent, watch, ref } from '@vue/composition-api'
 import { useVuex } from '../../../../modules/vue-hooks'
 import { Cem } from '@/modules/custom-events-manager'
+import { getMatchedCssRules } from '@/modules/get-matched-css-rules'
 
 export default defineComponent({
+  props: {
+    selectState: Boolean,
+  },
   setup(props, ctx) {
     const vuex = useVuex(ctx)
     const cssRules = ref<CSSStyleRule[]>(null)
@@ -40,9 +61,66 @@ export default defineComponent({
       }, 0)
     }
 
+    const isAddBtn = ref(true)
+
+    function selectType(e: MouseEvent) {
+      const target = e.target as HTMLElement
+      isAddBtn.value = false
+    }
+
+    const selectorState = ref('')
+    const isInputField = ref(false)
+    const inputRef = ref<HTMLInputElement>(null)
+
+    function visibleInputField(e: MouseEvent) {
+      const target = e.target as HTMLElement
+      isInputField.value = true
+      if (target.textContent === 'id') {
+        selectorState.value = 'id'
+      } else if (target.textContent === 'class') {
+        selectorState.value = 'class'
+      }
+      inputRef.value?.focus()
+      isAddBtn.value = true
+    }
+
+    function activateCssFileSelector(e: InputEvent) {
+      const target = e.target as HTMLInputElement
+      const selectorTarget = vuex.styleData.target
+
+      ctx.emit('open-selector', target, selectorState.value)
+      if (!selectorTarget) return
+      if (selectorState.value === 'class') {
+        selectorTarget.classList.add(target.value)
+      } else if (selectorState.value === 'id') {
+        selectorTarget.id = target.value
+      }
+    }
+
+    watch(
+      () => props.selectState,
+      () => {
+        if (props.selectState) {
+          if (!inputRef.value) return
+          console.log('cose')
+          isInputField.value = false
+          inputRef.value.value = ''
+          // vuex.editorInfo.SET_MATCHED_CSS_RULES(
+          //   getMatchedCssRules(vuex.styleData.target)
+          // )
+        }
+      }
+    )
+
     return {
       cssRules,
       selectCssSelector,
+      selectType,
+      isAddBtn,
+      activateCssFileSelector,
+      visibleInputField,
+      inputRef,
+      isInputField,
     }
   },
 })
@@ -83,6 +161,42 @@ export default defineComponent({
         background-color: #000;
         cursor: pointer;
       }
+    }
+
+    .add-selector {
+      text-align: center;
+      color: #2fce2f;
+      font-size: 21px;
+      font-weight: bold;
+    }
+
+    .new-selector {
+      display: flex;
+      flex-direction: row;
+      padding: 0;
+      border-top: 1px solid black;
+      height: 32px;
+
+      .new-class,
+      .new-id {
+        width: 50%;
+        text-align: center;
+        padding: 5px 0;
+        color: #4ba2f3;
+
+        &:hover {
+          background-color: black;
+          cursor: pointer;
+        }
+      }
+      .new-class {
+        color: #9672d8;
+        border-right: 1px solid black;
+      }
+    }
+
+    .selector-input {
+      color: #b7dfb7;
     }
   }
 }
