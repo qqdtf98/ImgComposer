@@ -2,6 +2,7 @@ import { File, cssPair, dataType } from '@/interfaces/any-editor-file'
 import { actionTree, mutationTree } from 'nuxt-typed-vuex'
 
 import { reactive } from '@vue/composition-api'
+import { Vuex as vuex } from '@/modules/vuex'
 
 export const state: () => {
   fileList: File[]
@@ -98,6 +99,31 @@ export const actions = actionTree(
         newCssList.splice(newFileIndex, 1, newFile)
         commit('SET_CSS_FILE_LIST', newCssList)
       }
+    },
+    addFileValue({ commit, state }, { value, title }) {
+      const newFileList = [...state.fileList]
+      let newFileIndex = state.fileList.findIndex(
+        (elem) => elem.fileName === title
+      )
+      let newFile = { ...state.fileList[newFileIndex] }
+      newFile.data = newFile.data + value
+      newFileList.splice(newFileIndex, 1, newFile)
+
+      newFile = { ...state.fileList[vuex.store.codeMirror.htmlSectionIndex] }
+      const iframe = document.querySelector('#main-iframe') as HTMLIFrameElement
+      // newFile.data = iframe.
+      // TODO class나 id가 추가된 iframe의 innerHTML을 가지고와서 저장하기
+      // console.log(iframe.contentDocument?.documentElement.innerHTML)
+      commit('SET_FILE_LIST', newFileList)
+
+      const newCssList = [...state.cssFileList]
+      newFileIndex = state.cssFileList.findIndex(
+        (elem) => elem.fileName === title
+      )
+      newFile = { ...state.cssFileList[newFileIndex] }
+      newFile.data = newFile.data + value
+      newCssList.splice(newFileIndex, 1, newFile)
+      commit('SET_CSS_FILE_LIST', newCssList)
     },
   }
 )
