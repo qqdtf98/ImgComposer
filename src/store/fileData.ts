@@ -149,5 +149,30 @@ export const actions = actionTree(
       newCssList.splice(newFileIndex, 1, newFile)
       commit('SET_CSS_FILE_LIST', newCssList)
     },
+    removeFileValue({ commit, state }) {
+      // html file에 selector 추가된 코드 저장
+      const newFileIndex = state.fileList.findIndex(
+        (elem) => elem.fileId === state.selectedFile?.fileId
+      )
+      const newFile = { ...state.fileList[newFileIndex] }
+      const newFileList = [...state.fileList]
+
+      const iframe = document.querySelector('#main-iframe') as HTMLIFrameElement
+      const iframeElem = iframe.contentDocument?.documentElement as HTMLElement
+
+      const markerPart = iframeElem.lastChild?.lastChild as HTMLElement
+      let iframeText = iframeElem.innerHTML.replace(markerPart.outerHTML, '')
+      const stylePart = iframeElem.getElementsByTagName('style')[0].innerHTML
+      iframeText = iframeText.replace(stylePart, '')
+      const selectorPart = iframeElem.querySelector(
+        '#any-editor-selector'
+      ) as HTMLElement
+      iframeText = iframeText.replace(selectorPart?.outerHTML, '')
+      newFile.data = iframeText
+      newFileList.splice(newFileIndex, 1, newFile)
+      commit('SET_FILE_LIST', newFileList)
+      commit('SET_SELECTED_FILE', newFile)
+      vuex.store.codeMirror.SET_HTML_SECTION_VALUE(newFile.data)
+    },
   }
 )

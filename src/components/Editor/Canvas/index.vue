@@ -23,6 +23,10 @@
       :cssTarget="cssTarget"
       @vacate-input="vacateInputField"
     />
+    <ContextHandler
+      v-show="isSelectorHandler"
+      :selectorTarget="selectorTarget"
+    />
   </div>
 </template>
 
@@ -52,9 +56,10 @@ import prettier from 'prettier/standalone'
 import parserHtml from 'prettier/parser-html'
 import parserPostCss from 'prettier/parser-postcss'
 import CssFileSelector from '@/components/Editor/Canvas/Context/CssFileSelector.vue'
+import ContextHandler from '@/components/Editor/Canvas/Context/ContextHandler.vue'
 
 export default defineComponent({
-  components: { Context, CssFileSelector },
+  components: { Context, CssFileSelector, ContextHandler },
   setup(props, ctx) {
     const vuex = useVuex(ctx)
 
@@ -326,6 +331,9 @@ ${formattedCss}
       cssTarget,
       vacateInputField,
       selectState,
+      isSelectorHandler,
+      selectorTarget,
+      activateHandler,
     }
   },
 })

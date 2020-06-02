@@ -180,7 +180,7 @@ export default defineComponent({
       target = target.closest('.code-on-btn') as HTMLElement
       if (isCodeMirrorOn.value) {
         isCodeMirrorOn.value = false
-        target.style.bottom = '0'
+        target.style.top = window.innerHeight - 35 + 'px'
         const arrowImg = target.children[1] as HTMLElement
         arrowImg.style.transform = 'rotate(270deg)'
       } else {
@@ -191,7 +191,7 @@ export default defineComponent({
           codeRef.value.style.display = 'flex'
           const codeRefRect = codeRef.value.getBoundingClientRect()
           resizeRef.value.style.bottom = codeRefRect.height + 'px'
-          target.style.bottom = codeRefRect.height + 10 + 'px'
+          target.style.top = codeRefRect.height + 45 + 'px'
           const arrowImg = target.children[1] as HTMLElement
           arrowImg.style.transform = 'rotate(90deg)'
           htmlCodeMirror.setCursor(0, 0)
@@ -293,6 +293,7 @@ export default defineComponent({
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
     border-radius: 6.69879px 6.69879px 0px 0px;
     transform: translateX(-50%);
+    height: 35px;
     cursor: pointer;
 
     .code-arrow {
