@@ -21,7 +21,14 @@ import ProjectService from '@/services/project-service'
 import CodeEditor from './CodeEditor/index.vue'
 
 export default defineComponent({
-  components: { MenuBar, Canvas, Tabs, StylesPanel, StudioPanel, CodeEditor },
+  components: {
+    MenuBar,
+    Canvas,
+    Tabs,
+    StylesPanel,
+    StudioPanel,
+    CodeEditor,
+  },
   props: {
     projectId: Number,
   },
