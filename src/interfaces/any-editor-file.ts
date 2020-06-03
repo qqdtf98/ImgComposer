@@ -92,3 +92,14 @@ export interface NewData {
   index: number
   transfer: DataTransfer
 }
+
+export interface TemplateType {
+  category: {
+    category_seq: number
+    category_name: string
+  }
+  template_seq: number
+  template_name: string
+  html_code: string
+  css_code: string
+}
