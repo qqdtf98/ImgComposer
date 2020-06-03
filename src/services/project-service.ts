@@ -1,5 +1,5 @@
+import apiUrl from '@/modules/api-url'
 import axios from 'axios'
-import apiUrl from '../modules/api-url'
 
 class ProjectService {
   async getProjectList() {

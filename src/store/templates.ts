@@ -1,5 +1,6 @@
+import { actionTree, mutationTree } from 'nuxt-typed-vuex'
+
 import { TemplateType } from '@/interfaces/any-editor-file'
-import { mutationTree } from 'nuxt-typed-vuex'
 
 export const state: () => {
   basicTemplates: TemplateType[]
@@ -11,28 +12,7 @@ export const state: () => {
   insertTarget: HTMLElement | null
   insertTemplate: TemplateType | null
 } = () => ({
-  basicTemplates: [
-    {
-      category: {
-        category_seq: 1,
-        category_name: 'basic',
-      },
-      template_seq: 1,
-      template_name: 'button',
-      html_code: '<button class="sample-btn">button</button>',
-      css_code: '.sample-btn{ color: yellow; background-color:green;}',
-    },
-    {
-      category: {
-        category_seq: 1,
-        category_name: 'basic',
-      },
-      template_seq: 2,
-      template_name: 'paragraph',
-      html_code: '<p class="sample-para">paragraph</p>',
-      css_code: '.sample-para{ color: red; background-color:orange;}',
-    },
-  ],
+  basicTemplates: [],
   pageTemplates: [],
   customTemplates: [],
   selectCssFile: false,
@@ -57,3 +37,30 @@ export const mutations = mutationTree(state, {
   SET_INSERT_TEMPLATE: (state, template: TemplateType) =>
     (state.insertTemplate = template),
 })
+
+type AddTempType = {
+  template: TemplateType
+  type: string
+}
+
+export const actions = actionTree(
+  { state, mutations },
+  {
+    addTemplateData({ commit, state }, data: AddTempType) {
+      let newTemplates
+      if (data.type === 'basic') {
+        newTemplates = [...state.basicTemplates]
+        newTemplates.push(data.template)
+        commit('SET_BASIC_TEMPLATES', newTemplates)
+      } else if (data.type === 'custom') {
+        newTemplates = [...state.customTemplates]
+        newTemplates.push(data.template)
+        commit('SET_CUSTOM_TEMPLATES', newTemplates)
+      } else if (data.type === 'page') {
+        newTemplates = [...state.pageTemplates]
+        newTemplates.push(data.template)
+        commit('SET_PAGE_TEMPLATES', newTemplates)
+      }
+    },
+  }
+)
