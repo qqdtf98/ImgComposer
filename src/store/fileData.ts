@@ -174,5 +174,51 @@ export const actions = actionTree(
       commit('SET_SELECTED_FILE', newFile)
       vuex.store.codeMirror.SET_HTML_SECTION_VALUE(newFile.data)
     },
+    insertTemplateValue({ commit, state }, cssfileName: string) {
+      //  css file에 template css 코드 추가
+      const newCssList = [...state.cssFileList]
+      let newFileIndex = state.cssFileList.findIndex(
+        (elem) => elem.fileName === cssfileName
+      )
+      let newFile = { ...state.cssFileList[newFileIndex] }
+      newFile.data = newFile.data + vuex.store.templates.insertTemplate.css_code
+      newCssList.splice(newFileIndex, 1, newFile)
+      commit('SET_CSS_FILE_LIST', newCssList)
+
+      let newFileList = [...state.fileList]
+      newFileIndex = state.fileList.findIndex(
+        (elem) => elem.fileName === cssfileName
+      )
+      newFile = { ...state.fileList[newFileIndex] }
+      newFile.data = newFile.data + vuex.store.templates.insertTemplate.css_code
+      newFileList.splice(newFileIndex, 1, newFile)
+      commit('SET_FILE_LIST', newFileList)
+
+      // template이 추가된 iframe의 html 코드 저장
+
+      newFileList = [...state.fileList]
+      newFileIndex = state.fileList.findIndex(
+        (elem) => elem.fileId === state.selectedFile?.fileId
+      )
+      newFile = { ...state.fileList[newFileIndex] }
+
+      const iframe = document.querySelector('#main-iframe') as HTMLIFrameElement
+      const iframeElem = iframe.contentDocument?.documentElement as HTMLElement
+
+      const markerPart = iframeElem.lastChild?.lastChild as HTMLElement
+      let iframeText = iframeElem.innerHTML.replace(markerPart.outerHTML, '')
+      const stylePart = iframeElem.getElementsByTagName('style')[0].innerHTML
+      iframeText = iframeText.replace(stylePart, '')
+
+      const selectorPart = iframeElem.querySelector(
+        '#any-editor-selector'
+      ) as HTMLElement
+      iframeText = iframeText.replace(selectorPart?.outerHTML, '')
+      newFile.data = iframeText
+      newFileList.splice(newFileIndex, 1, newFile)
+      commit('SET_FILE_LIST', newFileList)
+      commit('SET_SELECTED_FILE', newFile)
+      vuex.store.codeMirror.SET_HTML_SECTION_VALUE(newFile.data)
+    },
   }
 )
