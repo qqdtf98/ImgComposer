@@ -225,7 +225,7 @@ ${formattedCss}
 
       const selector = new Selector(iframe)
 
-      // marker를 생성했을 때 context actuvate
+      // marker를 생성했을 때 context activate
       Cem.addEventListener(
         'onmarkerschange',
         canvas.value as HTMLElement,
