@@ -35,13 +35,13 @@ export default defineComponent({
           value: '.' + props.cssTarget.value + '{}',
           title: target.textContent?.trim(),
         }
-        vuex.fileData.addFileValue(addValue)
+        vuex.fileData.addSelectorValue(addValue)
       } else if (props.selectorType === 'id') {
         const addValue = {
           value: '#' + props.cssTarget.value + '{}',
           title: target.textContent?.trim(),
         }
-        vuex.fileData.addFileValue(addValue)
+        vuex.fileData.addSelectorValue(addValue)
       }
       ctx.emit('vacate-input')
     }

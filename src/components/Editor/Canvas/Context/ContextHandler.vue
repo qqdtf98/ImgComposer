@@ -42,7 +42,7 @@ export default defineComponent({
         vuex.styleData.target.id = ''
       }
 
-      vuex.fileData.removeFileValue()
+      vuex.fileData.removeSelectorValue()
     }
 
     return {

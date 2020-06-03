@@ -105,7 +105,7 @@ export const actions = actionTree(
      * @param value file의 data부분에 변경할 내용
      * @param title fileName
      */
-    addFileValue({ commit, state }, { value, title }) {
+    addSelectorValue({ commit, state }, { value, title }) {
       // css file에 새로운 selector 추가
       const newFileList = [...state.fileList]
       let newFileIndex = state.fileList.findIndex(
@@ -149,7 +149,7 @@ export const actions = actionTree(
       newCssList.splice(newFileIndex, 1, newFile)
       commit('SET_CSS_FILE_LIST', newCssList)
     },
-    removeFileValue({ commit, state }) {
+    removeSelectorValue({ commit, state }) {
       // html file에 selector 추가된 코드 저장
       const newFileIndex = state.fileList.findIndex(
         (elem) => elem.fileId === state.selectedFile?.fileId
