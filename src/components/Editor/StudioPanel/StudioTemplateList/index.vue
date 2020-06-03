@@ -1,5 +1,5 @@
 <template>
-  <div id="template-options">
+  <div id="template-options" class="template-category">
     <div
       v-for="(temp, i) in templates"
       :key="i"
@@ -13,8 +13,8 @@
       <div class="nested active">
         <BasicTemplates v-if="temp === 'Basic Templates'" class="template" />
         <PageTemplates v-if="temp === 'Page Templates'" class="template" />
-        <SampleTemplate v-if="temp === 'Custom Templates'" class="template" />
-        <!-- <CustomTemplates v-if="temp === 'Custom Templates'" class="template" /> -->
+        <!-- <SampleTemplate v-if="temp === 'Custom Templates'" class="template" /> -->
+        <CustomTemplates v-if="temp === 'Custom Templates'" class="template" />
       </div>
     </div>
   </div>
@@ -85,7 +85,7 @@ export default defineComponent({
 <style lang="scss">
 @use '@/assets/styles/package' as *;
 
-#template-options {
+.template-category {
   .template-list-box {
     text-align: left;
     border-bottom: 1px solid #000000;
