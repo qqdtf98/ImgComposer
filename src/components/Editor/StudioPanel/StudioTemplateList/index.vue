@@ -1,5 +1,5 @@
 <template>
-  <div id="template-options">
+  <div id="template-options" class="template-category">
     <div
       v-for="(temp, i) in templates"
       :key="i"
@@ -13,6 +13,7 @@
       <div class="nested active">
         <BasicTemplates v-if="temp === 'Basic Templates'" class="template" />
         <PageTemplates v-if="temp === 'Page Templates'" class="template" />
+        <CustomTemplates v-if="temp === 'Custom Templates'" class="template" />
       </div>
     </div>
   </div>
@@ -22,11 +23,20 @@
 import { defineComponent, onMounted } from '@vue/composition-api'
 import BasicTemplates from './BasicTemplates.vue'
 import PageTemplates from './PageTemplates.vue'
+import CustomTemplates from './CustomTemplates.vue'
 
 export default defineComponent({
-  components: { BasicTemplates, PageTemplates },
+  components: {
+    BasicTemplates,
+    PageTemplates,
+    CustomTemplates,
+  },
   setup() {
-    const templates: string[] = ['Basic Templates', 'Page Templates']
+    const templates: string[] = [
+      'Basic Templates',
+      'Page Templates',
+      'Custom Templates',
+    ]
 
     onMounted(() => {
       const toggler = document.getElementsByClassName('template-list')
@@ -72,7 +82,7 @@ export default defineComponent({
 <style lang="scss">
 @use '@/assets/styles/package' as *;
 
-#template-options {
+.template-category {
   .template-list-box {
     text-align: left;
     border-bottom: 1px solid #000000;

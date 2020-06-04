@@ -33,6 +33,7 @@ export default defineComponent({
     const keyRef = ref<HTMLInputElement>(null)
     const valueRef = ref<HTMLInputElement>(null)
 
+    // query, params의 key,value 저장
     onMounted(() => {
       if (!keyRef.value) return
       keyRef.value.addEventListener('blur', () => {

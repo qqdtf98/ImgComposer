@@ -108,6 +108,9 @@ export default defineComponent({
     const gridRef = ref<HTMLElement>(null)
     const imgRef = ref<HTMLElement[]>([])
 
+    /**
+     * page 이미지 리스트를 확장시켜 grid 형식으로 나열시키는 함수
+     */
     function expandPages() {
       if (!pagesRef.value) return
       if (!gridRef.value) return
@@ -144,6 +147,9 @@ export default defineComponent({
       }
     }
 
+    /**
+     * drag&drop을 사용하여 page 순서 이동
+     */
     function movePage(e: MouseEvent, index: number) {
       e.preventDefault()
       const target = e.target as HTMLElement
@@ -175,6 +181,9 @@ export default defineComponent({
       )
     }
 
+    /**
+     * 해당 페이지의 데이터를 로드
+     */
     function openPage(e: MouseEvent, img: string) {
       const target = e.target as HTMLElement
       const preview = document.querySelector('#preview') as HTMLImageElement

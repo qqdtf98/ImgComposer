@@ -61,4 +61,22 @@ export default {
       url: `${host}/file/deleteHtmlJsPair`,
     },
   },
+  template: {
+    list: {
+      method: 'get',
+      url: `${host}/template/selectTemplate`,
+    },
+    create: {
+      method: 'post',
+      url: `${host}/template/createTemplate`,
+    },
+    update: {
+      method: 'post',
+      url: `${host}/template/updateTemplate`,
+    },
+    delete: {
+      method: 'post',
+      url: `${host}/template/deleteTemplate`,
+    },
+  },
 }

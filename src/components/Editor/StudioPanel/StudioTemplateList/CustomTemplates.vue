@@ -1,7 +1,7 @@
 <template>
   <div id="basic-template">
     <TemplateCompo
-      v-for="(template, i) in vuex.templates.pageTemplates"
+      v-for="(template, i) in vuex.templates.customTemplates"
       :key="i"
       :template="template"
     />

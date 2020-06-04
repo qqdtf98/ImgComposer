@@ -35,10 +35,12 @@ export default defineComponent({
       if (!props.item) return
       const target = e.target as HTMLElement
       if (props.item.children.length !== 0) {
+        // 폴더를 클릭했을 때 해당 폴더로 이동
         console.log(props.item)
         vuex.folderDirectory.SET_CURRENT_LIST(props.item.children)
         ctx.emit('dir-name', props.item.name)
       } else {
+        // 파일을 클릭했을 때 해당 파일 로드
         const folderPath = document.querySelectorAll(
           '.folder-path'
         ) as NodeListOf<HTMLElement>

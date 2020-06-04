@@ -1,13 +1,19 @@
 <template>
-  <div id="css-file-selector">
-    <div class="context-arrow"></div>
+  <div
+    v-show="vuex.templates.selectCssFile"
+    id="css-selector"
+    :style="{
+      left: vuex.templates.selectorPosX + 'px',
+      top: vuex.templates.selectorPosY + 'px',
+    }"
+  >
     <div class="css-file-list">
       <div class="css-file-title">CSS Files</div>
       <div
         v-for="(css, i) in vuex.fileData.cssFileList"
         :key="i"
         class="css-file-text"
-        @click="storeCssSelector"
+        @click="insertTemplate"
       >
         {{ css.fileName }}
       </div>
@@ -17,62 +23,48 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api'
-import { useVuex } from '../../../../modules/vue-hooks'
+import { useVuex } from '@/modules/vue-hooks'
 
 export default defineComponent({
-  props: {
-    cssTarget: HTMLInputElement,
-    selectorType: String,
-  },
   setup(props, ctx) {
     const vuex = useVuex(ctx)
 
     /**
-     * 선택한 css file에 selector 코드 추가
+     * @param e select css fileName
      */
-    function storeCssSelector(e: MouseEvent) {
-      if (!props.cssTarget) return
-      const target = e.target as HTMLElement
-      if (props.selectorType === 'class') {
-        const addValue = {
-          value: '.' + props.cssTarget.value + '{}',
-          title: target.textContent?.trim(),
-        }
-        vuex.fileData.addSelectorValue(addValue)
-      } else if (props.selectorType === 'id') {
-        const addValue = {
-          value: '#' + props.cssTarget.value + '{}',
-          title: target.textContent?.trim(),
-        }
-        vuex.fileData.addSelectorValue(addValue)
-      }
-      ctx.emit('vacate-input')
+    function insertTemplate(e: MouseEvent) {
+      const target = vuex.templates.insertTarget
+      const template = vuex.templates.insertTemplate
+
+      // html에 해당 element 삽입
+      const newTemplate = document.createElement('div')
+      newTemplate.innerHTML = template.html_code
+      target.parentElement?.insertBefore(
+        newTemplate.children[0],
+        target.nextSibling
+      )
+
+      // iframe의 html 코드 data에 저장
+      const evtTarget = e.target as HTMLElement
+      vuex.fileData.insertTemplateValue(evtTarget.textContent?.trim())
+
+      vuex.templates.SET_SELECT_CSS_FILE(false)
     }
 
     return {
       vuex,
-      storeCssSelector,
+      insertTemplate,
     }
   },
 })
 </script>
 
 <style lang="scss">
-#css-file-selector {
+#css-selector {
   position: fixed;
   display: flex;
   flex-direction: row;
   width: 137px;
-
-  .context-arrow {
-    background-color: rgba(58, 58, 60, 0.8);
-    width: 0.8rem;
-    height: 0.8rem;
-    transform: rotate(45deg);
-    position: absolute;
-    top: 10px;
-    // right: 0.5rem;
-  }
 
   .css-file-list {
     display: flex;

@@ -1,7 +1,7 @@
 <template>
   <img
-    ref="pageFoldRef"
     v-show="vuex.identifier.fileState"
+    ref="pageFoldRef"
     class="fold-img"
     src="@/assets/images/rightarrow.svg"
     @click="expandSidePanel"
@@ -24,7 +24,9 @@ export default defineComponent({
       const sidePanel = document.querySelector('.side-panel') as HTMLElement
       const viewHide = document.querySelector('.view-hide') as HTMLElement
       const imgLoad = document.querySelector('.img-load-box') as HTMLElement
+
       if (pageFoldState.value) {
+        // sidepanel 접기
         pageFoldState.value = false
         imgLoad.style.display = 'block'
         sidePanel.style.width = '300px'
@@ -36,6 +38,7 @@ export default defineComponent({
         }
         sidePanel.children[0].classList.remove('transfer-expand')
       } else {
+        // sidepanel 열기
         pageFoldState.value = true
         imgLoad.style.display = 'none'
         sidePanel.style.width = '100%'

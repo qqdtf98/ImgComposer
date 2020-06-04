@@ -112,7 +112,9 @@ export default defineComponent({
 
     /**
      *  전달할 data를 input 상자를 통해 입력받음
+     *
      * vuex의 dataTransfer에 type에 따라 저장
+     *
      * endCompo는 배열의 형태로 저장되어있음
      */
     function storeInputValue(e: InputEvent) {
@@ -154,6 +156,7 @@ export default defineComponent({
 
     /**
      * global Event에서 endCompo를 추가
+     *
      * endCompo는 배열의 형태로 저장되어있음
      */
     function addEndCompo(e: MouseEvent) {

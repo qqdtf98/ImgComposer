@@ -184,6 +184,9 @@ export default defineComponent({
 
     const componentData: CompoData = []
 
+    /**
+     * component의 이름을 입력하기 전 identifier를 그리기 위해  vuex에 임의의 값 저장
+     */
     function addData(data: string) {
       isDataSelect.value = !isDataSelect.value
       componentData.push({
@@ -217,6 +220,9 @@ export default defineComponent({
 
     let timeValue: number
 
+    /**
+     * input value의 길이에 따라 input field resize
+     */
     function resizeInputField(e: InputEvent) {
       const target = e.target as HTMLInputElement
       const hide = document.querySelector('#hide') as HTMLElement

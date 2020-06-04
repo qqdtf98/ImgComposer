@@ -30,12 +30,15 @@
 import { onMounted, reactive, defineComponent } from '@vue/composition-api'
 import Spinner from '@/components/global/Spinner.vue'
 import ProjectServcie from '@/services/project-service'
+import { AxiosRequestConfig, AxiosResponse } from 'axios'
+import { useVuex } from '../../modules/vue-hooks'
 
 export default defineComponent({
   components: { Spinner },
   // setup(props, { root: { $router: router } }) {
   setup(...args) {
     const router = args[1].root.$router
+    const vuex = useVuex(args[1])
 
     type Title = {
       seq: number

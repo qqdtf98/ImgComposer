@@ -76,12 +76,18 @@ export default defineComponent({
     let cssRule: string
     let htmlElem: string
 
+    // 사용자가 element를 선택하면 getMatchedCssRules()를 사용하여 해당 element의 css rule 가져옴
     watch(
       () => vuex.styleData.target,
       () => {
         const target = vuex.styleData.target as HTMLElement
         htmlElem = target?.outerHTML
 
+        /**
+         * 사용자가 선택한 htmlelement를 vue 파일로 추출하기 위해
+         * 해당 html element부터 최하단 자식까지 적용되어 있는 css text를 추출해냄.
+         * @param elm css rule을 추출할 target
+         */
         function getCss(elm: HTMLElement | Element) {
           let css: CSSStyleDeclaration[] = []
 
@@ -111,6 +117,9 @@ export default defineComponent({
       }
     )
 
+    /**
+     * prettier를 사용하여 html, css 코드를 formatting한 후 vue 파일로 export
+     */
     function exportComponent() {
       const formattedHtml = prettier
         .format(htmlElem, {
@@ -151,39 +160,40 @@ ${formattedCss}
       // Load html
 
       // img 위에 selector 표시 샘플
-      window.addEventListener('mousedown', (e: MouseEvent) => {
-        const selector = document.createElement('div')
-        selector.style.border = '2px solid white'
-        selector.style.position = 'fixed'
-        const initX = e.clientX
-        const initY = e.clientY
-        selector.style.left = initX + 'px'
-        selector.style.top = initY + 'px'
-        selector.style.width = '1px'
-        selector.style.height = '1px'
-        let moveEvent: (e: MouseEvent) => void
-        let upEvent: (e: MouseEvent) => void
-        window.addEventListener(
-          'mousemove',
-          (moveEvent = (evt: MouseEvent) => {
-            const deltaX = evt.clientX - initX
-            const deltaY = evt.clientY - initY
+      // window.addEventListener('mousedown', (e: MouseEvent) => {
+      //   const selector = document.createElement('div')
+      //   selector.style.border = '2px solid white'
+      //   selector.style.position = 'fixed'
+      //   const initX = e.clientX
+      //   const initY = e.clientY
+      //   selector.style.left = initX + 'px'
+      //   selector.style.top = initY + 'px'
+      //   selector.style.width = '1px'
+      //   selector.style.height = '1px'
+      //   let moveEvent: (e: MouseEvent) => void
+      //   let upEvent: (e: MouseEvent) => void
+      //   window.addEventListener(
+      //     'mousemove',
+      //     (moveEvent = (evt: MouseEvent) => {
+      //       const deltaX = evt.clientX - initX
+      //       const deltaY = evt.clientY - initY
 
-            selector.style.left = initX + (deltaX < 0 ? deltaX : 0) + 'px'
-            selector.style.width = Math.abs(deltaX) + 'px'
-            selector.style.top = initY + (deltaY < 0 ? deltaY : 0) + 'px'
-            selector.style.height = Math.abs(deltaY) + 'px'
-          })
-        )
-        window.addEventListener(
-          'mouseup',
-          (upEvent = () => {
-            window.removeEventListener('mousemove', moveEvent)
-            window.removeEventListener('mouseup', upEvent)
-          })
-        )
-      })
+      //       selector.style.left = initX + (deltaX < 0 ? deltaX : 0) + 'px'
+      //       selector.style.width = Math.abs(deltaX) + 'px'
+      //       selector.style.top = initY + (deltaY < 0 ? deltaY : 0) + 'px'
+      //       selector.style.height = Math.abs(deltaY) + 'px'
+      //     })
+      //   )
+      //   window.addEventListener(
+      //     'mouseup',
+      //     (upEvent = () => {
+      //       window.removeEventListener('mousemove', moveEvent)
+      //       window.removeEventListener('mouseup', upEvent)
+      //     })
+      //   )
+      // })
 
+      // fileList가 수정될 때마다 selectedFile을 사용하여 iframe reload
       watch(
         () => vuex.fileData.fileList,
         () => {
@@ -200,6 +210,7 @@ ${formattedCss}
 
             if (!selectedFile.htmlCssPair) return
 
+            // html-css pair 정보를 사용하여 css text를 가져온 후 style 태그에 담아 iframe에 로드
             let i
             for (i = 0; i < selectedFile.htmlCssPair.length; i++) {
               let j
@@ -225,7 +236,7 @@ ${formattedCss}
 
       const selector = new Selector(iframe)
 
-      // marker를 생성했을 때 context actuvate
+      // marker를 생성했을 때 context activate
       Cem.addEventListener(
         'onmarkerschange',
         canvas.value as HTMLElement,
@@ -267,6 +278,11 @@ ${formattedCss}
     const cssTarget = ref<HTMLInputElement>(null)
     const selectorType = ref('')
 
+    /**
+     * css file selector
+     * @param target user가 입력한 selector의 이름
+     * @param type class인지 id인지
+     */
     function activateSelector(target: HTMLInputElement, type: string) {
       cssTarget.value = target
       selectorType.value = type
@@ -297,6 +313,10 @@ ${formattedCss}
     const selectorTarget = ref<HTMLElement>(null)
     const isSelectorHandler = ref(false)
 
+    /**
+     * selector 수정/삭제 context
+     * @param target target selector
+     */
     function activateHandler(target: HTMLElement) {
       const targetRect: DOMRect = target.getBoundingClientRect()
       isSelectorHandler.value = true

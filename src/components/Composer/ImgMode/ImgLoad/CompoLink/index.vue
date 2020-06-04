@@ -55,6 +55,9 @@ import { Cem } from '@/modules/custom-events-manager'
 export default defineComponent({
   components: { CompoValue, vueCustomScrollbar },
   setup() {
+    /**
+     * page 이동 시 전달할 데이터 저장
+     */
     type dataType = {
       key: string
       value: string
@@ -91,6 +94,7 @@ export default defineComponent({
 
     const linkRef = ref<HTMLInputElement>(null)
 
+    // Done 버튼
     function submitCompoLink() {
       if (!linkRef.value) return
       if (!linkRef.value.value) return

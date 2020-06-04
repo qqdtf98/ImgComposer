@@ -85,6 +85,10 @@ export default defineComponent({
       isAddBtn.value = true
     }
 
+    /**
+     * selector 코드를 추가할 css file 선택
+     * .class{} 형태로 삽입
+     */
     function activateCssFileSelector(e: InputEvent) {
       const target = e.target as HTMLInputElement
       const selectorTarget = vuex.styleData.target
