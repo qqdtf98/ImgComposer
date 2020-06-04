@@ -23,6 +23,9 @@ import ProjectService from '@/services/project-service'
 import CodeEditor from './CodeEditor/index.vue'
 import CssFileSelector from '@/components/Editor/StudioPanel/StudioTemplateList/CssFileSelector.vue'
 import TemplateHandler from '@/components/Editor/StudioPanel/StudioTemplateList/TemplateHandler.vue'
+import { TemplateType } from '../../interfaces/any-editor-file'
+import TemplateService from '@/services/template-service'
+import { AxiosRequestConfig, AxiosResponse } from 'axios'
 
 export default defineComponent({
   components: {
@@ -48,7 +51,7 @@ export default defineComponent({
         return
       }
 
-      // projectId로 data받아와서 vuex에 저장
+      // projectId로 data 받아와서 vuex에 저장
       const res = await ProjectService.getProjectData(projectId)
       if (res.data.responseCode === 'SUCCESS') {
         const folders = res.data.data.folders
@@ -58,6 +61,19 @@ export default defineComponent({
           }
         }
       }
+
+      // 페이지가 로드될 때 template 데이터를 받아와서 vuex에 저장
+      TemplateService.getTemplateList().then((res: AxiosResponse) => {
+        if (res.data.responseCode === 'SUCCESS') {
+          const templateList = res.data.data as TemplateType[]
+          for (const temp of templateList) {
+            vuex.templates.addTemplateData({
+              template: temp,
+              type: temp.category.category_name,
+            })
+          }
+        }
+      })
     })
     return {}
   },

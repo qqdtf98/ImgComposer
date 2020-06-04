@@ -30,10 +30,8 @@
 import { onMounted, reactive, defineComponent } from '@vue/composition-api'
 import Spinner from '@/components/global/Spinner.vue'
 import ProjectServcie from '@/services/project-service'
-import TemplateService from '@/services/template-service'
 import { AxiosRequestConfig, AxiosResponse } from 'axios'
 import { useVuex } from '../../modules/vue-hooks'
-import { TemplateType } from '../../interfaces/any-editor-file'
 
 export default defineComponent({
   components: { Spinner },
@@ -78,18 +76,6 @@ export default defineComponent({
               title: res.data.data[i].project_name,
             }
             state.projects.push(title)
-          }
-        }
-      })
-
-      TemplateService.getTemplateList().then((res: AxiosResponse) => {
-        if (res.data.responseCode === 'SUCCESS') {
-          const templateList = res.data.data as TemplateType[]
-          for (const temp of templateList) {
-            vuex.templates.addTemplateData({
-              template: temp,
-              type: temp.category.category_name,
-            })
           }
         }
       })
