@@ -8,7 +8,7 @@
     }"
   >
     <div class="context-handle">
-      <div class="handle-list-revise">수정</div>
+      <div class="handle-list-revise" @click="activateTemplateEditor">수정</div>
       <div class="handle-list-delete" @click="deleteTemplate">삭제</div>
     </div>
   </div>
@@ -24,8 +24,12 @@ export default defineComponent({
   setup(props, ctx) {
     const vuex = useVuex(ctx)
 
+    function activateTemplateEditor() {
+      vuex.templates.SET_HANDLE_TEMPLATE_STATE(false)
+      vuex.templates.SET_EDIT_TEMPLATE_STATE(true)
+    }
+
     function deleteTemplate() {
-      console.log(vuex.templates.handleTemplate)
       const target = vuex.templates.handleTemplate as TemplateType
 
       TemplateService.deleteTemplate([
@@ -33,7 +37,6 @@ export default defineComponent({
           template_seq: target.template_seq,
         },
       ]).then((res) => {
-        console.log(res)
         if (res.data.responseCode === 'SUCCESS') {
           vuex.templates.deleteTemplateData(target.template_seq)
           vuex.templates.SET_HANDLE_TEMPLATE_STATE(false)
@@ -43,6 +46,7 @@ export default defineComponent({
 
     return {
       vuex,
+      activateTemplateEditor,
       deleteTemplate,
     }
   },

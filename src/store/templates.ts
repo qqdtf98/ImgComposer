@@ -11,6 +11,7 @@ export const state: () => {
   insertTarget: HTMLElement | null
   insertTemplate: TemplateType | null
   handleTemplateState: boolean
+  editTemplateState: boolean
   handleTemplate: TemplateType | null
   handlerPosX: number
   handlerPosY: number
@@ -24,6 +25,7 @@ export const state: () => {
   insertTarget: null,
   insertTemplate: null,
   handleTemplateState: false,
+  editTemplateState: false,
   handleTemplate: null,
   handlerPosX: 0,
   handlerPosY: 0,
@@ -45,6 +47,8 @@ export const mutations = mutationTree(state, {
     (state.insertTemplate = template),
   SET_HANDLE_TEMPLATE_STATE: (state, handleState: boolean) =>
     (state.handleTemplateState = handleState),
+  SET_EDIT_TEMPLATE_STATE: (state, handleState: boolean) =>
+    (state.editTemplateState = handleState),
   SET_HANDLE_TEMPLATE: (state, template: TemplateType) =>
     (state.handleTemplate = template),
   SET_HANDLER_POS_X: (state, pos: number) => (state.handlerPosX = pos),

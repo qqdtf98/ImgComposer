@@ -8,6 +8,7 @@
     <CodeEditor />
     <CssFileSelector />
     <TemplateHandler />
+    <TemplateEditor />
   </div>
 </template>
 
@@ -26,6 +27,7 @@ import TemplateHandler from '@/components/Editor/StudioPanel/StudioTemplateList/
 import { TemplateType } from '../../interfaces/any-editor-file'
 import TemplateService from '@/services/template-service'
 import { AxiosRequestConfig, AxiosResponse } from 'axios'
+import TemplateEditor from '@/components/Editor/StudioPanel/StudioTemplateList/TemplateEditor.vue'
 
 export default defineComponent({
   components: {
@@ -37,6 +39,7 @@ export default defineComponent({
     CodeEditor,
     TemplateHandler,
     CssFileSelector,
+    TemplateEditor,
   },
   props: {
     projectId: Number,
