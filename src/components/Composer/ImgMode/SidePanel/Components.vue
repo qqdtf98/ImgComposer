@@ -72,6 +72,10 @@ export default defineComponent({
     const nameRef = ref<HTMLElement>(null)
     const hideRef = ref<HTMLElement>(null)
 
+    /**
+     * 사용자가 선택한 identifier만 화면에 표시
+     * @param iden 사용자가 선택한 identifier 정보
+     */
     function viewSelectedCompo(iden: IdentifierType) {
       for (
         let i = 0;
@@ -101,6 +105,9 @@ export default defineComponent({
       }
     }
 
+    /**
+     * 전체 identifier를 표시
+     */
     function viewEveryCompo() {
       for (
         let i = 0;
@@ -122,6 +129,11 @@ export default defineComponent({
       }
     }
 
+    /**
+     * 사용자가 선택한 identifier만 화면에 표시
+     * @param evt mousedown target. mouseup target의 자식이 됨.
+     * @param index 현재 컴포넌트 리스트에서의 순서
+     */
     function createParentCompo(evt: MouseEvent, index: number) {
       let downTarget = evt.target as HTMLElement
       downTarget = downTarget.closest('.compo-list') as HTMLElement
@@ -134,12 +146,15 @@ export default defineComponent({
         HTMLElement
       >
       const compoArray: HTMLElement[] = Array.prototype.slice.call(compoList)
+
       let upEvent: (e: MouseEvent) => void
       window.addEventListener(
         'mouseup',
         (upEvent = (e: MouseEvent) => {
           let target: HTMLElement | null = e.target as HTMLElement
           target = target.closest('.compo-list')
+
+          // mouseup target이 mousedown target과 다를 때
           if (target && target !== downTarget) {
             const parent = compoArray.find(
               (elem) => elem === target
@@ -151,7 +166,9 @@ export default defineComponent({
                 vuex.identifier.selectedPageIndex as number
               ].identifiers,
             ]
+
             let count = 0
+            // 선택한 컴포넌트의 하위에 존재하는 자식의 개수 세기
             for (
               let i = parentIndex + 1;
               i <
@@ -173,8 +190,10 @@ export default defineComponent({
                 break
               }
             }
+
             const splicedIden = [...newIdentifier.splice(index, count + 1)]
             const pushIden = []
+            // 하위 자식들의 level 올리기
             for (let i = 0; i < splicedIden.length; i++) {
               const spliced = { ...splicedIden[i] }
               if (i === 0) {
@@ -201,8 +220,10 @@ export default defineComponent({
             }
             vuex.identifier.SET_IDEN_DATA(newIdentifier)
           } else if (target && target === downTarget) {
+            // mouseup target과 mousedown target이 같을 때
             e.preventDefault()
           } else if (!target) {
+            //  mouseup target이 컴포넌트 리스트가 아닌 위치일때
             // TODO 밖으로 뺄 때 구현하기
             const copyIden = {
               ...vuex.identifier.pages[

@@ -171,6 +171,7 @@ export default defineComponent({
 
     function resizeIdentifier(e: MouseEvent) {
       const target = e.target as HTMLElement
+      // 4개의 border를 생성하여 resize 방향 알기ㄴ
       const direction = target.className.split('-')[1]
       let moveEvent: (e: MouseEvent) => void
       let upEvent: (e: MouseEvent) => void

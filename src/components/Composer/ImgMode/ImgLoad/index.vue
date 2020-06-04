@@ -358,6 +358,9 @@ export default defineComponent({
 
     const fileArray: string[] = []
 
+    /**
+     * FileReader를 사용하여 첫번째 이미지를 띄우며 vuex의 identifier에 imageData와 imagePath를 저장합니다.
+     */
     function processFile(file: File) {
       return new Promise(function (resolve, reject) {
         const reader = new FileReader()

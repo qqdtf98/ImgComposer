@@ -35,6 +35,9 @@ export default defineComponent({
       }
     }
 
+    /**
+     * 선택한 파일 로드
+     */
     function openDirectoryFile(e: MouseEvent) {
       let target = e.target as HTMLElement
       target = target.closest('.file') as HTMLElement
@@ -55,6 +58,13 @@ export default defineComponent({
       vuex.identifier.SET_SELECTED_PAGE_INDEX(selectedPageIndex)
     }
 
+    /**
+     * 현재 폴더의 자식이 file인지 folder인지에 따라 트리 생성
+     *
+     * recursive 함수
+     * @param directory 현재 폴더
+     * @param parent file tree를 생성할 htmlelement
+     */
     function createFileTree(directory: DirType, parent: HTMLElement) {
       if (!parent) return
       if (directory.children.length === 0) {
