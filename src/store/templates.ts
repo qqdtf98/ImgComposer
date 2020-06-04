@@ -1,6 +1,5 @@
-import { actionTree, mutationTree } from 'nuxt-typed-vuex'
-
 import { TemplateType } from '@/interfaces/any-editor-file'
+import { actionTree, mutationTree } from 'nuxt-typed-vuex'
 
 export const state: () => {
   basicTemplates: TemplateType[]
@@ -11,6 +10,10 @@ export const state: () => {
   selectorPosY: number
   insertTarget: HTMLElement | null
   insertTemplate: TemplateType | null
+  handleTemplateState: boolean
+  handleTemplate: TemplateType | null
+  handlerPosX: number
+  handlerPosY: number
 } = () => ({
   basicTemplates: [],
   pageTemplates: [],
@@ -20,6 +23,10 @@ export const state: () => {
   selectorPosY: 0,
   insertTarget: null,
   insertTemplate: null,
+  handleTemplateState: false,
+  handleTemplate: null,
+  handlerPosX: 0,
+  handlerPosY: 0,
 })
 
 export const mutations = mutationTree(state, {
@@ -36,6 +43,12 @@ export const mutations = mutationTree(state, {
   SET_INSERT_TARGET: (state, elem: HTMLElement) => (state.insertTarget = elem),
   SET_INSERT_TEMPLATE: (state, template: TemplateType) =>
     (state.insertTemplate = template),
+  SET_HANDLE_TEMPLATE_STATE: (state, handleState: boolean) =>
+    (state.handleTemplateState = handleState),
+  SET_HANDLE_TEMPLATE: (state, template: TemplateType) =>
+    (state.handleTemplate = template),
+  SET_HANDLER_POS_X: (state, pos: number) => (state.handlerPosX = pos),
+  SET_HANDLER_POS_Y: (state, pos: number) => (state.handlerPosY = pos),
 })
 
 type AddTempType = {
@@ -61,6 +74,14 @@ export const actions = actionTree(
         newTemplates.push(data.template)
         commit('SET_PAGE_TEMPLATES', newTemplates)
       }
+    },
+    deleteTemplateData({ commit, state }, index: number) {
+      const newCustomTemplates = [...state.customTemplates]
+      const deleteIndex = newCustomTemplates.findIndex(
+        (elem) => elem.template_seq === index
+      )
+      newCustomTemplates.splice(deleteIndex, 1)
+      commit('SET_CUSTOM_TEMPLATES', newCustomTemplates)
     },
   }
 )

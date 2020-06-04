@@ -7,6 +7,7 @@
     <StudioPanel />
     <CodeEditor />
     <CssFileSelector />
+    <TemplateHandler />
   </div>
 </template>
 
@@ -21,6 +22,7 @@ import { useVuex } from '@/modules/vue-hooks'
 import ProjectService from '@/services/project-service'
 import CodeEditor from './CodeEditor/index.vue'
 import CssFileSelector from '@/components/Editor/StudioPanel/StudioTemplateList/CssFileSelector.vue'
+import TemplateHandler from '@/components/Editor/StudioPanel/StudioTemplateList/TemplateHandler.vue'
 
 export default defineComponent({
   components: {
@@ -30,6 +32,7 @@ export default defineComponent({
     StylesPanel,
     StudioPanel,
     CodeEditor,
+    TemplateHandler,
     CssFileSelector,
   },
   props: {

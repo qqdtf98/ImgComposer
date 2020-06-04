@@ -1,5 +1,9 @@
 <template>
-  <div class="template-wrapper" @mousedown="dragTemplate">
+  <div
+    class="template-wrapper"
+    @mousedown="dragTemplate"
+    @contextmenu="activateHandler"
+  >
     <span class="template-text">{{ template.template_name }}</span>
   </div>
 </template>
@@ -19,6 +23,7 @@ export default defineComponent({
     }
     // Fire when mouse down
     function dragTemplate(e: MouseEvent) {
+      vuex.templates.SET_HANDLE_TEMPLATE_STATE(false)
       const target: HTMLElement = (e.target as HTMLElement).closest(
         '.template-wrapper'
       ) as HTMLElement
@@ -98,8 +103,21 @@ export default defineComponent({
       vuex.templates.SET_INSERT_TEMPLATE(template)
     }
 
+    /**
+     * 수정/삭제 context 띄우기
+     */
+    function activateHandler(e: MouseEvent) {
+      if (template.category.category_name === 'custom') {
+        vuex.templates.SET_HANDLE_TEMPLATE_STATE(true)
+        vuex.templates.SET_HANDLE_TEMPLATE(template)
+        vuex.templates.SET_HANDLER_POS_X(e.clientX)
+        vuex.templates.SET_HANDLER_POS_Y(e.clientY)
+      }
+    }
+
     return {
       dragTemplate,
+      activateHandler,
     }
   },
 })
