@@ -10,7 +10,6 @@
           <i class="icon-arrowhead-left" />
         </button>
       </h1>
-      <!-- <StudioTemplate class="studio-template" /> -->
       <StudioTemplateList />
     </div>
 
@@ -26,13 +25,11 @@
 
 <script lang="ts">
 import { defineComponent, reactive } from '@vue/composition-api'
-import StudioTemplate from './StudioTemplate.vue'
 import mergeClassNames from '@/modules/merge-class-names'
 import StudioTemplateList from '@/components/Editor/StudioPanel/StudioTemplateList/index.vue'
 
 export default defineComponent({
   components: {
-    StudioTemplate,
     StudioTemplateList,
   },
   setup() {

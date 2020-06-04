@@ -13,7 +13,6 @@
       <div class="nested active">
         <BasicTemplates v-if="temp === 'Basic Templates'" class="template" />
         <PageTemplates v-if="temp === 'Page Templates'" class="template" />
-        <!-- <SampleTemplate v-if="temp === 'Custom Templates'" class="template" /> -->
         <CustomTemplates v-if="temp === 'Custom Templates'" class="template" />
       </div>
     </div>
@@ -25,14 +24,12 @@ import { defineComponent, onMounted } from '@vue/composition-api'
 import BasicTemplates from './BasicTemplates.vue'
 import PageTemplates from './PageTemplates.vue'
 import CustomTemplates from './CustomTemplates.vue'
-import SampleTemplate from './SampleTemplate.vue'
 
 export default defineComponent({
   components: {
     BasicTemplates,
     PageTemplates,
     CustomTemplates,
-    SampleTemplate,
   },
   setup() {
     const templates: string[] = [
