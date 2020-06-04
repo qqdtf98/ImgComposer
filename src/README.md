@@ -24,7 +24,7 @@ Any Editor는 크게 `Composer` 와 `Editor` 두 가지 기능으로 나뉩니�
 
 ## Composer
 
-`src/components/Composer/ImgMode`
+**_src/components/Composer/ImgMode_**
 
 ### Side Panel
 
@@ -103,4 +103,58 @@ vuex.folderDirectory.currentList에 저장되어 있는 데이터들만 보이�
 
 폴더 구조를 트리 형태로 나타냈습니다. 선택한 폴더의 구조에 따라 동적으로 트리를 생성합니다.
 
+<br>
+
 ## Editor
+
+**_src/components/Editor_**
+
+### Canvas
+
+```
+ <iframe
+      id="main-iframe"
+      ref="iframeRef"
+      frameborder="0"
+      :class="mergeClassNames(iframeClassName)"
+    ></iframe>
+```
+
+Canvas.vue에 존재.
+
+편집할 html 파일을 로드합니다.
+
+`Context`
+
+user가 선택한 element의 css selector을 나열.
+
+selector의 이름, type(class / id)를 입력받음.
+
+`CssFileSelector`
+
+프로젝트 내의 css file list를 나열.
+
+css file에 추가할 코드 생성.
+
+`ContextHandler`
+
+selector 이름 변경 기능 (추후 구현 필요)
+
+selector 삭제 기능
+
+`./modules`
+
+- Marker: 유저가 선택한 element를 표시
+- Selector: 유저가 mouseover한 target을 표시
+
+### Code Editor
+
+### FileListPanel
+
+### MenuBar
+
+### StudioPanel
+
+### StylesPanel
+
+### Tabs

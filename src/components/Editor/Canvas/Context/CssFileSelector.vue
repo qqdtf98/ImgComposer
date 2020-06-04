@@ -27,6 +27,9 @@ export default defineComponent({
   setup(props, ctx) {
     const vuex = useVuex(ctx)
 
+    /**
+     * 선택한 css file에 selector 코드 추가
+     */
     function storeCssSelector(e: MouseEvent) {
       if (!props.cssTarget) return
       const target = e.target as HTMLElement

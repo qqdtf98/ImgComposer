@@ -26,6 +26,7 @@ export default defineComponent({
       }
     )
 
+    // TODO selector 이름 변경
     function reviseSelectorName() {}
 
     function deleteSelector() {
@@ -33,6 +34,7 @@ export default defineComponent({
       if (!selectorTarget) return
       const selectorText = selectorTarget.textContent as string
 
+      // 해당 selector 삭제
       if (selectorText.includes('.')) {
         vuex.styleData.target?.classList.remove(
           selectorText.trim().replace('.', '')
@@ -42,6 +44,7 @@ export default defineComponent({
         vuex.styleData.target.id = ''
       }
 
+      // fileData에서 해당 부분 코드 삭제
       vuex.fileData.removeSelectorValue()
     }
 
