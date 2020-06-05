@@ -72,6 +72,9 @@ export default defineComponent({
   setup(props, ctx) {
     const vuex = useVuex(ctx)
 
+    /**
+     * 선택한 파일을 iframe과 code Mirror에 로드
+     */
     function loadFile(e: MouseEvent, selectedFile: File) {
       if (selectedFile.fileType === 'html') {
         const formattedHtml = prettier.format(selectedFile.data, {
@@ -80,6 +83,7 @@ export default defineComponent({
         })
         vuex.codeMirror.SET_HTML_SECTION_VALUE(formattedHtml)
         vuex.codeMirror.SET_HTML_SECTION_INDEX(selectedFile.fileId)
+        // html 파일은 selectedFile에도 저장
         vuex.fileData.SET_SELECTED_FILE(selectedFile)
       } else if (selectedFile.fileType === 'css') {
         const formattedCss = prettier.format(selectedFile.data, {
@@ -108,10 +112,11 @@ export default defineComponent({
     const activateContext = ref('')
 
     const folderRef = ref<VueComponent>(null)
-
     const fileRef = ref<VueComponent>(null)
 
-    // calculate Context position
+    /**
+     * calculate Context position
+     */
     function placeContext(elem: HTMLElement, e: MouseEvent) {
       if (
         e.clientX + elem.getBoundingClientRect().width > window.innerWidth &&
@@ -147,7 +152,9 @@ export default defineComponent({
 
     let clickedTarget: HTMLInputElement
 
-    // open fileContext and set props by fileId
+    /**
+     * open fileContext and set props by fileId
+     */
     function openFileContext(e: MouseEvent, fileId: number, file: File) {
       let target = e.target as HTMLInputElement
       if (target.className === 'project-data-wrapper') {
@@ -159,7 +166,6 @@ export default defineComponent({
       activateContext.value = 'file'
       const File = fileRef.value?.$el as HTMLElement
 
-      // TODO context 위치가 셋팅되기 전에 보여지는 현상해결하기
       setTimeout(() => {
         placeContext(File, e)
       }, 0)
@@ -169,6 +175,11 @@ export default defineComponent({
       selectedFileElem.value = file
     }
 
+    /**
+     * 새로운 파일을 select
+     * @param fileId 새로 생성한 파일의 id
+     * @param newFile 새로 생성한 파일 data
+     */
     function setNewFileTarget(fileId: number, newFile: File) {
       const titles: NodeListOf<HTMLInputElement> = document.querySelectorAll(
         '.project-data-wrapper'
@@ -188,6 +199,9 @@ export default defineComponent({
 
     let blurEvent: () => void
 
+    /**
+     * 파일 이름 입력
+     */
     function enableWrite() {
       clickedTarget.disabled = false
       closeFileContext()
@@ -200,6 +214,7 @@ export default defineComponent({
           if (!selectedFileElem.value) return
 
           // TODO folder_seq 저장해서 fileName 중복체크하기
+          // 파일 생성 시 넣었던 임의의 값을 사용자가 입력한 값으로 업데이트
           FileService.updateFileName(
             selectedFileElem.value,
             title,
@@ -216,7 +231,6 @@ export default defineComponent({
       clickedTarget.removeEventListener('blur', blurEvent)
     }
 
-    // open FolderContext
     function openFolderContext(e: MouseEvent) {
       const target = e.target as HTMLInputElement
       if (target.className === 'project-data-list') {
@@ -229,7 +243,6 @@ export default defineComponent({
       }
     }
 
-    // close Context
     function closeFileContext() {
       if (
         activateContext.value === 'folder' ||

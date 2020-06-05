@@ -52,6 +52,7 @@ export default defineComponent({
       matchBrackets: MatchBrackets,
       lineNumbers: true,
     }
+
     let htmlCodeMirror: CodeMirror.Editor
     let cssCodeMirror: CodeMirror.Editor
 

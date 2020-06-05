@@ -164,7 +164,9 @@ export default defineComponent({
       fontColor: '#fff',
     })
 
-    // default color box를 선택했을 때 css selector 변경
+    /**
+     * default color box를 선택했을 때 css selector 변경
+     */
     function submitDefaultValue(e: MouseEvent) {
       const target = e.target
       if (vuex.styleData.target) {
@@ -184,7 +186,9 @@ export default defineComponent({
       }
     }
 
-    // chrome-picker를 선택했을 때 값을 css rule에 반영
+    /**
+     * chrome-picker를 선택했을 때 값을 css rule에 반영
+     */
     function submitPickerValue(color: VueColor) {
       if (vuex.styleData.target) {
         if (!vuex.editorInfo.selectedCssRule) return
@@ -195,7 +199,9 @@ export default defineComponent({
       }
     }
 
-    // fontweight값을 css rule에 반영
+    /**
+     * fontWeight값을 css rule에 반영
+     */
     function submitWeightValue(e: MouseEvent, property: string) {
       if (vuex.styleData.target) {
         if (!vuex.editorInfo.selectedCssRule) return
@@ -208,7 +214,9 @@ export default defineComponent({
 
     const sizeSelected = ref('px')
 
-    // input 태그를 사용해 입력한 fontSize 값을 css rule에 반영
+    /**
+     * input 태그를 사용해 입력한 fontSize 값을 css rule에 반영
+     */
     function submitFontSize(e: InputEvent) {
       if (vuex.styleData.target) {
         const target = e.target as HTMLElement
@@ -221,7 +229,9 @@ export default defineComponent({
       }
     }
 
-    // text-align 속성을 css rule에 반영
+    /**
+     * text-align 속성을 css rule에 반영
+     */
     function submitTextAlign(e: MouseEvent) {
       const target = e.target as HTMLElement
       if (vuex.styleData.target) {
@@ -236,7 +246,9 @@ export default defineComponent({
       }
     }
 
-    // lineHeight와 letterSpacing 값을 css rule에 반영
+    /**
+     * lineHeight와 letterSpacing 값을 css rule에 반영
+     */
     function submitTextValue(e: InputEvent) {
       if (vuex.styleData.target) {
         const target = e.target as HTMLElement
@@ -252,7 +264,9 @@ export default defineComponent({
       }
     }
 
-    // font-style의 특정 속성을 css rule에 반영
+    /**
+     * font-style의 특정 속성을 css rule에 반영
+     */
     function submitFontStyle(e: MouseEvent) {
       const target = e.target as HTMLElement
       if (vuex.styleData.target) {

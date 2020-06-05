@@ -8,6 +8,7 @@ export const state: () => {
   selectCssFile: boolean
   selectorPosX: number
   selectorPosY: number
+  /** template을 추가할 대상 */
   insertTarget: HTMLElement | null
   insertTemplate: TemplateType | null
   handleTemplateState: boolean

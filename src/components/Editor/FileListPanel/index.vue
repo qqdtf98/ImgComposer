@@ -26,7 +26,9 @@ export default defineComponent({
       activateFileList()
     })
 
-    // fileList 열고 닫을 때마다 file-panel과 layout 길이 변경
+    /**
+     * fileList 열고 닫을 때마다 file-panel과 layout 길이 변경
+     */
     function activateFileList() {
       const stylesCompo = document.querySelector(
         '.layout-scroll-area'
@@ -34,10 +36,12 @@ export default defineComponent({
       const listCompo = document.querySelector('#file-panel') as HTMLElement
 
       if (isFileListOn.value) {
+        // fileList 닫기
         isFileListOn.value = false
         stylesCompo.style.height = 'calc(100% - 115px)'
         listCompo.style.height = '45px'
       } else {
+        // fileList 열기
         isFileListOn.value = true
         setTimeout(() => {
           const totalHeight =

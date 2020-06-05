@@ -54,6 +54,7 @@ export default defineComponent({
   },
   setup() {
     onMounted(() => {
+      // 각 컴포넌트 열기/닫기 구현
       const toggler = document.getElementsByClassName('layout-list')
       let i
       for (i = 0; i < toggler.length; i++) {

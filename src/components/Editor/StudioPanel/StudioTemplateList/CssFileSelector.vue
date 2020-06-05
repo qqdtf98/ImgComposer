@@ -30,7 +30,7 @@ export default defineComponent({
     const vuex = useVuex(ctx)
 
     /**
-     * @param e select css fileName
+     * @param e selected css fileName
      */
     function insertTemplate(e: MouseEvent) {
       const target = vuex.templates.insertTarget

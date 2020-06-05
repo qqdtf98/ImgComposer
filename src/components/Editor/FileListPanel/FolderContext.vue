@@ -21,8 +21,11 @@ import FileService from '@/services/file-service.ts'
 export default defineComponent({
   setup(props, ctx) {
     const vuex = useVuex(ctx)
+
+    /**
+     * 새 파일을 화면에 띄우기 위해 임의의 데이터로 파일 생성
+     */
     function addFile() {
-      // TODO folderSeq, file_path 등 실제 값으로 채워넣기
       const sampleFile: SampleType = {
         folder_seq: 50,
         file_name: '',
@@ -41,6 +44,7 @@ export default defineComponent({
           htmlCssPair: null,
         }
         vuex.fileData.storeFiles(resData)
+        // 새로운 파일 데이터 전달ㄴㄴ
         setTimeout(() => {
           ctx.emit('new-file', resData.file_seq, newFile)
         }, 0)

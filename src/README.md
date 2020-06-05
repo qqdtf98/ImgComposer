@@ -8,6 +8,8 @@ Vue의 composition API
 
 typescript
 
+Nuxt.js
+
 # 실행방법
 
 `npm i`
@@ -149,12 +151,76 @@ selector 삭제 기능
 
 ### Code Editor
 
+html 파일과 css 파일을 code editor를 사용하여 직접 편집할 수 있습니다.
+
+Code Mirror를 사용하여 htmlCodeMirror, cssCodeMirror를 생성하였습니다. codeMirror가 변화할 때의 기능, editor 열기/닫기, resize의 기능이 있습니다.
+
+[참조](https://codemirror.net/doc/manual.html#events)
+
 ### FileListPanel
+
+`FileList`
+
+현재 프로젝트의 파일리스트를 보여줍니다.
+
+FileContext, FolderContext를 열고 닫는 기능이 있으며 새로운 파일 생성 시 사용자로부터 파일이름을 받아와 저장합니다.
 
 ### MenuBar
 
+화면 상단의 메뉴 바 입니다.
+
+UI만 구현되어 있으며 추후 기능 구현이 필요합니다.
+
 ### StudioPanel
+
+단순한 기본 템플릿을 담고 있는 `BasicTemplates`, 페이지 기본 템플릿을 담고 있는 `PageTemplates`, 사용자가 직접 업로드한 `CustomTemplates`가 있습니다.
+
+`TemplateCompo`
+
+BasicTemplates, PageTemplates, CustomTemplates를 구성하는 단일 template 컴포넌트입니다.
+
+template을 드래그&드롭을 사용하여 iframe에 삽입하는 부분이 구현되어 있습니다.
+
+`TemplateHandler`
+
+사용자가 선택한 CustomTemplate을 삭제하는 부분이 구현되어 있습니다.
+
+`TemplateEditor`
+
+사용자가 선택한 customTemplate을 로드하여 code mirror를 사용해 수정할 수 있습니다.
 
 ### StylesPanel
 
+UI 상으로 css를 쉽게 수정할 수 있습니다. 사용자가 css selector 선택 시 이를 저장하여 StylesPanel에서 수정한 내용을 해당 selector에 적용시킵니다.
+
+각 css 속성에 따라 컴포넌트가 분리되어 있습니다.
+
 ### Tabs
+
+화면 상단에 위치하며 파일을 열 때 tab이 추가됩니다.
+
+# store 폴더
+
+**_src/store_**
+
+vuex store에 저장할 데이터들을 정의해두었습니다.
+
+# interfaces 폴더
+
+**_src/interfaces/any-editor-file_**
+
+여러 파일에서 사용하는 type들을 정의해두었습니다.
+
+# services 폴더
+
+**_src/services_**
+
+각 기능의 api 통신 함수가 구현되어있습니다.
+
+`file-service`, `project-service`, `template-service`로 구성되어있습니다.
+
+# modules 폴더
+
+# npm 모듈 설명
+
+color-picker: Chrome

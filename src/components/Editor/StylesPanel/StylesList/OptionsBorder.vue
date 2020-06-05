@@ -95,17 +95,6 @@ export default defineComponent({
 
     const borderState = Object.keys(state)
 
-    watch(
-      () => vuex.styleData.target,
-      () => {
-        if (vuex.styleData.target) {
-          if (vuex.styleData.styleData) {
-          }
-        } else {
-        }
-      }
-    )
-
     const picker = reactive({
       isChromePicker: false,
     })
@@ -136,7 +125,9 @@ export default defineComponent({
       })
     }
 
-    // input 태그와 select의 value를 사용하여 borderRadius 값을 css rule에 적용
+    /**
+     * input 태그와 select의 value를 사용하여 borderRadius 값을 css rule에 적용
+     */
     function submitBorderRadiusValue(e: MouseEvent) {
       const target = e.target as HTMLElement
       if (!vuex.editorInfo.selectedCssRule) return
@@ -149,7 +140,9 @@ export default defineComponent({
 
     const currentStyle = ref('')
 
-    // border style을 선택했을 때 width와 color를 조합하여 css selector에 반영
+    /**
+     * border style을 선택했을 때 width와 color를 조합하여 css selector에 반영
+     */
     function submitStyleValue(e: MouseEvent, style: string) {
       if (vuex.styleData.target) {
         const btnList = document.querySelectorAll(
@@ -187,7 +180,10 @@ export default defineComponent({
 
     const currentColor = ref('')
 
-    // border color를 선택했을 때 width와 style을 조합하여 css selector에 반영
+    /**
+     * border color를 선택했을 때 width와 style을 조합하여 css selector에 반영
+     * @param color colorPicker를 사용하여 선택한 색깔
+     */
     function submitPickerValue(color: VueColor) {
       if (vuex.styleData.target) {
         if (!vuex.editorInfo.selectedCssRule) return
@@ -211,7 +207,9 @@ export default defineComponent({
       }
     }
 
-    // border width를 선택했을 때 style과 color를 조합하여 css selector에 반영
+    /**
+     * border width를 선택했을 때 style과 color를 조합하여 css selector에 반영
+     */
     function submitWidthValue() {
       if (vuex.styleData.target) {
         if (!vuex.editorInfo.selectedCssRule) return

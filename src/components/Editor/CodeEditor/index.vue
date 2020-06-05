@@ -63,6 +63,7 @@ export default defineComponent({
     let htmlCodeMirror: CodeMirror.Editor
     let cssCodeMirror: CodeMirror.Editor
 
+    // styles 패널이나 template 추가로 인해 html 코드가 변경되는 경우
     watch(
       () => vuex.codeMirror.htmlSectionValue,
       () => {
@@ -72,6 +73,7 @@ export default defineComponent({
       }
     )
 
+    // styles 패널이나 template 추가로 인해 css 코드가 변경되는 경우
     watch(
       () => vuex.codeMirror.cssSectionValue,
       () => {
@@ -96,6 +98,9 @@ export default defineComponent({
       )
     }
 
+    /**
+     * openedFileList를 사용하여 사용자가 열었던 페이지를 모두 서버에 업데이트
+     */
     function saveFileAtServer() {
       const openedFileList: {
         file_seq: number
@@ -118,12 +123,10 @@ export default defineComponent({
     onMounted(() => {
       window.addEventListener('keydown', (e: KeyboardEvent) => {
         if (e.which === 17 || e.which === 91) {
-          console.log('??')
           isCtrl.value = true
           addMouseUpEvent()
         }
         if (e.which === 83 && isCtrl.value) {
-          console.log('isave')
           // ctrl+s => 저장 단축키
           e.preventDefault()
           saveFileAtServer()
@@ -132,6 +135,7 @@ export default defineComponent({
       })
 
       if (htmlSection.value) {
+        // htmlCodeMirror 생성
         htmlCodeMirror = CodeMirror(htmlSection.value, {
           ...codeMirrorHtmlOptions,
           value: '',
@@ -152,6 +156,7 @@ export default defineComponent({
       }
 
       if (cssSection.value) {
+        // cssCodeMirror 생성
         cssCodeMirror = CodeMirror(cssSection.value, {
           ...codeMirrorCssOptions,
           value: '',
@@ -179,11 +184,13 @@ export default defineComponent({
       let target = e.target as HTMLElement
       target = target.closest('.code-on-btn') as HTMLElement
       if (isCodeMirrorOn.value) {
+        // code Editor 닫기
         isCodeMirrorOn.value = false
         target.style.top = window.innerHeight - 35 + 'px'
         const arrowImg = target.children[1] as HTMLElement
         arrowImg.style.transform = 'rotate(270deg)'
       } else {
+        // code Editor 열기
         isCodeMirrorOn.value = true
         setTimeout(() => {
           if (!codeRef.value) return
@@ -204,6 +211,7 @@ export default defineComponent({
     const codeBtnRef = ref<HTMLButtonElement>(null)
 
     function resizeCodeMirror(e: MouseEvent) {
+      // target: resize의 기준이 되는 top border element
       const target = e.target as HTMLElement
       if (!codeRef.value) return
       if (!codeBtnRef.value) return
@@ -213,8 +221,6 @@ export default defineComponent({
 
       const targetRect = target.getBoundingClientRect()
       const initTopGap = e.clientY - targetRect.top
-      const initBottomGap = targetRect.bottom - e.clientY
-      const initX = e.clientX
       const initY = e.clientY
       const initHeight = codeRef.value.getBoundingClientRect().height
       const btnHeight = codeBtnRef.value.getBoundingClientRect().height
@@ -246,9 +252,6 @@ export default defineComponent({
           codeBtnRef.value.style.top =
             evt.clientY - initTopGap - btnHeight + 'px'
           codeBtnRef.value.style.height = btnHeight + 'px'
-          // console.log(codeBtnRef.value.getBoundingClientRect().height)
-
-          // TODO resize해결하기
 
           window.addEventListener(
             'mouseup',
