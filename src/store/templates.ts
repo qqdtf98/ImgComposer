@@ -88,5 +88,13 @@ export const actions = actionTree(
       newCustomTemplates.splice(deleteIndex, 1)
       commit('SET_CUSTOM_TEMPLATES', newCustomTemplates)
     },
+    updateTemplateData({ commit, state }, template: TemplateType) {
+      const newCustomTemplates = [...state.customTemplates]
+      const updateIndex = newCustomTemplates.findIndex(
+        (elem) => elem.template_seq === template.template_seq
+      )
+      newCustomTemplates.splice(updateIndex, 1, template)
+      commit('SET_CUSTOM_TEMPLATES', newCustomTemplates)
+    },
   }
 )

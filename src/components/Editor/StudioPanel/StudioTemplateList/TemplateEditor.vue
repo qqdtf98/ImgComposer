@@ -10,7 +10,7 @@
       <div class="css-wrapper">
         <div class="code-type">CSS</div>
         <div ref="cssSection" class="css-template-section"></div>
-        <button class="update-btn">Update</button>
+        <button @click="updateTemplate" class="update-btn">Update</button>
       </div>
     </div>
   </div>
@@ -24,11 +24,16 @@ import AutoCloseTags from 'codemirror/addon/edit/closetag'
 import 'codemirror/mode/htmlmixed/htmlmixed'
 import 'codemirror/mode/xml/xml'
 import 'codemirror/mode/css/css'
-import { useVuex } from '../../../../modules/vue-hooks'
+import { useVuex } from '@/modules/vue-hooks'
 import prettier from 'prettier/standalone'
 import parserHtml from 'prettier/parser-html'
 import parserPostCss from 'prettier/parser-postcss'
 import { format } from 'url'
+import TemplateService from '@/services/template-service'
+import {
+  TemplateType,
+  TemplateUpdateType,
+} from '../../../../interfaces/any-editor-file'
 
 export default defineComponent({
   setup(props, ctx) {
@@ -66,18 +71,7 @@ export default defineComponent({
           value: '',
         })
 
-        htmlCodeMirror.setSize('100%', '100%')
-
-        htmlCodeMirror.on('change', function (cm, change) {
-          // if (vuex.codeMirror.htmlSectionIndex !== -1) {
-          //   const valueType = {
-          //     value: cm.getValue(),
-          //     type: 'html',
-          //     index: vuex.codeMirror.htmlSectionIndex,
-          //   }
-          //   vuex.fileData.updateFileValue(valueType)
-          // }
-        })
+        htmlCodeMirror.setSize('90%', '100%')
       }
 
       if (cssSection.value) {
@@ -86,22 +80,10 @@ export default defineComponent({
           value: '',
         })
         cssCodeMirror.setSize('100%', '100%')
-
-        cssCodeMirror.on('change', function (cm, change) {
-          // if (vuex.codeMirror.cssSectionIndex !== -1) {
-          //   const valueType = {
-          //     value: cm.getValue(),
-          //     type: 'css',
-          //     index: vuex.codeMirror.cssSectionIndex,
-          //   }
-          //   vuex.fileData.updateFileValue(valueType)
-          // }
-        })
       }
     })
 
-    // TODO code 넣으면 깨짐
-    // TODO update
+    /** 수정할 template을 선택했을 때 codeMirror에 setValue */
     watch(
       () => vuex.templates.editTemplateState,
       () => {
@@ -120,7 +102,9 @@ export default defineComponent({
             plugins: [parserPostCss],
           }
         )
+        htmlCodeMirror.refresh()
         htmlCodeMirror.setValue(formattedHtml)
+        cssCodeMirror.refresh()
         cssCodeMirror.setValue(formattedCss)
       }
     )
@@ -129,11 +113,33 @@ export default defineComponent({
       vuex.templates.SET_EDIT_TEMPLATE_STATE(false)
     }
 
+    function updateTemplate() {
+      const newTemplate: TemplateType = { ...vuex.templates.handleTemplate }
+      newTemplate.html_code = htmlCodeMirror.getValue()
+      newTemplate.css_code = cssCodeMirror.getValue()
+
+      const updateTemplate: TemplateUpdateType = {
+        ...newTemplate,
+        user_seq: 2,
+      }
+
+      // 서버 데이터 업데이트
+      TemplateService.updateTemplate([updateTemplate]).then((res) => {
+        console.log(res.data)
+        if (res.data.responseCode === 'SUCCESS') {
+          // vuex 데이터 업데이트
+          vuex.templates.updateTemplateData(newTemplate)
+          vuex.templates.SET_EDIT_TEMPLATE_STATE(false)
+        }
+      })
+    }
+
     return {
       htmlSection,
       cssSection,
       vuex,
       closeTemplateEditor,
+      updateTemplate,
     }
   },
 })

@@ -109,7 +109,7 @@ export interface NewData {
 /**
  * api에서 받아온 템플릿 데이터의 타입
  */
-export interface TemplateType {
+export type TemplateType = {
   category: {
     category_seq: number
     category_name: string
@@ -118,4 +118,8 @@ export interface TemplateType {
   template_name: string
   html_code: string
   css_code: string
+}
+
+export type TemplateUpdateType = TemplateType & {
+  user_seq: number
 }
