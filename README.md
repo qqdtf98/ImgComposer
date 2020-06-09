@@ -1,120 +1,116 @@
-# Any Editor
+# 개발 환경
 
-Any Editor는 HTML과 CSS로 구성되어있는 웹 페이지를 프로그래밍 지식 없이 직관적인 UI로 편집할 수 있는 소프트웨어이다.
+Vue cli
 
-## Features
+Vue의 composition API
 
-### 파일 로드
+[참조](https://velog.io/@kyusung/Vue.js-3-Composition-API)
 
-**변경사항**
+typescript
 
-`pair` 정보를 사용하지 않고 클라이언트에서 HTML 파일 내의 `<link />` 및 `<script />`로 짝을 짓는다.
+Nuxt.js
 
-**File**
+# 실행방법
 
-```ts
-interface File {
-  path: string
-  fileId: number
-  fileName: string
-  fileType: 'html' | 'css' | 'js'
-  data: string
-}
+`npm i`
+
+`npm run dev`
+
+# 컴포넌트 설명
+
+`Composer`는 이미지 파일을 로드하여 컴포넌트 설계를 간편하게 할 수 있도록 하는 기능을 합니다.
+
+## Composer
+
+**_src/components/Composer/ImgMode_**
+
+### Side Panel
+
+`VuexStore`
+
+code mirror를 사용하여 state, mutation, actions에 대한 입력을 받습니다.
+
+`Components`
+
+이미지 위에 설계한 컴포넌트의 리스트를 나열합니다.
+
+`DataTranser`
+
+컴포넌트 간의 event, props, global event 전달에 대한 데이터를 생성하고 리스트를 보여줍니다.
+
+### ImgLoad
+
+`ViewHide`
+
+이미지 위에 설계한 identifier들을 숨김/보임 기능을 합니다.
+
+`ExpandPanel`
+
+SidePanel을 확장시키는 기능을 합니다.
+
+`ComponentsData`
+
+identifier create, delete, resize, move
+
+component 이름 입력 & 색깔 선정
+
+DB 쿼리문 입력
+
+컴포넌트 data 입력
+
+`CompoLink`
+
+페이지 이동 시 전달할 query, params의 key, value 값을 입력받습니다.
+
+### Pages
+
+```
+<div v-show="showImgList" ref="gridRef" class="previews">
+      <div
+        v-for="(page, i) in store.identifier.pages"
+        ref="imgRef"
+        :key="i"
+        class="image-wrapper"
+      >
+        <img
+          id="page-img"
+          :src="page.imageData"
+          @click="openPage($event, page.imageData)"
+          @mousedown="movePage"
+        />
+        <img
+          src="@/assets/images/delete.svg"
+          class="img-delete-icon"
+          @click="deletePage(page)"
+        />
+      </div>
+    </div>
 ```
 
-### Resolve CSS
+Pages.vue내에 존재.
 
-페이지 HTML 마크업에 포함되어 있는 `link`는 로드 되지 않고 페이지에 적용되지 않으므로 서버에서 받아온 CSS 데이터를 `style`로 감싸서 `head`에 삽입한다.
+개별 컴포넌트로 구성되지는 않았으나 폴더 내의 파일 리스트를 이미지로 나열하는 기능을 합니다. 이미지 삭제, 순서 변경, 열기 기능을 합니다.
 
-**Life Cycle**
+`Directory`
 
-1. HTML 로드
-2. 로드한 HTML 파일에 대해서만 stylesheet `<link />` 태그 분석
-3. style 태그에 CSS seq 적용(`data-css-seq=""`)
-4. `head`에 삽입
-5. style 태그 제거하고 에디터에 로드
+폴더 구조를 파일 탐색기 형태로 나타냈습니다. root 클릭 시 root 폴더로 이동하게 됩니다.
 
-### HTML 편집 (Studio)
+vuex.folderDirectory.currentList에 저장되어 있는 데이터들만 보이며, 이는 현재 선택한 폴더의 바로 하위 자식들입니다.
 
-Studio 패널에서 드래그&드롭으로 HTML 마크업에 요소를 추가하거나 삭제할 수 있다.
+`File Tree`
 
-**추가**
+폴더 구조를 트리 형태로 나타냈습니다. 선택한 폴더의 구조에 따라 동적으로 트리를 생성합니다.
 
-- Block: `div`
-- Text: `h1` ~ `h6`, `p`
-- Image: `img`
-- Link(wrapper): `a`
+<br>
 
-**삭제**
+# store 폴더
 
-**Attribute 편집**
+**_src/store_**
 
-**태그 변경**
+vuex store에 저장할 데이터들을 정의해두었습니다.
 
-### CSS 편집 (Styles)
+# interfaces 폴더
 
-HTML 마크업에 직접적으로 삽입되는 inner style 대신 class, id 등의 attribute을 직접 추가하거나 삭제하고 해당 attribute에 스타일을 적용하는 방식을 사용한다.
+**_src/interfaces/any-editor-file_**
 
-**Unit**
-
-- px
-- rem
-- em
-
-**Layouts**
-
-- Position: `relative`, `absolute`, `fixed`
-- Display: `block`, `inline-block`, `inline`, `flex`
-  - Flex: `flex-direction`, `align-items`, `justify-content`
-    - Flex Children: `flex`
-- Margin
-- Padding
-
-**Dimension**
-
-- Width
-- Height
-- Top, Right, Bottom Left (for `relative` position)
-
-**Text**
-
-- ~~Familly~~
-- Size
-- Weight
-- Align
-- Color
-- Line height
-- Letter spacing
-
-**Background**
-
-- Color
-- ~~Gradient~~
-- ~~Image~~
-
-**Border**
-
-- Radius
-- Width
-- Color
-
-**Effects**
-
-- Opacity
-- Shadow
-  - Inner shadow
-  - Outer shadow
-- ~~Transform~~
-
-## 프로젝트 Style Guide
-
-### Naming
-
-- Class/Interface/Type: `PascalCase`
-- Others: `camelCase`
-
-**File names**
-
-- JS/TS: `general-file.ts`
-- Vue Component: `VueComponent.vue`
-- Vuex Store: `storeModule.ts`
+여러 파일에서 사용하는 type들을 정의해두었습니다.
