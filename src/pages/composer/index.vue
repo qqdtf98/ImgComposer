@@ -1,12 +1,12 @@
 <template>
-  <home />
+  <ImgMode />
 </template>
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api'
-import Home from '@/components/Home/index.vue'
+import ImgMode from '@/components/Composer/ImgMode/index.vue'
 
 export default defineComponent({
-  components: { Home },
+  components: { ImgMode },
 })
 </script>
