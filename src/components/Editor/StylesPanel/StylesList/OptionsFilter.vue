@@ -121,7 +121,9 @@ export default defineComponent({
       }
     )
 
-    // input을 사용하여 filter값을 변경할 때 filter 종류에 따라 css rule에 반영
+    /**
+     * input을 사용하여 filter값을 변경할 때 filter 종류에 따라 css rule에 반영
+     */
     function submitFilterInputValue(e: InputEvent) {
       if (vuex.styleData.target) {
         const inputValue = document.querySelectorAll(
@@ -134,7 +136,7 @@ export default defineComponent({
           filterValue =
             filterValue + filters[i] + '(' + inputValue[i].value + ')' + ' '
         }
-        // TODO filter 제대로 작동안함
+        // TODO filter 기능 수정 필요
         const beforeStatement = 'filter'
         vuex.editorInfo.selectedCssRule.style.filter = filterValue
         console.log(filterValue)

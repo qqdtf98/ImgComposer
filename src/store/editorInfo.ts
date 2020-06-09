@@ -3,13 +3,15 @@ import cssom from 'cssom'
 import { actionTree, mutationTree } from 'nuxt-typed-vuex'
 
 type EditorInfoState = {
+  /** 사용자가 열었던 파일 리스트 저장 */
   openedFiles: File[]
+  /**  현재 열려있는 ㄴ파일 */
   activeFileIndex: number | null
-  // 선택된 element에 적용된 cssStyleRule[]
+  /**  선택된 element에 적용된 cssStyleRule[] */
   matchedCssRules: CSSStyleRule[]
-  // 선택된 element에 적용된 css 중에 사용자가 선택한 cssStyleRule
+  /**  선택된 element에 적용된 css 중에 사용자가 선택한 cssStyleRule */
   selectedCssRule: CSSStyleRule | null
-  // 파일 전체에 사용된 cssStyleRule[]
+  /**  파일 전체에 사용된 cssStyleRule[] */
   parsedCssRules: cssom.CSSRule[]
 }
 

@@ -1,6 +1,8 @@
 import { mutationTree } from 'nuxt-typed-vuex'
 
+// 파일 탐색기와 파일 트리를 구성할 때 사용
 export const state: () => {
+  /** 현재 디렉토리의 name과 children */
   directory: dirType
   currentList: dirType[]
   rootTitle: string

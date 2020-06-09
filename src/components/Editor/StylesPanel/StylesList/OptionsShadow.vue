@@ -154,7 +154,9 @@ export default defineComponent({
 
     const currentColor = ref('px')
 
-    // boxShadow의 color를 colorpicker를 통해 선택한 후 css selector에 반영
+    /**
+     * boxShadow의 color를 colorpicker를 통해 선택한 후 css selector에 반영
+     */
     function submitPickerValue(color: VueColor) {
       if (vuex.styleData.target) {
         if (!vuex.editorInfo.selectedCssRule) return
@@ -173,7 +175,9 @@ export default defineComponent({
 
     const currentStyle = ref('')
 
-    // boxshadow style을 currenStyle에 저장
+    /**
+     * boxshadow style을 currenStyle에 저장
+     */
     function submitBoxShadowStyle(e: MouseEvent, style: string) {
       if (vuex.styleData.target) {
         const btnList = document.querySelectorAll('.shadow-type') as NodeListOf<
@@ -199,7 +203,9 @@ export default defineComponent({
 
     const currentBoxShadow = ref('')
 
-    // box shadow value를 css selector에 적용
+    /**
+     * box shadow value를 css selector에 적용
+     */
     function submitBoxShadowValue(e: MouseEvent) {
       if (vuex.styleData.target) {
         if (!vuex.editorInfo.selectedCssRule) return
@@ -219,7 +225,6 @@ export default defineComponent({
         const beforeStatement = 'box-shadow'
         vuex.editorInfo.selectedCssRule.style.boxShadow =
           boxShadowValue + currentColor.value + currentStyle.value
-        console.log(boxShadowValue + currentColor.value + currentStyle.value)
         const afterStatement = vuex.editorInfo.selectedCssRule.style.boxShadow
         replaceCssRules(beforeStatement, afterStatement)
       }

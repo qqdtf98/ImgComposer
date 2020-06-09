@@ -1,6 +1,6 @@
 import {
-  IdentifierType,
   Identifiers,
+  IdentifierType,
   NewIden,
 } from '@/interfaces/any-editor-file.ts'
 import { actionTree, mutationTree } from 'nuxt-typed-vuex'
@@ -11,6 +11,7 @@ type Page = {
   identifiers: Identifiers
 }
 
+// composer에서 컴포넌트를 설계할 때 사용하는 페이지 데이터
 export const state: () => {
   pages: Page[]
   selectedPageIndex: number | null
@@ -56,6 +57,7 @@ export const actions = actionTree(
 
       commit('SET_SELECTED_PAGE_INDEX', lastIndex)
     },
+    /** identifier를 화면에 렌더링하기 위해 임의의 값으로 생성 */
     storeIden({ commit, state }, pos: Pos) {
       const newIdentifiers: Identifiers = [
         ...state.pages[state.selectedPageIndex as number].identifiers,
@@ -100,6 +102,7 @@ export const actions = actionTree(
       newIdentifiers.splice(index, 1)
       commit('SET_IDEN_DATA', newIdentifiers)
     },
+    /** 페이지 순서 변경 */
     movePage({ commit, state }, data: spliceData) {
       const newPages: Page[] = [...state.pages]
       newPages.splice(data.targetIndex + 1, 0, newPages[data.spliceIndex])

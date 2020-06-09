@@ -1,3 +1,4 @@
+import { TemplateUpdateType } from '@/interfaces/any-editor-file'
 import apiUrl from '@/modules/api-url'
 import axios from 'axios'
 
@@ -17,6 +18,12 @@ class TemplateService {
   async deleteTemplate(templateSeq: deleteType[]) {
     return await axios.post(apiUrl.template.delete.url, {
       templates: templateSeq,
+    })
+  }
+
+  async updateTemplate(template: TemplateUpdateType[]) {
+    return await axios.post(apiUrl.template.update.url, {
+      templates: template,
     })
   }
 }

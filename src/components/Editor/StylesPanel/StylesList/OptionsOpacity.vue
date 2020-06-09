@@ -48,7 +48,9 @@ export default defineComponent({
 
     const valueState = ref(false)
 
-    // range-slider에 마우스 오버 시 opacity-value 보이게 함
+    /**
+     * range-slider에 마우스 오버 시 opacity-value 위치 셋팅
+     */
     function setValuePosition(e: MouseEvent) {
       if (vuex.styleData.target) {
         const target = e.target as HTMLElement
@@ -79,7 +81,9 @@ export default defineComponent({
       }
     )
 
-    // range-slider를 사용하여 opacity값을 변경할 때 css selector 변경
+    /**
+     * range-slider를 사용하여 opacity값을 변경할 때 css selector 변경
+     */
     function submitOpacityValue(value: string) {
       if (vuex.styleData.target) {
         if (!vuex.editorInfo.selectedCssRule) return

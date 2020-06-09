@@ -8,6 +8,7 @@ export const state: () => {
   selectCssFile: boolean
   selectorPosX: number
   selectorPosY: number
+  /** template을 추가할 대상 */
   insertTarget: HTMLElement | null
   insertTemplate: TemplateType | null
   handleTemplateState: boolean
@@ -85,6 +86,14 @@ export const actions = actionTree(
         (elem) => elem.template_seq === index
       )
       newCustomTemplates.splice(deleteIndex, 1)
+      commit('SET_CUSTOM_TEMPLATES', newCustomTemplates)
+    },
+    updateTemplateData({ commit, state }, template: TemplateType) {
+      const newCustomTemplates = [...state.customTemplates]
+      const updateIndex = newCustomTemplates.findIndex(
+        (elem) => elem.template_seq === template.template_seq
+      )
+      newCustomTemplates.splice(updateIndex, 1, template)
       commit('SET_CUSTOM_TEMPLATES', newCustomTemplates)
     },
   }

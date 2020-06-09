@@ -1,12 +1,14 @@
-import { File, cssPair, dataType } from '@/interfaces/any-editor-file'
+import { cssPair, dataType, File } from '@/interfaces/any-editor-file'
+import { Vuex as vuex } from '@/modules/vuex'
+import { reactive } from '@vue/composition-api'
 import { actionTree, mutationTree } from 'nuxt-typed-vuex'
 
-import { reactive } from '@vue/composition-api'
-import { Vuex as vuex } from '@/modules/vuex'
-
 export const state: () => {
+  /** 프로젝트에 존재하는 전체 파일 리스트 */
   fileList: File[]
+  /** 현재 iframe에 로드되어 있는 html 파일 */
   selectedFile: File | null
+  /** 프로젝트에 존재하는 css 파일 리스트 */
   cssFileList: File[]
 } = () => ({
   fileList: [],
@@ -26,9 +28,12 @@ export const actions = actionTree(
     mutations,
   },
   {
+    /**
+     *  새로운 파일 저장
+     *  @param file 서버에서 받아온 파일
+     */
     storeFiles({ commit, state }, file: dataType) {
       const newList: File[] = [...state.fileList]
-      // console.log(typeof file)
       const newFile: File = {
         fileId: file.file_seq,
         filePath: file.file_path,
@@ -68,6 +73,11 @@ export const actions = actionTree(
       if (idx > -1) newList.splice(idx, 1)
       commit('SET_FILE_LIST', newList)
     },
+    /**  fileData 변경
+     * @param value update할 코드
+     * @param type html | css
+     * @param index update할 fileId
+     */
     updateFileValue({ commit, state }, { value, type, index }) {
       if (type === 'html') {
         const newSelectedFile = { ...state.selectedFile } as File
@@ -101,7 +111,7 @@ export const actions = actionTree(
       }
     },
     /**
-     *
+     * selector 추가
      * @param value file의 data부분에 변경할 내용
      * @param title fileName
      */
@@ -174,6 +184,7 @@ export const actions = actionTree(
       commit('SET_SELECTED_FILE', newFile)
       vuex.store.codeMirror.SET_HTML_SECTION_VALUE(newFile.data)
     },
+    /** template 코드를 html, css 파일에 추가 */
     insertTemplateValue({ commit, state }, cssfileName: string) {
       //  css file에 template css 코드 추가
       const newCssList = [...state.cssFileList]
@@ -195,7 +206,6 @@ export const actions = actionTree(
       commit('SET_FILE_LIST', newFileList)
 
       // template이 추가된 iframe의 html 코드 저장
-
       newFileList = [...state.fileList]
       newFileIndex = state.fileList.findIndex(
         (elem) => elem.fileId === state.selectedFile?.fileId

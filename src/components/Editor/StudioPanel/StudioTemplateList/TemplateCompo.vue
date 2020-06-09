@@ -21,7 +21,10 @@ export default defineComponent({
     const { template } = props as {
       template: TemplateType
     }
-    // Fire when mouse down
+    /**
+     * Fire when mouse down
+     * @param e template select event
+     */
     function dragTemplate(e: MouseEvent) {
       vuex.templates.SET_HANDLE_TEMPLATE_STATE(false)
       const target: HTMLElement = (e.target as HTMLElement).closest(
@@ -29,6 +32,7 @@ export default defineComponent({
       ) as HTMLElement
 
       if (target) {
+        // 마우스를 따라 다닐 copyTarget 생성
         const copyTarget = target.cloneNode(true) as HTMLElement
         const initLeftInter = e.screenX - target.getBoundingClientRect().left
         const initTopInter = e.screenY - target.getBoundingClientRect().top
@@ -79,6 +83,7 @@ export default defineComponent({
         iframeWindow?.addEventListener(
           'mouseup',
           (iframeUpEvent = (e: MouseEvent) => {
+            // iframe 위에서 mouseup 했을 때 삽입
             selectCssFile(e)
             removeEventListener()
           })
@@ -124,7 +129,6 @@ export default defineComponent({
 </script>
 <style lang="scss">
 @use '@/assets/styles/package' as *;
-
 .template-wrapper {
   @include auto-distinct-bg-color;
   margin-bottom: 12px;

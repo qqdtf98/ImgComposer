@@ -27,6 +27,7 @@
       v-show="isSelectorHandler"
       :selectorTarget="selectorTarget"
     />
+    <ElementHandler />
   </div>
 </template>
 
@@ -57,9 +58,10 @@ import parserHtml from 'prettier/parser-html'
 import parserPostCss from 'prettier/parser-postcss'
 import CssFileSelector from '@/components/Editor/Canvas/Context/CssFileSelector.vue'
 import ContextHandler from '@/components/Editor/Canvas/Context/ContextHandler.vue'
+import ElementHandler from '@/components/Editor/Canvas/Context/ElementHandler.vue'
 
 export default defineComponent({
-  components: { Context, CssFileSelector, ContextHandler },
+  components: { Context, CssFileSelector, ContextHandler, ElementHandler },
   setup(props, ctx) {
     const vuex = useVuex(ctx)
 
@@ -157,41 +159,15 @@ ${formattedCss}
       const iframeWindow = iframe.contentWindow
 
       if (!iframeDoc || !iframeWindow) return
-      // Load html
 
-      // img 위에 selector 표시 샘플
-      // window.addEventListener('mousedown', (e: MouseEvent) => {
-      //   const selector = document.createElement('div')
-      //   selector.style.border = '2px solid white'
-      //   selector.style.position = 'fixed'
-      //   const initX = e.clientX
-      //   const initY = e.clientY
-      //   selector.style.left = initX + 'px'
-      //   selector.style.top = initY + 'px'
-      //   selector.style.width = '1px'
-      //   selector.style.height = '1px'
-      //   let moveEvent: (e: MouseEvent) => void
-      //   let upEvent: (e: MouseEvent) => void
-      //   window.addEventListener(
-      //     'mousemove',
-      //     (moveEvent = (evt: MouseEvent) => {
-      //       const deltaX = evt.clientX - initX
-      //       const deltaY = evt.clientY - initY
-
-      //       selector.style.left = initX + (deltaX < 0 ? deltaX : 0) + 'px'
-      //       selector.style.width = Math.abs(deltaX) + 'px'
-      //       selector.style.top = initY + (deltaY < 0 ? deltaY : 0) + 'px'
-      //       selector.style.height = Math.abs(deltaY) + 'px'
-      //     })
-      //   )
-      //   window.addEventListener(
-      //     'mouseup',
-      //     (upEvent = () => {
-      //       window.removeEventListener('mousemove', moveEvent)
-      //       window.removeEventListener('mouseup', upEvent)
-      //     })
-      //   )
-      // })
+      iframeDoc.addEventListener('contextmenu', (e) => {
+        e.preventDefault()
+        isContextActivate.value = false
+        console.log('context')
+        vuex.handlerData.SET_HANDLER_TARGET(e.target)
+        vuex.handlerData.SET_HANDLER_POS_X(e.clientX)
+        vuex.handlerData.SET_HANDLER_POS_Y(e.clientY)
+      })
 
       // fileList가 수정될 때마다 selectedFile을 사용하여 iframe reload
       watch(

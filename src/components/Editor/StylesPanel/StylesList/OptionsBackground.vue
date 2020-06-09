@@ -81,7 +81,9 @@ export default defineComponent({
       })
     }
 
-    // default color box에서 선택하였을 때 chagnedData 저장
+    /**
+     * default color box에서 선택하였을 때 chagnedData 저장
+     */
     function submitDefaultValue(e: MouseEvent) {
       const target = e.target
       if (vuex.styleData.target) {
@@ -91,6 +93,7 @@ export default defineComponent({
           if (target.className === 'color-none') {
             if (!vuex.editorInfo.selectedCssRule) return
             beforeStatement = `background-color`
+            // 화면에 적용시킴
             vuex.editorInfo.selectedCssRule.style.backgroundColor =
               'transparent'
             afterStatement = `${vuex.editorInfo.selectedCssRule.style.backgroundColor}`
@@ -102,6 +105,7 @@ export default defineComponent({
             ).backgroundColor
             afterStatement = `${vuex.editorInfo.selectedCssRule.style.backgroundColor}`
           }
+          // codeData에 적용시킴
           replaceCssRules(beforeStatement, afterStatement)
         }
       }
