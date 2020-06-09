@@ -1,45 +1,3 @@
-/**
- * editor 프로젝트에서 사용하는 파일 데이터의 타입
- */
-export interface File {
-  fileId: number
-  filePath: string
-  fileName: string
-  fileType: 'html' | 'css' | 'js'
-  data: string
-  htmlCssPair: cssPair[] | null
-}
-
-/**
- * api에서 받아온 파일 데이터의 타입
- */
-export interface dataType {
-  file_seq: number
-  file_path: string
-  file_name: string
-  file_type: 'html' | 'css' | 'js'
-  contents: string
-  html_css_pair: cssType[]
-}
-
-export interface cssPair {
-  htmlFileSeq: number
-  cssFileSeq: number
-}
-
-export interface cssType {
-  html_file_seq: number
-  css_file_seq: number
-}
-
-export interface SampleType {
-  folder_seq: number
-  file_name: string
-  file_path: string
-  file_type: string
-  contents: string
-}
-
 export interface CompoDataType {
   key: string
   value: string
@@ -104,22 +62,4 @@ export interface DataTransfer {
 export interface NewData {
   index: number
   transfer: DataTransfer
-}
-
-/**
- * api에서 받아온 템플릿 데이터의 타입
- */
-export type TemplateType = {
-  category: {
-    category_seq: number
-    category_name: string
-  }
-  template_seq: number
-  template_name: string
-  html_code: string
-  css_code: string
-}
-
-export type TemplateUpdateType = TemplateType & {
-  user_seq: number
 }
