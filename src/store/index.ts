@@ -9,7 +9,7 @@ import * as openedFileIndex from './openedFileIndex'
 import * as styleData from './styleData'
 import * as templates from './templates'
 
-import { getAccessorType, mutationTree } from 'nuxt-typed-vuex'
+import { actionTree, getAccessorType, mutationTree } from 'nuxt-typed-vuex'
 
 export const state = () => ({
   rootState: '',
@@ -21,9 +21,12 @@ export const mutations = mutationTree(state, {
   },
 })
 
+export const actions = actionTree({ state, mutations }, {})
+
 export const accessorType = getAccessorType({
   state,
   mutations,
+  actions,
   modules: {
     styleData,
     editorInfo,
