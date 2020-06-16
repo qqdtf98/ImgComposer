@@ -2,7 +2,6 @@ import * as composer from './composer'
 import * as dataTransfer from './dataTransfer'
 import * as folderDirectory from './folderDirectory'
 import * as identifier from './identifier'
-import * as styleData from './styleData'
 
 import { actionTree, getAccessorType, mutationTree } from 'nuxt-typed-vuex'
 
@@ -23,7 +22,6 @@ export const accessorType = getAccessorType({
   mutations,
   actions,
   modules: {
-    styleData,
     composer,
     dataTransfer,
     identifier,
