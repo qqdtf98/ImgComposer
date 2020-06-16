@@ -43,6 +43,7 @@ export default defineComponent({
     }
 
     onMounted(() => {
+      // state, mutation, actions 입력을 받을 code mirror 생성
       if (stateSection.value) {
         const stateCodeMirror = CodeMirror(stateSection.value, {
           ...codeMirrorOptions,

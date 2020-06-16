@@ -18,11 +18,7 @@ Nuxt.js
 
 # 컴포넌트 설명
 
-`Composer`는 이미지 파일을 로드하여 컴포넌트 설계를 간편하게 할 수 있도록 하는 기능을 합니다.
-
-## Composer
-
-**_src/components/Composer/ImgMode_**
+`AnyxUI`는 이미지 파일을 로드하여 컴포넌트 설계를 간편하게 할 수 있도록 하는 기능을 합니다.
 
 ### Side Panel
 
@@ -34,7 +30,7 @@ code mirror를 사용하여 state, mutation, actions에 대한 입력을 받습�
 
 이미지 위에 설계한 컴포넌트의 리스트를 나열합니다.
 
-`DataTranser`
+`DataTransfer`
 
 컴포넌트 간의 event, props, global event 전달에 대한 데이터를 생성하고 리스트를 보여줍니다.
 
@@ -114,3 +110,15 @@ vuex store에 저장할 데이터들을 정의해두었습니다.
 **_src/interfaces/any-editor-file_**
 
 여러 파일에서 사용하는 type들을 정의해두었습니다.
+
+# 주요사용 모듈
+
+[CodeMirror] https://codemirror.net
+
+[Vue Color] https://github.com/xiaokaike/vue-color
+
+# 기타 첨부파일
+
+**_src/assets/component설명-피피티.pptx_**
+
+각 컴포넌트의 기능 설명을 이미지와 함께 설명해두었습니다.
