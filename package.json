@@ -22,7 +22,7 @@
     "dayjs": "^1.8.23",
     "directory-tree": "^2.2.4",
     "file-saver": "^2.0.2",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "nuxt": "^2.12.2",
     "nuxt-typed-vuex": "^0.1.18",
     "path-list-to-tree": "^1.1.1",
