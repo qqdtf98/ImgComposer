@@ -17,7 +17,7 @@
     "@types/prettier": "^2.0.0",
     "@vue/composition-api": "^0.5.0",
     "axios": "^0.19.2",
-    "codemirror": "^5.54.0",
+    "codemirror": "^5.58.2",
     "cssom": "^0.4.4",
     "dayjs": "^1.8.23",
     "directory-tree": "^2.2.4",
